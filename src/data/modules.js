@@ -2,7 +2,7 @@ export const MODULES = [
   {
     id: 1,
     name: 'O que é empreendedorismo',
-    tag: 'Mentalidade · Gratuito',
+    tag: 'Mentalidade',
     color: '#1E40AF',
     videoUrl: null,
     mission: {
@@ -28,7 +28,7 @@ export const MODULES = [
   {
     id: 2,
     name: 'Cria sua empresa',
-    tag: 'Identidade · Pago',
+    tag: 'Identidade',
     color: '#7C3AED',
     isCompanyCreation: true,
     videoUrl: null,
@@ -45,7 +45,7 @@ export const MODULES = [
   {
     id: 3,
     name: 'Seu primeiro cliente',
-    tag: 'Mercado · Pago',
+    tag: 'Mercado',
     color: '#0891B2',
     videoUrl: null,
     mission: {
@@ -72,7 +72,7 @@ export const MODULES = [
   {
     id: 4,
     name: 'Criando e entregando valor',
-    tag: 'Valor · Pago',
+    tag: 'Valor',
     color: '#059669',
     videoUrl: null,
     mission: {
@@ -99,7 +99,7 @@ export const MODULES = [
   {
     id: 5,
     name: 'Sua primeira venda',
-    tag: 'Marco · Anual',
+    tag: 'Marco',
     color: '#B45309',
     videoUrl: null,
     mission: {
