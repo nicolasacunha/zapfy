@@ -1,10 +1,20 @@
 import { supabase } from './supabase'
 
+export async function getMissionReports(childId) {
+  const { data, error } = await supabase
+    .from('mission_completions')
+    .select('module_id, report, completed_at')
+    .eq('child_profile_id', childId)
+  if (error) return {}
+  return Object.fromEntries((data ?? []).map(r => [r.module_id, r.report]))
+}
+
 export async function loadUserState(childId) {
-  const [{ data: profile }, { data: progress }, { data: company }] = await Promise.all([
+  const [{ data: profile }, { data: progress }, { data: company }, missionReports] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', childId).single(),
     supabase.from('progress').select('*').eq('user_id', childId).maybeSingle(),
     supabase.from('companies').select('*').eq('user_id', childId).maybeSingle(),
+    getMissionReports(childId),
   ])
 
   if (!profile) return null
@@ -30,6 +40,8 @@ export async function loadUserState(childId) {
     completedModules:  progress?.completed_modules ?? [],
     currentModule:     progress?.current_module  ?? 1,
     parentPin:         profile.parent_pin_hash ?? null,
+    missionReports,
+    completedMissions: Object.keys(missionReports).map(Number),
     company: company ? {
       name:      company.name,
       type:      company.type,
@@ -77,4 +89,14 @@ export async function getChildProfiles(parentId) {
     .eq('role', 'child')
   if (error) throw error
   return data ?? []
+}
+
+export async function saveMissionReport(childId, moduleId, report) {
+  const { error } = await supabase.from('mission_completions').upsert({
+    child_profile_id: childId,
+    module_id:        moduleId,
+    report,
+    completed_at:     new Date().toISOString(),
+  }, { onConflict: 'child_profile_id,module_id' })
+  if (error) console.error('[Zapfy] mission sync error:', error)
 }
