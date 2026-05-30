@@ -1,25 +1,25 @@
 import { useState } from 'react'
-import { Check, X, Crown } from 'lucide-react'
+import { X, Crown, Check, Sparkles } from 'lucide-react'
 import { C } from '../tokens'
 import ZappyWithSkin from '../components/ZappyWithSkin'
 import { PRODUCTS, purchasePremium, restorePurchases } from '../lib/purchases'
 import { useZapfy } from '../context/ZapfyContext'
 
-const MODULES_UNLOCKED = [
-  { icon: '🏢', title: 'Módulo 2 — Cria sua empresa', desc: 'Nome, produto, identidade e diferencial da empresa do seu filho' },
-  { icon: '🎯', title: 'Módulo 3 — Primeiro cliente', desc: 'Quem compraria, onde encontrar, como chegar até ele' },
-  { icon: '💰', title: 'Módulo 4 — Preço e valor', desc: 'Como precificar, negociar e defender o preço sem dar desconto' },
-  { icon: '🚀', title: 'Módulo 5 — Primeira venda', desc: 'Simulação completa + desafio: tentar vender para alguém de verdade' },
-  { icon: '📊', title: 'Dashboard do pai', desc: 'Veja cada missão concluída, empresa criada e progresso em tempo real' },
+const FOUNDER_FEATURES = [
+  { icon: '🧊', title: 'Streak Freeze ilimitado', desc: 'Nunca perca sua sequência por um dia ruim' },
+  { icon: '⚡', title: 'Missões bônus por módulo', desc: 'Conteúdo extra além dos 5 módulos principais' },
+  { icon: '📊', title: 'Relatório PDF do pai', desc: 'Resumo mensal de progresso para compartilhar' },
+  { icon: '🚀', title: 'Acesso antecipado', desc: 'Novos módulos antes de todo mundo' },
+  { icon: '✨', title: 'Zappy Dourado', desc: 'Skin exclusiva do mascote para Founders' },
+  { icon: '🏆', title: 'Liga Founder', desc: 'Compita com os melhores founders do país' },
 ]
 
 export default function PaywallScreen({ onNav }) {
   const { dispatch } = useZapfy()
-  const [plan,    setPlan]    = useState('annual')
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
 
-  const product = PRODUCTS[plan]
+  const product = PRODUCTS.founder
 
   const handleSubscribe = async () => {
     setLoading(true)
@@ -28,6 +28,7 @@ export default function PaywallScreen({ onNav }) {
       const result = await purchasePremium(product.id)
       if (result.success) {
         dispatch({ type: 'SET_PREMIUM', value: true })
+        dispatch({ type: 'SET_SKIN', skin: 'golden' })
         onNav('pathway')
       } else {
         setError('Não foi possível processar o pagamento. Tente novamente.')
@@ -54,93 +55,53 @@ export default function PaywallScreen({ onNav }) {
     }
   }
 
-  const buttonLabel = loading
-    ? 'Processando…'
-    : plan === 'annual'
-      ? 'Começar 7 dias grátis • depois R$599/ano'
-      : 'Começar 7 dias grátis • depois R$69,90/mês'
-
   return (
     <div className="min-h-screen pb-8 flex flex-col" style={{ background: C.bg }}>
 
       {/* Header */}
       <div className="relative px-4 pt-10 pb-6 flex flex-col items-center text-center"
-        style={{ background: `linear-gradient(160deg, #1E40AF 0%, #7C3AED 100%)` }}>
+        style={{ background: 'linear-gradient(160deg, #1E40AF 0%, #7C3AED 100%)' }}>
         <button onClick={() => onNav('pathway')}
           className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
-          style={{ background: 'rgba(255,255,255,.2)' }}>
+          style={{ background: 'rgba(255,255,255,.15)' }}>
           <X size={16} color="white" />
         </button>
         <div className="mb-3">
-          <ZappyWithSkin mood="cheer" size={80} />
+          <ZappyWithSkin mood="cheer" size={80} skin="golden" />
         </div>
         <div className="flex items-center gap-2 mb-2">
           <Crown size={18} fill="#F97316" color="#F97316" />
-          <span className="text-white/80 font-extrabold text-sm uppercase tracking-widest">Zapfy Premium</span>
+          <span className="text-white/80 font-extrabold text-sm uppercase tracking-widest">Zapfy Founder</span>
           <Crown size={18} fill="#F97316" color="#F97316" />
         </div>
         <h1 className="text-2xl font-black text-white leading-tight">
-          Seu filho vai criar<br />sua empresa de verdade.
+          Para quem quer ir<br />além do básico.
         </h1>
-        <p className="text-white/80 text-sm font-bold mt-2">
-          7 dias grátis — sem cartão de crédito
+        <p className="text-white/70 text-sm font-semibold mt-2">
+          Todos os módulos são gratuitos. Isso é só para quem quer mais.
         </p>
       </div>
 
       <div className="flex-1 px-4 pt-5 flex flex-col gap-4">
 
-        {/* Modules unlocked */}
-        <div className="rounded-3xl border p-4 flex flex-col gap-4" style={{ background: C.card, borderColor: C.border }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-center" style={{ color: C.inkSoft }}>
-            O que é desbloqueado
-          </p>
-          {MODULES_UNLOCKED.map((m, i) => (
+        {/* Features */}
+        <div className="rounded-3xl border p-4 flex flex-col gap-3" style={{ background: C.card, borderColor: C.border }}>
+          {FOUNDER_FEATURES.map((f, i) => (
             <div key={i} className="flex items-start gap-3">
-              <span className="text-xl w-7 flex-shrink-0 mt-0.5">{m.icon}</span>
+              <span className="text-xl w-7 flex-shrink-0 mt-0.5">{f.icon}</span>
               <div className="flex-1">
-                <p className="text-sm font-extrabold leading-tight" style={{ color: C.ink }}>{m.title}</p>
-                <p className="text-xs font-semibold leading-snug mt-0.5" style={{ color: C.inkSoft }}>{m.desc}</p>
+                <p className="text-sm font-bold leading-snug" style={{ color: C.ink }}>{f.title}</p>
+                <p className="text-xs font-semibold mt-0.5" style={{ color: C.inkSoft }}>{f.desc}</p>
               </div>
-              <Check size={16} color={C.success} strokeWidth={3} className="flex-shrink-0 mt-0.5" />
+              <Check size={15} color={C.success} strokeWidth={3} className="flex-shrink-0 mt-1" />
             </div>
           ))}
         </div>
 
-        {/* Stat badge */}
-        <div className="rounded-2xl px-4 py-3 text-center"
-          style={{ background: `${C.primary}12`, border: `1.5px solid ${C.primary}30` }}>
-          <p className="text-xs font-bold leading-snug" style={{ color: C.primary }}>
-            "71% dos filhos de empreendedores chegaram aos 19 anos sem entender o negócio dos pais."
-          </p>
-        </div>
-
-        {/* Plan selector */}
-        <div className="grid grid-cols-2 gap-3">
-          {['monthly', 'annual'].map(p => {
-            const prod = PRODUCTS[p]
-            const active = plan === p
-            return (
-              <button key={p} onClick={() => setPlan(p)}
-                className="rounded-2xl p-3 text-left transition-all relative overflow-hidden"
-                style={{
-                  border:     `2px solid ${active ? C.primary : C.border}`,
-                  background: active ? `${C.primary}10` : C.card,
-                }}>
-                {prod.savings && (
-                  <span className="absolute top-2 right-2 text-[9px] font-extrabold px-1.5 py-0.5 rounded-lg text-white"
-                    style={{ background: C.accent }}>
-                    {prod.savings}
-                  </span>
-                )}
-                <p className="text-xs font-bold mb-0.5" style={{ color: C.inkSoft }}>
-                  {p === 'monthly' ? 'Mensal' : 'Anual'}
-                </p>
-                <p className="text-base font-extrabold" style={{ color: active ? C.primary : C.ink }}>
-                  {prod.price}
-                </p>
-              </button>
-            )
-          })}
+        {/* Price */}
+        <div className="rounded-2xl border-2 p-4 text-center" style={{ borderColor: C.primary, background: `${C.primary}08` }}>
+          <p className="text-3xl font-black" style={{ color: C.ink }}>R$19,90<span className="text-base font-bold text-gray-400">/mês</span></p>
+          <p className="text-sm font-semibold mt-1" style={{ color: C.inkSoft }}>Cancele quando quiser</p>
         </div>
 
         {error && (
@@ -150,20 +111,24 @@ export default function PaywallScreen({ onNav }) {
           </p>
         )}
 
-        {/* Subscribe button */}
+        {/* Subscribe */}
         <button onClick={handleSubscribe} disabled={loading}
-          className="w-full py-4 rounded-2xl font-extrabold text-sm text-white transition-all active:scale-95 leading-tight px-4"
-          style={{
-            background:  loading ? C.border : `linear-gradient(135deg, #1E40AF, #7C3AED)`,
-            boxShadow:   loading ? 'none' : '0 4px 0 #1E3A8A',
-          }}>
-          {buttonLabel}
+          className="w-full py-4 rounded-2xl font-extrabold text-base text-white uppercase tracking-wide transition-all active:scale-95"
+          style={{ background: loading ? C.border : 'linear-gradient(135deg, #1E40AF, #7C3AED)', boxShadow: loading ? 'none' : '0 4px 0 #1E3A8A' }}>
+          {loading ? 'Processando…' : 'Virar Founder — R$19,90/mês'}
+        </button>
+
+        {/* No thanks */}
+        <button onClick={() => onNav('pathway')}
+          className="text-center text-sm font-bold py-2"
+          style={{ color: C.inkSoft }}>
+          Não, obrigado — continuar de graça
         </button>
 
         <button onClick={handleRestore} disabled={loading}
-          className="text-center text-sm font-bold"
+          className="text-center text-xs font-bold"
           style={{ color: C.inkSoft }}>
-          Restaurar compras anteriores
+          Restaurar compra anterior
         </button>
 
         {/* Legal */}
@@ -171,8 +136,7 @@ export default function PaywallScreen({ onNav }) {
           Ao assinar, você concorda com nossos{' '}
           <a href="https://zapfy.app/termos" target="_blank" rel="noopener" style={{ color: C.primary }}>Termos de Uso</a>{' '}e{' '}
           <a href="https://zapfy.app/privacidade" target="_blank" rel="noopener" style={{ color: C.primary }}>Política de Privacidade</a>.{' '}
-          A assinatura renova automaticamente — cancele quando quiser nas configurações da App Store.{' '}
-          Para menores de 13 anos, o consentimento do responsável é obrigatório (LGPD/COPPA).
+          A assinatura renova automaticamente — cancele quando quiser.
         </p>
       </div>
     </div>
