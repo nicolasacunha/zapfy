@@ -30,6 +30,9 @@ const INIT = {
   currentUnit:      0,
   completedModules: [],
   completedUnits:   [],
+  seenModuleIntros:  [],
+  completedMissions: [],
+  missionReports:    {},
 
   // Escolhas de exercícios compostos
   lessonChoices: {},
@@ -64,6 +67,9 @@ const MOCK_STATE = {
   parentPin:        null,
   company:          { name: 'TechKids', type: 'digital', product: 'App de jogos educativos', isFounder: false },
   unlockedAchievements: ['primeira_licao', 'streak_7', 'empresa_criada'],
+  seenModuleIntros:  [1],
+  completedMissions: [],
+  missionReports:    {},
   pendingToast:     null,
   pendingLevelUp:   null,
   perfectLessons:   2,
@@ -158,6 +164,12 @@ function reducer(state, action) {
       return { ...state, companyDraftName: action.name }
     }
 
+    case 'MARK_MODULE_INTRO_SEEN': {
+      const mid = action.moduleId
+      if (state.seenModuleIntros.includes(mid)) return state
+      return { ...state, seenModuleIntros: [...state.seenModuleIntros, mid] }
+    }
+
     case 'FOUND_COMPANY': {
       const prevUnlocked = state.unlockedAchievements || []
       const next = {
@@ -185,11 +197,17 @@ function reducer(state, action) {
 
     case 'COMPLETE_MISSION': {
       const prevUnlocked = state.unlockedAchievements || []
+      const moduleId     = action.moduleId
+      const alreadyDone  = (state.completedMissions || []).includes(moduleId)
       const next = {
         ...state,
-        xp:               state.xp + (action.xp || 0),
-        zapcoins:         state.zapcoins + (action.zapcoins || 0),
-        missionsDoneToday: (state.missionsDoneToday || 0) + 1,
+        xp:               state.xp + (alreadyDone ? 0 : (action.xp || 0)),
+        zapcoins:         state.zapcoins + (alreadyDone ? 0 : (action.zapcoins || 0)),
+        missionsDoneToday: alreadyDone ? state.missionsDoneToday : (state.missionsDoneToday || 0) + 1,
+        completedMissions: alreadyDone ? (state.completedMissions || []) : [...(state.completedMissions || []), moduleId],
+        missionReports:    action.report
+          ? { ...(state.missionReports || {}), [moduleId]: action.report }
+          : (state.missionReports || {}),
       }
       return withAchievements(prevUnlocked, next)
     }
@@ -299,6 +317,13 @@ export function ZapfyProvider({ children }) {
     if (action.type === 'UNLOCK_FOUNDER' && nextState.company && nextState.childProfileId &&
         nextState.childProfileId !== 'mock-child') {
       saveCompany(nextState.childProfileId, { ...nextState.company, isFounder: true })
+    }
+
+    if (action.type === 'COMPLETE_MISSION' && action.moduleId && action.report &&
+        nextState.childProfileId && nextState.childProfileId !== 'mock-child') {
+      import('../lib/db').then(({ saveMissionReport }) =>
+        saveMissionReport(nextState.childProfileId, action.moduleId, action.report)
+      )
     }
   }, [scheduleSync])
 
