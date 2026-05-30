@@ -36,12 +36,15 @@ import DailyMissionsScreen     from './screens/DailyMissionsScreen'
 import AchievementsScreen      from './screens/AchievementsScreen'
 import StreakMilestoneScreen   from './screens/StreakMilestoneScreen'
 import PaywallScreen           from './screens/PaywallScreen'
+import ModuleVideoScreen      from './screens/ModuleVideoScreen'
+import RealWorldMissionScreen from './screens/RealWorldMissionScreen'
 
 const NO_TAB = new Set([
   'lesson', 'lessonResult', 'roleSelect', 'parentAuth', 'childSetup',
   'pinSetup', 'inviteCode', 'inviteSuccess',
   'parentsLock', 'parents', 'companyCreation', 'founderCelebration',
-  'onboarding', 'levelUp', 'missions', 'achievements', 'companyRevenue', 'streakMilestone', 'paywall',
+  'onboarding', 'levelUp', 'missions', 'achievements', 'companyRevenue',
+  'streakMilestone', 'paywall', 'moduleVideo', 'mission',
 ])
 
 function LoadingScreen() {
@@ -81,6 +84,8 @@ function ZapfyApp() {
   const { state, dispatch } = useZapfy()
   const [screen,       setScreen]       = useState(null)
   const [lessonCtx,    setLessonCtx]    = useState({ unitId: null, lessonId: null, perfect: false })
+  const [missionModuleId, setMissionModuleId] = useState(null)
+  const [videoCtx, setVideoCtx] = useState({ moduleId: null, unitId: null, lessonId: null })
   const [authCtx,      setAuthCtx]      = useState({})
   const [levelUpValue,    setLevelUpValue]    = useState(null)
   const [streakMilestone, setStreakMilestone] = useState(null)
@@ -101,6 +106,10 @@ function ZapfyApp() {
       setLessonCtx(c => ({ ...c, ...ctx }))
     if (ctx?.childName || ctx?.childAge !== undefined || ctx?.inviteCode || ctx?.childConsent !== undefined)
       setAuthCtx(c => ({ ...c, ...ctx }))
+    if (ctx?.moduleId !== undefined) {
+      setMissionModuleId(ctx.moduleId)
+      setVideoCtx(v => ({ ...v, ...ctx }))
+    }
 
     const el = screenWrapperRef.current
     if (el) {
@@ -233,6 +242,20 @@ function ZapfyApp() {
         {screen === 'achievements'       && <AchievementsScreen     onNav={onNav} />}
         {screen === 'streakMilestone'    && <StreakMilestoneScreen  onNav={onNav} streak={streakMilestone || 7} />}
         {screen === 'paywall'            && <PaywallScreen          onNav={onNav} />}
+        {screen === 'moduleVideo' && (
+          <ModuleVideoScreen
+            onNav={onNav}
+            moduleId={videoCtx.moduleId}
+            unitId={videoCtx.unitId}
+            lessonId={videoCtx.lessonId}
+          />
+        )}
+        {screen === 'mission' && (
+          <RealWorldMissionScreen
+            onNav={onNav}
+            moduleId={missionModuleId}
+          />
+        )}
       </div>
 
       {!noTab && <TabBar screen={screen} onNav={onNav} />}
