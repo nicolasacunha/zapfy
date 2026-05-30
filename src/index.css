@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Grandstander:wght@700;800;900&family=Figtree:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Grandstander', cursive;
+  --font-body:    'Figtree', system-ui, sans-serif;
+  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.26, 0.64, 1);
+}
+
+* { font-family: var(--font-body); box-sizing: border-box; }
+body { margin: 0; }
+.font-display { font-family: var(--font-display) !important; }
+
+/* ─────────────────────────────────────────────────────────────
+   KEYFRAMES
+───────────────────────────────────────────────────────────── */
+
+/* Screen transition — fade + rise, snappy ease-out-expo */
+@keyframes screen-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes screen-exit {
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Confetti fall */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(800px) rotate(720deg); opacity: 0; }
+}
+
+/* Generic fade up — used for feedback banners, tooltips */
+@keyframes slide-up {
+  from { transform: translateY(16px) scale(.97); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);   opacity: 1; }
+}
+
+/* Celebration entrance — reward cards, badges */
+@keyframes pop-in {
+  0%   { transform: scale(0.65); opacity: 0; }
+  65%  { transform: scale(1.10); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+/* Staggered card rise — pathway nodes, dashboard cards */
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Wrong answer shake */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-8px); }
+  40%     { transform: translateX(8px); }
+  60%     { transform: translateX(-5px); }
+  80%     { transform: translateX(5px); }
+}
+
+/* Correct answer — subtle scale burst */
+@keyframes correct-burst {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Zappy float */
+@keyframes zappy-float {
+  0%,100% { transform: translateY(0);   }
+  50%     { transform: translateY(-9px); }
+}
+
+/* Active node pulse */
+@keyframes pulse-glow {
+  0%,100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(249,115,22,.45); }
+  50%     { transform: scale(1.06); box-shadow: 0 0 0 14px rgba(249,115,22,0); }
+}
+
+/* Tab icon bounce on activation */
+@keyframes tab-bounce {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-6px) scale(1.2); }
+  65%  { transform: translateY(1px) scale(.95); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Streak fire micro-pulse */
+@keyframes fire-pulse {
+  0%,100% { transform: scale(1) rotate(0); }
+  30%     { transform: scale(1.25) rotate(-6deg); }
+  60%     { transform: scale(1.18) rotate(5deg); }
+}
+
+/* XP float-up burst — small +25 XP label */
+@keyframes xp-float {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-48px) scale(.75); }
+}
+
+/* Heart lost — shrink + fade */
+@keyframes heart-lose {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.35); }
+  60%  { transform: scale(0.6);  opacity: .5; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+/* Slow spin — loading indicator */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────────────────────────────
+   UTILITY CLASSES
+───────────────────────────────────────────────────────────── */
+
+.screen-enter  { animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.screen-exit   { animation: screen-exit  160ms ease-in both; }
+.slide-up      { animation: slide-up  .28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.bounce-in     { animation: pop-in    .45s cubic-bezier(0.34, 1.26, 0.64, 1) both; }
+.pop-in        { animation: pop-in    .40s cubic-bezier(0.34, 1.26, 0.64, 1) both; }
+.card-rise     { animation: card-rise .34s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.shake         { animation: shake     .38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+.correct-burst { animation: correct-burst .3s ease-out both; }
+.zappy-float   { animation: zappy-float 3s ease-in-out infinite; }
+.node-active   { animation: pulse-glow 2s ease-in-out infinite; }
+.tab-bounce    { animation: tab-bounce .42s cubic-bezier(0.34, 1.1, 0.64, 1) both; }
+.fire-pulse    { animation: fire-pulse 1.6s ease-in-out infinite; }
+.xp-float      { animation: xp-float  .9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.heart-lose    { animation: heart-lose .4s ease-in-out both; }
+.spin          { animation: spin .9s linear infinite; }
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+/* Stagger delays via CSS variable --i (index) */
+.stagger { animation-delay: calc(var(--i, 0) * 75ms); }
+
+/* ─────────────────────────────────────────────────────────────
+   BUTTON PHYSICS — 3D press feel
+───────────────────────────────────────────────────────────── */
+
+.btn-primary {
+  background: linear-gradient(180deg, #2251D9 0%, #1D44BF 100%);
+  box-shadow: 0 5px 0 #1535A0, 0 8px 20px rgba(29,68,191,.28);
+  transition: transform .09s var(--ease-expo), box-shadow .09s var(--ease-expo);
+}
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #1535A0, 0 2px 8px rgba(29,68,191,.15);
+}
+
+.btn-accent {
+  background: linear-gradient(180deg, #FB8733 0%, #F97316 100%);
+  box-shadow: 0 5px 0 #C2410C, 0 8px 20px rgba(249,115,22,.28);
+  transition: transform .09s var(--ease-expo), box-shadow .09s var(--ease-expo);
+}
+.btn-accent:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #C2410C, 0 2px 8px rgba(249,115,22,.15);
+}
+
+.btn-success {
+  background: linear-gradient(180deg, #2DD566 0%, #22C55E 100%);
+  box-shadow: 0 5px 0 #16A34A, 0 8px 20px rgba(34,197,94,.28);
+  transition: transform .09s var(--ease-expo), box-shadow .09s var(--ease-expo);
+}
+.btn-success:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #16A34A, 0 2px 8px rgba(34,197,94,.15);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.4);
+  color: #E6EDFF;
+  transition: transform .09s var(--ease-expo), box-shadow .09s var(--ease-expo);
+}
+.btn-secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
+
+/* Tap feedback for non-btn buttons */
+button:active:not(:disabled) { opacity: .88; }
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 2px; }

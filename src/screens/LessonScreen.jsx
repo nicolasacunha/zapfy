@@ -1,0 +1,350 @@
+import { useState } from 'react'
+import { X, Check } from 'lucide-react'
+import { C } from '../tokens'
+import { useZapfy } from '../context/ZapfyContext'
+import { LESSONS } from '../data/lessons'
+import Hearts from '../components/Hearts'
+import { playCorrect, playWrong } from '../lib/sound'
+import { hapticSuccess, hapticError } from '../lib/haptic'
+import { trackMission } from '../lib/missions'
+
+function interpolate(text, company) {
+  if (!text || !company) return text
+  return text
+    .replace(/\{companyName\}/g, company.name || 'sua empresa')
+    .replace(/\{product\}/g, company.product || 'seu produto')
+}
+
+export default function LessonScreen({ onNav, lessonId }) {
+  const { state, dispatch } = useZapfy()
+  const lesson = LESSONS[lessonId] || LESSONS['m1-oportunidade']
+  const exercises = lesson.exercises
+
+  const [exIdx,      setExIdx]      = useState(0)
+  const [feedback,   setFeedback]   = useState(null)
+  const [selected,   setSelected]   = useState(null)
+  const [shakeKey,   setShakeKey]   = useState(0)
+  const [heartsLeft, setHeartsLeft] = useState(state.hearts)
+  const [hasError,   setHasError]   = useState(false)
+
+  // match state
+  const [ex2Left,    setEx2Left]    = useState(null)
+  const [ex2Matched, setEx2Matched] = useState([])
+  const [ex2Wrong,   setEx2Wrong]   = useState(null)
+
+  // order state
+  const [ex3Items,   setEx3Items]   = useState(null)
+  const [ex3Sel,     setEx3Sel]     = useState(null)
+  const [ex3Ok,      setEx3Ok]      = useState(false)
+
+  // composite state
+  const [ex6Step,    setEx6Step]    = useState(0)
+  const [ex6Choices, setEx6Choices] = useState([])
+  const [ex6Done,    setEx6Done]    = useState(false)
+
+  const cur = exercises[exIdx]
+  const prog = (exIdx / exercises.length) * 100
+  const canContinue = feedback !== null
+  const company = state.company
+
+  const interp = (text) => interpolate(text, company)
+
+  const getOrderItems = () => {
+    if (ex3Items) return ex3Items
+    if (cur.type !== 'order') return []
+    const items = cur.scrambled.map(i => cur.items[i])
+    return items
+  }
+  const orderItems = getOrderItems()
+  if (cur.type === 'order' && ex3Items === null && orderItems.length > 0) {
+    setEx3Items(orderItems)
+    return null
+  }
+
+  const wrong = () => {
+    setHasError(true)
+    setFeedback('wrong')
+    setShakeKey(k => k + 1)
+    setHeartsLeft(h => Math.max(0, h - 1))
+    dispatch({ type: 'LOSE_HEART' })
+    playWrong()
+    hapticError()
+  }
+
+  const handleMCAnswer = (opt) => {
+    if (feedback) return
+    setSelected(opt)
+    if (opt.ok) {
+      setFeedback('correct')
+      playCorrect()
+      hapticSuccess()
+      trackMission('correct', state.streak)
+    } else {
+      wrong()
+    }
+  }
+
+  const handleEx2Left = (i) => {
+    if (!ex2Matched.find(m => m.l === i)) setEx2Left(i)
+  }
+  const handleEx2Right = (i) => {
+    if (ex2Left === null || ex2Matched.find(m => m.r === i)) return
+    if (ex2Left === i) {
+      const nm = [...ex2Matched, { l: ex2Left, r: i }]
+      setEx2Matched(nm); setEx2Left(null); setEx2Wrong(null)
+      if (nm.length === cur.pairs.length) { setFeedback('correct'); hapticSuccess(); trackMission('correct', state.streak) }
+    } else {
+      setEx2Wrong({ l: ex2Left, r: i }); setEx2Left(null)
+      setTimeout(() => setEx2Wrong(null), 800)
+    }
+  }
+
+  const handleEx3Tap = (idx) => {
+    if (ex3Ok) return
+    const items = ex3Items
+    if (ex3Sel === null) { setEx3Sel(idx); return }
+    if (ex3Sel === idx)  { setEx3Sel(null); return }
+    const ni = [...items]; [ni[ex3Sel], ni[idx]] = [ni[idx], ni[ex3Sel]]
+    setEx3Items(ni); setEx3Sel(null)
+    const correctOrder = cur.items.map(i => i.id)
+    if (ni.map(i => i.id).join(',') === correctOrder.join(',')) {
+      setEx3Ok(true); setFeedback('correct'); hapticSuccess(); trackMission('correct', state.streak)
+    }
+  }
+
+  const handleEx6Choice = (val) => {
+    const nc = [...ex6Choices, val]
+    setEx6Choices(nc)
+    if (ex6Step < cur.steps.length - 2) { setEx6Step(s => s + 1) }
+    else {
+      setEx6Done(true)
+      setFeedback('correct')
+      hapticSuccess()
+      trackMission('correct', state.streak)
+      dispatch({ type: 'SAVE_LESSON_CHOICES', lessonId, choices: nc })
+    }
+  }
+
+  const handleContinue = () => {
+    setFeedback(null); setSelected(null)
+    setEx2Left(null); setEx2Matched([]); setEx2Wrong(null)
+    setEx3Items(null); setEx3Sel(null); setEx3Ok(false)
+    setEx6Step(0); setEx6Choices([]); setEx6Done(false)
+    if (exIdx < exercises.length - 1) {
+      setExIdx(i => i + 1)
+    } else {
+      trackMission('lessons', state.streak)
+      onNav('lessonResult', { perfect: !hasError })
+    }
+  }
+
+  const fb = (type) => type === 'correct'
+    ? { border: C.success, bg: '#F0FDF4', text: C.successDk }
+    : { border: C.danger,  bg: '#FEF2F2', text: '#991B1B' }
+
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: C.bg }}>
+      {/* Topbar */}
+      <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+        <button onClick={() => onNav('pathway')} className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100">
+          <X size={22} color={C.inkSoft} />
+        </button>
+        <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: C.border }}>
+          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(5, prog)}%`, background: C.primary }} />
+        </div>
+        <Hearts count={heartsLeft} />
+      </div>
+      <div className="px-4 pt-1">
+        <span className="text-xs font-extrabold uppercase tracking-wider" style={{ color: C.inkSoft }}>
+          Exercício {exIdx + 1} de {exercises.length}
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 px-4 pt-3 pb-2 overflow-auto" key={exIdx}>
+        <p className="text-xl font-extrabold mb-5 leading-snug" style={{ color: C.ink }}>{interp(cur.q)}</p>
+
+        {/* Multiple choice */}
+        {cur.type === 'mc' && (
+          <div className={`flex flex-col gap-3 ${shakeKey > 0 && feedback === 'wrong' ? 'shake' : ''}`} key={shakeKey}>
+            {cur.opts.map((opt, i) => {
+              const isSel   = selected === opt
+              const correct = feedback === 'correct' && isSel
+              const isWrong = feedback === 'wrong'   && isSel
+              return (
+                <button key={i} onClick={() => handleMCAnswer(opt)}
+                  className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left ${correct ? 'correct-burst' : ''}`}
+                  style={{
+                    borderColor: correct ? C.success : isWrong ? C.danger : C.border,
+                    background:  correct ? '#F0FDF4'  : isWrong ? '#FEF2F2' : C.card,
+                    transition:  'border-color .15s, background .15s',
+                    transform:   isSel && !feedback ? 'scale(.985)' : 'scale(1)',
+                  }}>
+                  <span className="text-2xl">{opt.e}</span>
+                  <span className="font-bold text-sm flex-1 leading-tight" style={{ color: C.ink }}>{interp(opt.t)}</span>
+                  {isSel && feedback && (
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 pop-in"
+                      style={{ background: feedback === 'correct' ? C.success : C.danger }}>
+                      {feedback === 'correct' ? <Check size={14} color="white" strokeWidth={3} /> : <X size={14} color="white" strokeWidth={3} />}
+                    </div>
+                  )}
+                </button>
+              )
+            })}
+            {feedback && (
+              <div className="p-4 rounded-2xl border-2 slide-up flex items-start gap-3"
+                style={{ borderColor: fb(feedback).border, background: fb(feedback).bg }}>
+                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 pop-in"
+                  style={{ background: feedback === 'correct' ? C.success : C.danger }}>
+                  {feedback === 'correct'
+                    ? <Check size={15} color="white" strokeWidth={3} />
+                    : <X     size={15} color="white" strokeWidth={3} />}
+                </div>
+                <p className="text-sm font-bold pt-0.5" style={{ color: fb(feedback).text }}>
+                  {feedback === 'correct' ? interp(cur.cf) : interp(cur.wf)}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Matching */}
+        {cur.type === 'match' && (
+          <>
+            <div className="flex gap-2">
+              <div className="flex-1 flex flex-col gap-2">
+                <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: C.inkSoft }}>Problema</p>
+                {cur.pairs.map((p, i) => {
+                  const matched = ex2Matched.find(m => m.l === i)
+                  const selLeft = ex2Left === i
+                  const isWrng  = ex2Wrong?.l === i
+                  return (
+                    <button key={i} onClick={() => !matched && handleEx2Left(i)}
+                      className="p-3 rounded-2xl border-2 text-left text-xs font-bold leading-tight transition-all"
+                      style={{ borderColor: matched ? C.success : selLeft ? C.primary : isWrng ? C.danger : C.border, background: matched ? '#F0FDF4' : selLeft ? `${C.primary}12` : isWrng ? '#FEF2F2' : C.card }}>
+                      {p.left}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="flex-1 flex flex-col gap-2">
+                <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: C.inkSoft }}>Oportunidade</p>
+                {cur.pairs.map((p, i) => {
+                  const matched = ex2Matched.find(m => m.r === i)
+                  const isWrng  = ex2Wrong?.r === i
+                  return (
+                    <button key={i} onClick={() => !matched && handleEx2Right(i)}
+                      className="p-3 rounded-2xl border-2 text-left text-xs font-bold leading-tight transition-all"
+                      style={{ borderColor: matched ? C.success : isWrng ? C.danger : ex2Left !== null ? C.primary : C.border, background: matched ? '#F0FDF4' : isWrng ? '#FEF2F2' : ex2Left !== null ? `${C.primary}08` : C.card }}>
+                      {p.right}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            {feedback && (
+              <div className="mt-4 p-4 rounded-2xl border-2 slide-up" style={{ borderColor: C.success, background: '#F0FDF4' }}>
+                <p className="text-sm font-bold" style={{ color: C.successDk }}>{cur.cf}</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Reorder */}
+        {cur.type === 'order' && ex3Items && (
+          <>
+            <p className="text-xs font-semibold mb-3" style={{ color: C.inkSoft }}>
+              {ex3Sel !== null ? '👆 Agora toque onde quer colocar' : '👆 Toque um item para selecionar, depois toque onde mover'}
+            </p>
+            <div className="flex flex-col gap-2">
+              {ex3Items.map((item, idx) => (
+                <button key={item.id} onClick={() => handleEx3Tap(idx)}
+                  className="flex items-center gap-3 p-4 rounded-2xl border-2 text-left font-bold text-sm transition-all"
+                  style={{ borderColor: ex3Ok ? C.success : ex3Sel === idx ? C.primary : C.border, background: ex3Ok ? '#F0FDF4' : ex3Sel === idx ? `${C.primary}12` : C.card }}>
+                  <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold flex-shrink-0"
+                    style={{ background: ex3Sel === idx ? C.primary : C.bg, color: ex3Sel === idx ? 'white' : C.inkSoft }}>
+                    {idx + 1}
+                  </div>
+                  <span style={{ color: C.ink }}>{item.text}</span>
+                </button>
+              ))}
+            </div>
+            {feedback && (
+              <div className="mt-4 p-4 rounded-2xl border-2 slide-up" style={{ borderColor: C.success, background: '#F0FDF4' }}>
+                <p className="text-sm font-bold" style={{ color: C.successDk }}>{cur.cf}</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Composite */}
+        {cur.type === 'composite' && !ex6Done && (
+          <>
+            <div className="flex gap-2 mb-4">
+              {cur.steps.map((_, i) => (
+                <div key={i} className="flex-1">
+                  <div className="h-1.5 rounded-full" style={{ background: i <= ex6Step ? C.primary : C.border }} />
+                  <p className="text-[10px] font-bold mt-0.5 text-center" style={{ color: i === ex6Step ? C.primary : C.inkSoft }}>{i + 1}</p>
+                </div>
+              ))}
+            </div>
+            <p className="font-extrabold text-base mb-3" style={{ color: C.ink }}>{interp(cur.steps[ex6Step].q)}</p>
+            <div className="flex flex-col gap-3">
+              {cur.steps[ex6Step].opts.map((opt, i) => (
+                <button key={i} onClick={() => handleEx6Choice(opt)}
+                  className="p-4 rounded-2xl border-2 text-left font-bold text-sm transition-all hover:border-blue-400"
+                  style={{ borderColor: C.border, background: C.card, color: C.ink }}>
+                  {interp(opt)}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {cur.type === 'composite' && ex6Done && (
+          <div className="flex flex-col items-center gap-4 slide-up">
+            <div className="w-full rounded-2xl border-2 p-4" style={{ borderColor: C.primary, background: `${C.primary}08` }}>
+              <p className="font-extrabold text-sm mb-3" style={{ color: C.primary }}>🗺️ Suas escolhas</p>
+              {cur.steps.map((s, i) => (
+                <div key={i} className="flex items-start gap-2 mb-1.5">
+                  <span className="text-xs font-extrabold" style={{ color: C.inkSoft }}>{s.q.replace('?', ':')} </span>
+                  <span className="text-xs font-bold" style={{ color: C.ink }}>{ex6Choices[i]}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm font-bold text-center" style={{ color: C.inkSoft }}>{interp(cur.cf)}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Heart refill offer */}
+      {heartsLeft === 0 && !feedback && (
+        <div className="mx-4 mb-2 p-3 rounded-2xl border-2 flex items-center justify-between" style={{ borderColor: C.danger, background: '#FEF2F2' }}>
+          <div>
+            <p className="text-sm font-extrabold" style={{ color: C.danger }}>Vidas esgotadas!</p>
+            <p className="text-xs" style={{ color: C.inkSoft }}>Modo prática: continue sem XP</p>
+          </div>
+          <button onClick={() => { if (state.zapcoins >= 50) dispatch({ type: 'RESTORE_HEARTS' }) }}
+            className="px-3 py-2 rounded-xl text-sm font-extrabold text-white" style={{ background: C.accent }}>
+            +5 vidas (50 🪙)
+          </button>
+        </div>
+      )}
+
+      {/* Continue — pop-in quando libera */}
+      <div className="px-4 pb-6 pt-2">
+        <button onClick={handleContinue} disabled={!canContinue}
+          key={`continue-${feedback}`}
+          className={`w-full h-14 rounded-2xl font-extrabold uppercase text-base tracking-wide text-white
+            ${canContinue ? 'slide-up' : ''}
+            ${canContinue ? (feedback === 'correct' ? 'btn-success' : 'btn-primary') : 'cursor-not-allowed'}`}
+          style={{
+            background:  !canContinue ? C.locked : undefined,
+            opacity:     !canContinue ? 0.38 : 1,
+          }}>
+          {exIdx < exercises.length - 1 ? 'Continuar' : 'Missão concluída ✓'}
+        </button>
+      </div>
+    </div>
+  )
+}

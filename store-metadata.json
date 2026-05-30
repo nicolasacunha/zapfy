@@ -1,0 +1,55 @@
+{
+  "appName": "Zapfy",
+  "subtitle": "Empreendedorismo para Crianças",
+  "bundleId": "com.zapfy.app",
+  "version": "1.0.0",
+  "ageRating": "4+",
+  "category": "Education",
+  "subcategory": "Kids",
+  "privacyPolicyUrl": "https://zapfy.app/privacidade",
+  "supportUrl": "https://zapfy.app/suporte",
+  "marketingUrl": "https://zapfy.app",
+  "description": {
+    "pt-BR": "O Zapfy ensina empreendedorismo para crianças de 8 a 14 anos de forma divertida e gamificada — como o Duolingo, mas para negócios reais.\n\nCom o Zapfy, seu filho aprende a:\n• Encontrar e resolver problemas do mundo real\n• Criar e nomear sua própria empresa virtual\n• Entender clientes, preços e negociação\n• Fazer sua primeira venda simulada\n• Desenvolver mentalidade empreendedora desde cedo\n\nCOM DESIGN FEITO PARA CRIANÇAS:\n✓ Lições de 5 minutos — sem sobrecarregar\n✓ Zappy, o mascote que acompanha cada passo\n✓ Sistema de conquistas, streaks e recompensas\n✓ Dashboard exclusivo para pais acompanharem\n✓ 100% seguro — sem anúncios, sem coleta desnecessária\n\nO Brasil precisa de mais empreendedores. Comece pelo seu filho.",
+    "en-US": "Zapfy teaches entrepreneurship to children aged 8-14 in a fun, gamified way — like Duolingo, but for real business skills.\n\nWith Zapfy, your child learns to:\n• Find and solve real-world problems\n• Create and name their own virtual company\n• Understand customers, pricing, and negotiation\n• Complete their first simulated sale\n• Build entrepreneurial mindset from an early age\n\nDESIGNED FOR KIDS:\n✓ 5-minute lessons — no overwhelm\n✓ Zappy, the mascot that guides every step\n✓ Achievements, streaks, and rewards system\n✓ Exclusive parent dashboard to track progress\n✓ 100% safe — no ads, no unnecessary data collection\n\nBrazil needs more entrepreneurs. Start with your child."
+  },
+  "keywords": {
+    "pt-BR": ["empreendedorismo", "educação", "crianças", "negócios", "aprendizado", "kids", "escola", "habilidades", "missões", "gamificado"],
+    "en-US": ["entrepreneurship", "education", "kids", "business", "learning", "children", "skills", "finance", "gamified", "Brazil"]
+  },
+  "screenshots": {
+    "note": "Capture 5 screenshots de cada tamanho: 6.7\" (1290×2796), 5.5\" (1242×2208), 12.9\" iPad (2048×2732)",
+    "suggestedScreens": [
+      "PathwayScreen — trilha de módulos com Zappy",
+      "LessonScreen — exercício interativo de escolha múltipla",
+      "CompanyCreationScreen — criando a empresa",
+      "ProfileScreen — conquistas e XP",
+      "ParentDashboardScreen — painel do responsável"
+    ]
+  },
+  "inAppPurchases": [
+    {
+      "id": "zapfy_premium_monthly",
+      "type": "Auto-Renewable Subscription",
+      "price": "BRL 14.90",
+      "duration": "1 month",
+      "_repricing_note": "Pesquisa Link School (maio/2026): benchmark espontâneo de inglês particular = R$160-220/mês. Testar R$29,90-39,90/mês antes de fixar. Teto percebido pelo público premium é 4-6x maior que o range atual."
+    },
+    {
+      "id": "zapfy_premium_annual",
+      "type": "Auto-Renewable Subscription",
+      "price": "BRL 99.90",
+      "duration": "1 year",
+      "_repricing_note": "Considerar R$299,90-349,90/ano (equivale a R$25-29/mês) para teste A/B."
+    }
+  ],
+  "coppa": {
+    "directed_to_children": true,
+    "mixed_audience": true,
+    "requires_parental_consent_for_under_13": true,
+    "data_collected": ["name", "age", "game_progress"],
+    "data_not_collected": ["precise_location", "contacts", "browsing_history", "photos", "health_data"],
+    "third_party_sdks_with_data": ["RevenueCat (purchase history only)"],
+    "data_retention": "Until account deletion or 3 years of inactivity"
+  }
+}

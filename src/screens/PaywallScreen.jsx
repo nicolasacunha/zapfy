@@ -1,0 +1,160 @@
+import { useState } from 'react'
+import { Check, X, Crown, Star, Lock } from 'lucide-react'
+import { C } from '../tokens'
+import ZappyWithSkin from '../components/ZappyWithSkin'
+import { PRODUCTS, purchasePremium, restorePurchases } from '../lib/purchases'
+import { useZapfy } from '../context/ZapfyContext'
+
+const FEATURES = [
+  { icon: '✨', text: 'Zappy Dourado — skin exclusiva do mascote' },
+  { icon: '🚀', text: 'Zappy Astronauta — skin espacial do Zappy' },
+  { icon: '🧊', text: 'Congelar Streak ilimitado — proteja sua sequência' },
+  { icon: '🎰', text: 'Aposta de Streak sem limite de vezes' },
+  { icon: '🏆', text: 'Liga Premium — compita com os melhores do país' },
+  { icon: '💎', text: 'Bônus mensal de Gemas — receba 20💎 todo mês' },
+  { icon: '📊', text: 'Dashboard do Pai com dados avançados de aprendizado' },
+  { icon: '🎁', text: 'Apoie o Zapfy — educação gratuita para todas as crianças' },
+]
+
+export default function PaywallScreen({ onNav }) {
+  const { dispatch } = useZapfy()
+  const [plan,    setPlan]    = useState('annual')
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState(null)
+
+  const product = PRODUCTS[plan]
+
+  const handleSubscribe = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await purchasePremium(product.id)
+      if (result.success) {
+        dispatch({ type: 'SET_PREMIUM', value: true })
+        onNav('pathway')
+      } else {
+        setError('Não foi possível processar o pagamento. Tente novamente.')
+      }
+    } catch (e) {
+      setError(e.message || 'Erro ao processar pagamento.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRestore = async () => {
+    setLoading(true)
+    try {
+      const result = await restorePurchases()
+      if (result.success) {
+        dispatch({ type: 'SET_PREMIUM', value: true })
+        onNav('pathway')
+      } else {
+        setError('Nenhuma compra anterior encontrada para esta conta.')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen pb-8 flex flex-col" style={{ background: C.bg }}>
+
+      {/* Header */}
+      <div className="relative px-4 pt-10 pb-6 flex flex-col items-center text-center"
+        style={{ background: `linear-gradient(160deg, #1E40AF 0%, #7C3AED 100%)` }}>
+        <button onClick={() => onNav('pathway')}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,.2)' }}>
+          <X size={16} color="white" />
+        </button>
+        <div className="mb-3">
+          <ZappyWithSkin mood="cheer" size={80} />
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          <Crown size={18} fill="#F97316" color="#F97316" />
+          <span className="text-white/80 font-extrabold text-sm uppercase tracking-widest">Zapfy Premium</span>
+          <Crown size={18} fill="#F97316" color="#F97316" />
+        </div>
+        <h1 className="text-2xl font-black text-white leading-tight">
+          Para quem leva<br />o negócio a sério
+        </h1>
+        <p className="text-white/70 text-sm font-semibold mt-2">
+          Todo o conteúdo educacional é sempre gratuito.
+        </p>
+      </div>
+
+      <div className="flex-1 px-4 pt-5 flex flex-col gap-4">
+
+        {/* Features list */}
+        <div className="rounded-3xl border p-4 flex flex-col gap-3" style={{ background: C.card, borderColor: C.border }}>
+          {FEATURES.map((f, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <span className="text-xl w-7 flex-shrink-0">{f.icon}</span>
+              <span className="text-sm font-semibold flex-1" style={{ color: C.ink }}>{f.text}</span>
+              <Check size={16} color={C.success} strokeWidth={3} className="flex-shrink-0" />
+            </div>
+          ))}
+        </div>
+
+        {/* Plan selector */}
+        <div className="grid grid-cols-2 gap-3">
+          {['monthly', 'annual'].map(p => {
+            const prod = PRODUCTS[p]
+            const active = plan === p
+            return (
+              <button key={p} onClick={() => setPlan(p)}
+                className="rounded-2xl p-3 text-left transition-all relative overflow-hidden"
+                style={{
+                  border:     `2px solid ${active ? C.primary : C.border}`,
+                  background: active ? `${C.primary}10` : C.card,
+                }}>
+                {prod.savings && (
+                  <span className="absolute top-2 right-2 text-[9px] font-extrabold px-1.5 py-0.5 rounded-lg text-white"
+                    style={{ background: C.accent }}>
+                    {prod.savings}
+                  </span>
+                )}
+                <p className="text-xs font-bold mb-0.5" style={{ color: C.inkSoft }}>
+                  {p === 'monthly' ? 'Mensal' : 'Anual'}
+                </p>
+                <p className="text-base font-extrabold" style={{ color: active ? C.primary : C.ink }}>
+                  {prod.price}
+                </p>
+              </button>
+            )
+          })}
+        </div>
+
+        {error && (
+          <p className="text-sm font-semibold text-center px-4 py-3 rounded-2xl"
+            style={{ background: '#FEF2F2', color: '#DC2626' }}>
+            {error}
+          </p>
+        )}
+
+        {/* Subscribe button */}
+        <button onClick={handleSubscribe} disabled={loading}
+          className="w-full py-4 rounded-2xl font-extrabold text-base text-white uppercase tracking-wide transition-all active:scale-95"
+          style={{ background: loading ? C.border : `linear-gradient(135deg, #1E40AF, #7C3AED)`, boxShadow: loading ? 'none' : '0 4px 0 #1E3A8A' }}>
+          {loading ? 'Processando…' : `Assinar por ${product.price}`}
+        </button>
+
+        <button onClick={handleRestore} disabled={loading}
+          className="text-center text-sm font-bold"
+          style={{ color: C.inkSoft }}>
+          Restaurar compras anteriores
+        </button>
+
+        {/* Legal */}
+        <p className="text-center text-[10px] font-semibold leading-relaxed" style={{ color: C.inkSoft }}>
+          Ao assinar, você concorda com nossos{' '}
+          <a href="https://zapfy.app/termos" target="_blank" rel="noopener" style={{ color: C.primary }}>Termos de Uso</a>{' '}e{' '}
+          <a href="https://zapfy.app/privacidade" target="_blank" rel="noopener" style={{ color: C.primary }}>Política de Privacidade</a>.{' '}
+          A assinatura renova automaticamente — cancele quando quiser nas configurações da App Store.{' '}
+          Para menores de 13 anos, o consentimento do responsável é obrigatório (LGPD/COPPA).
+        </p>
+      </div>
+    </div>
+  )
+}

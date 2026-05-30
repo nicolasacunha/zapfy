@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#1E40AF"/>
+  <!-- Inner highlight -->
+  <ellipse cx="256" cy="160" rx="200" ry="130" fill="#2D55CC" opacity="0.55"/>
+  <!-- Lightning bolt Z -->
+  <path d="M 310 80 L 170 255 L 225 255 L 190 432 L 342 240 L 282 240 Z" fill="white" opacity="0.97"/>
+  <!-- Orange spark -->
+  <circle cx="334" cy="108" r="38" fill="#F97316"/>
+  <circle cx="334" cy="108" r="20" fill="#FBBF24"/>
+</svg>

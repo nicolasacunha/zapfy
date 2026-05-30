@@ -1,0 +1,164 @@
+<style>
+.arc { display: flex; flex-direction: column; gap: 0; }
+.arc-phase { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; position: relative; }
+.arc-phase:not(:last-child)::after {
+  content: ''; position: absolute; left: 19px; top: 52px; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, #7C3AED88, #7C3AED11);
+}
+.arc-dot {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; z-index: 1;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  border: 2px solid currentColor;
+}
+.arc-body { flex: 1; }
+.arc-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.arc-sub { font-size: 12px; opacity: 0.6; line-height: 1.6; }
+.arc-screens { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.scr {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 4px; padding: 3px 8px;
+}
+.scr.exists { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.scr.new { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.scr.modified { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+.phase-tag {
+  font-size: 9px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 100px; margin-bottom: 12px; display: inline-block;
+}
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; opacity: 0.7; }
+</style>
+
+<h2>Design — Seção 1: Arco Completo da Jornada</h2>
+<p class="subtitle">Do download à primeira venda real. Janela crítica de 72h = módulos 1 e 2 completos.</p>
+
+<div class="arc" style="margin-top: 24px">
+
+  <!-- ONBOARDING -->
+  <div style="margin-bottom: 8px">
+    <span class="phase-tag" style="background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)">Pré-jornada · Download → Cadastro</span>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#a78bfa;background:rgba(124,58,237,0.1)">👨‍👩‍👧</div>
+    <div class="arc-body">
+      <div class="arc-title">Onboarding Pai + Filho</div>
+      <div class="arc-sub">Pai cria conta → configura filho (nome, idade) → filho escolhe nome da empresa (draft) → recebe código de convite.</div>
+      <div class="arc-screens">
+        <span class="scr exists">RoleSelectScreen</span>
+        <span class="scr exists">ParentAuthScreen</span>
+        <span class="scr exists">ChildSetupScreen</span>
+        <span class="scr exists">CompanyDraft (onboarding)</span>
+        <span class="scr exists">InviteCodeScreen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 72H DIVIDER -->
+  <div style="margin: 12px 0 8px; padding: 8px 16px; background: rgba(251,191,36,0.08); border: 1px dashed rgba(251,191,36,0.4); border-radius: 8px; font-size: 12px; color: #fbbf24; font-weight: 700; text-align: center;">
+    ⚡ Janela crítica de 72h começa aqui — filho deve sentir "estou construindo algo real" antes de fechar o app
+  </div>
+
+  <!-- MODULE 1 -->
+  <div style="margin: 16px 0 8px">
+    <span class="phase-tag" style="background:rgba(30,64,175,0.15);color:#60a5fa;border:1px solid rgba(30,64,175,0.4)">Módulo 1 · Mentalidade · Gratuito · ~30 min</span>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#60a5fa;background:rgba(30,64,175,0.1)">🎬</div>
+    <div class="arc-body">
+      <div class="arc-title">Vídeo do Zappy — "Por que negócios existem"</div>
+      <div class="arc-sub">MP4 pré-gerado com IA (~90s). Zappy apresenta o conceito de oportunidade com uma história do dia-a-dia. Tom: "Você vai descobrir algo que a maioria dos adultos não sabe."</div>
+      <div class="arc-screens">
+        <span class="scr modified">ModuleVideoScreen (adaptar ModuleStoryScreen)</span>
+      </div>
+    </div>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#60a5fa;background:rgba(30,64,175,0.1)">⚡</div>
+    <div class="arc-body">
+      <div class="arc-title">4 exercícios interativos</div>
+      <div class="arc-sub">MC + matching + ordenação + composite. Conteúdo já existe em lessons.js.</div>
+      <div class="arc-screens">
+        <span class="scr exists">LessonScreen</span>
+        <span class="scr exists">LessonResultScreen</span>
+      </div>
+    </div>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#60a5fa;background:rgba(30,64,175,0.1)">🎯</div>
+    <div class="arc-body">
+      <div class="arc-title">Missão Real: "Encontre 1 problema no seu mundo"</div>
+      <div class="arc-sub">Filho recebe missão: observar e registrar 1 problema real que viu hoje (escola, bairro, casa). Retorna ao app para registrar. Simples, fazível em minutos.</div>
+      <div class="arc-screens">
+        <span class="scr new">RealWorldMissionScreen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 2 -->
+  <div style="margin: 16px 0 8px">
+    <span class="phase-tag" style="background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)">Módulo 2 · Identidade · Pago · ~35 min · AHA MOMENT</span>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#a78bfa;background:rgba(124,58,237,0.1)">🎬</div>
+    <div class="arc-body">
+      <div class="arc-title">Vídeo do Zappy — "Sua empresa, seu nome"</div>
+      <div class="arc-sub">~90s. Zappy fala diretamente para o filho usando o nome da empresa draft. "Hoje você vai criar [NOME] de verdade."</div>
+      <div class="arc-screens">
+        <span class="scr modified">ModuleVideoScreen</span>
+      </div>
+    </div>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#a78bfa;background:rgba(124,58,237,0.1)">⚡</div>
+    <div class="arc-body">
+      <div class="arc-title">3 exercícios + Canvas da Empresa</div>
+      <div class="arc-sub">Exercícios de nome/identidade/diferencial + CompanyCreationScreen já existente. Filho conclui com empresa real no perfil: nome, produto, cor, diferencial.</div>
+      <div class="arc-screens">
+        <span class="scr exists">LessonScreen</span>
+        <span class="scr exists">CompanyCreationScreen</span>
+        <span class="scr exists">CompanyRevenueScreen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULES 3-5 resumidos -->
+  <div style="margin: 16px 0 8px">
+    <span class="phase-tag" style="background:rgba(8,145,178,0.15);color:#22d3ee;border:1px solid rgba(8,145,178,0.3)">Módulos 3–5 · Mercado → Valor → Venda · Pago</span>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#22d3ee;background:rgba(8,145,178,0.1)">🔁</div>
+    <div class="arc-body">
+      <div class="arc-title">Loop: Vídeo → Exercícios → Missão no Mundo Real</div>
+      <div class="arc-sub">Cada módulo: vídeo Zappy (~90s) → exercícios (3-4) → missão real com registros. Módulo 3: conversa com 1 cliente potencial. Módulo 4: define preço e pratica negociação. Módulo 5: tenta a venda real.</div>
+      <div class="arc-screens">
+        <span class="scr modified">ModuleVideoScreen</span>
+        <span class="scr exists">LessonScreen</span>
+        <span class="scr new">RealWorldMissionScreen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINALE -->
+  <div style="margin: 16px 0 8px">
+    <span class="phase-tag" style="background:rgba(180,83,9,0.15);color:#fb923c;border:1px solid rgba(180,83,9,0.3)">Conclusão · Marco do Fundador</span>
+  </div>
+  <div class="arc-phase">
+    <div class="arc-dot" style="color:#fb923c;background:rgba(180,83,9,0.1)">🏆</div>
+    <div class="arc-body">
+      <div class="arc-title">Founder Celebration + Certificado</div>
+      <div class="arc-sub">Filho completa a primeira tentativa de venda real (Módulo 5). FounderCelebration já existe. Pais recebem notificação: "Seu filho fez a primeira venda."</div>
+      <div class="arc-screens">
+        <span class="scr exists">FounderCelebration</span>
+        <span class="scr exists">ParentDashboardScreen</span>
+        <span class="scr new">Push notif para pais</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="scr exists">Verde</span> já existe no código</div>
+  <div class="legend-item"><span class="scr modified">Azul</span> existe, precisa de adaptação</div>
+  <div class="legend-item"><span class="scr new">Amarelo</span> novo a criar</div>
+</div>

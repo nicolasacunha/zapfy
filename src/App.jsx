@@ -1,0 +1,271 @@
+import { useState, useEffect, useRef } from 'react'
+import { ZapfyProvider } from './context/ZapfyContext'
+import { useZapfy } from './context/ZapfyContext'
+import TabBar from './components/TabBar'
+import ErrorBoundary from './components/ErrorBoundary'
+import ToastAchievement from './components/ToastAchievement'
+import DailyBonusModal from './components/DailyBonusModal'
+import OfflineBanner from './components/OfflineBanner'
+import { trackMission } from './lib/missions'
+import { recordSession } from './lib/screenTime'
+import { shouldShowBonus, claimBonus } from './lib/dailyBonus'
+
+// Auth screens
+import RoleSelectScreen    from './screens/auth/RoleSelectScreen'
+import ParentAuthScreen    from './screens/auth/ParentAuthScreen'
+import ChildSetupScreen    from './screens/auth/ChildSetupScreen'
+import PinSetupScreen      from './screens/auth/PinSetupScreen'
+import InviteCodeScreen    from './screens/auth/InviteCodeScreen'
+import InviteSuccessScreen from './screens/auth/InviteSuccessScreen'
+
+// App screens
+import OnboardingScreen       from './screens/OnboardingScreen'
+import PathwayScreen          from './screens/PathwayScreen'
+import LessonScreen           from './screens/LessonScreen'
+import LessonResultScreen     from './screens/LessonResultScreen'
+import CompanyCreationScreen  from './screens/CompanyCreationScreen'
+import CompanyRevenueScreen   from './screens/CompanyRevenueScreen'
+import FounderCelebration     from './screens/FounderCelebration'
+import LeagueScreen           from './screens/LeagueScreen'
+import ShopScreen             from './screens/ShopScreen'
+import ProfileScreen          from './screens/ProfileScreen'
+import ParentsLockScreen      from './screens/ParentsLockScreen'
+import ParentDashboardScreen  from './screens/ParentDashboardScreen'
+import LevelUpScreen           from './screens/LevelUpScreen'
+import DailyMissionsScreen     from './screens/DailyMissionsScreen'
+import AchievementsScreen      from './screens/AchievementsScreen'
+import StreakMilestoneScreen   from './screens/StreakMilestoneScreen'
+import PaywallScreen           from './screens/PaywallScreen'
+
+const NO_TAB = new Set([
+  'lesson', 'lessonResult', 'roleSelect', 'parentAuth', 'childSetup',
+  'pinSetup', 'inviteCode', 'inviteSuccess',
+  'parentsLock', 'parents', 'companyCreation', 'founderCelebration',
+  'onboarding', 'levelUp', 'missions', 'achievements', 'companyRevenue', 'streakMilestone', 'paywall',
+])
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen flex items-center justify-center"
+      style={{ background: 'linear-gradient(160deg, #1D44BF 0%, #1535A0 55%, #0F2680 100%)' }}>
+      <div className="flex flex-col items-center gap-5">
+        <div className="bounce-in" style={{
+          width: 80, height: 80, borderRadius: 24,
+          background: 'rgba(255,255,255,0.15)',
+          border: '1.5px solid rgba(255,255,255,0.28)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <path d="M10 12H34L16 32H34" stroke="white" strokeWidth="5.5"
+              strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <p style={{
+          fontFamily: 'var(--font-display)', color: 'rgba(255,255,255,0.65)',
+          fontWeight: 800, fontSize: 13, letterSpacing: '0.18em',
+        }}>ZAPFY</p>
+        <div className="spin" style={{
+          width: 28, height: 28,
+          border: '3px solid rgba(255,255,255,0.18)',
+          borderTopColor: 'rgba(255,255,255,0.75)',
+          borderRadius: '50%',
+          animationDuration: '0.75s',
+        }} />
+      </div>
+    </div>
+  )
+}
+
+function ZapfyApp() {
+  const { state, dispatch } = useZapfy()
+  const [screen,       setScreen]       = useState(null)
+  const [lessonCtx,    setLessonCtx]    = useState({ unitId: null, lessonId: null, perfect: false })
+  const [authCtx,      setAuthCtx]      = useState({})
+  const [levelUpValue,    setLevelUpValue]    = useState(null)
+  const [streakMilestone, setStreakMilestone] = useState(null)
+  const [dailyBonus,      setDailyBonus]      = useState(null)
+  const screenWrapperRef = useRef(null)
+
+  // Rastreia tempo de tela
+  useEffect(() => {
+    const start = Date.now()
+    const flush = () => recordSession(Date.now() - start)
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', () => { if (document.hidden) flush() })
+    return flush
+  }, [])
+
+  const onNav = (s, ctx) => {
+    if (ctx?.unitId !== undefined || ctx?.lessonId !== undefined || ctx?.perfect !== undefined)
+      setLessonCtx(c => ({ ...c, ...ctx }))
+    if (ctx?.childName || ctx?.childAge !== undefined || ctx?.inviteCode || ctx?.childConsent !== undefined)
+      setAuthCtx(c => ({ ...c, ...ctx }))
+
+    const el = screenWrapperRef.current
+    if (el) {
+      el.style.animation = 'screen-exit 160ms ease-in both'
+      setTimeout(() => {
+        el.style.animation = ''
+        setScreen(s)
+      }, 150)
+    } else {
+      setScreen(s)
+    }
+  }
+
+  // Auto-marca missão de streak ao carregar o estado (streak já existente)
+  useEffect(() => {
+    if (!state.isLoading && state.streak > 0) {
+      trackMission('streak', state.streak)
+    }
+  }, [state.isLoading])
+
+  // Detecta level-up e navega para a tela comemorativa
+  useEffect(() => {
+    if (state.pendingLevelUp) {
+      setLevelUpValue(state.pendingLevelUp)
+      dispatch({ type: 'DISMISS_LEVEL_UP' })
+      setScreen('levelUp')
+    }
+  }, [state.pendingLevelUp, dispatch])
+
+  // Detecta streak milestone
+  useEffect(() => {
+    if (state.pendingStreakMilestone) {
+      setStreakMilestone(state.pendingStreakMilestone)
+      setScreen('streakMilestone')
+    }
+  }, [state.pendingStreakMilestone])
+
+  // Daily login bonus
+  useEffect(() => {
+    if (state.isLoading || !state.authUser) return
+    if (!shouldShowBonus()) return
+    const bonus = claimBonus()
+    if (!bonus) return
+    setDailyBonus(bonus)
+    dispatch({ type: 'DAILY_BONUS', zapcoins: bonus.zapcoins || 0, gems: bonus.gems || 0 })
+  }, [state.isLoading, state.authUser])
+
+  // Verifica expiração do streak freeze
+  useEffect(() => {
+    if (!state.streakFreezeActive || !state.streakFreezeExpiry) return
+    const remaining = state.streakFreezeExpiry - Date.now()
+    if (remaining <= 0) { dispatch({ type: 'EXPIRE_STREAK_FREEZE' }); return }
+    const t = setTimeout(() => dispatch({ type: 'EXPIRE_STREAK_FREEZE' }), remaining)
+    return () => clearTimeout(t)
+  }, [state.streakFreezeActive, state.streakFreezeExpiry, dispatch])
+
+  // Agenda notificação push às 19h se streak > 0
+  useEffect(() => {
+    if (state.isLoading || !state.authUser || typeof Notification === 'undefined') return
+    if (Notification.permission !== 'granted') return
+    const now = new Date()
+    const next19 = new Date(now)
+    next19.setHours(19, 0, 0, 0)
+    if (now >= next19) next19.setDate(next19.getDate() + 1)
+    const ms = next19.getTime() - now.getTime()
+    const t = setTimeout(() => {
+      const companyName = state.company?.name
+      const notifTitle = companyName ? companyName : 'Zapfy 🔥'
+      const notifBody = companyName
+        ? `A ${companyName} vai fechar se você não entrar hoje. ${state.streak} dias em risco.`
+        : `Sua sequência de ${state.streak} dias tá em risco! Entre agora pra não perder.`
+      new Notification(notifTitle, {
+        body: notifBody,
+        icon: '/pwa-192x192.png',
+      })
+    }, ms)
+    return () => clearTimeout(t)
+  }, [state.isLoading, state.authUser])
+
+  // Routing baseado no estado de auth
+  useEffect(() => {
+    if (state.isLoading) return
+
+    if (!state.authUser) {
+      setScreen(s => s && NO_TAB.has(s) && s !== 'pathway' ? s : 'roleSelect')
+      return
+    }
+
+    if (!state.childProfileId) {
+      setScreen('childSetup')
+      return
+    }
+
+    setScreen(s => {
+      if (!s || s === 'roleSelect' || s === 'parentAuth' || s === 'inviteCode') {
+        return localStorage.getItem('zapfy_onboarded') ? 'pathway' : 'onboarding'
+      }
+      return s
+    })
+  }, [state.isLoading, state.authUser, state.childProfileId])
+
+  if (state.isLoading || screen === null) return <LoadingScreen />
+
+  const noTab = NO_TAB.has(screen)
+
+  return (
+    <>
+      <div key={screen} className="screen-enter" ref={screenWrapperRef}>
+        {screen === 'onboarding'         && <OnboardingScreen       onNav={onNav} userName={state.user?.name} />}
+        {screen === 'roleSelect'         && <RoleSelectScreen       onNav={onNav} />}
+        {screen === 'parentAuth'         && <ParentAuthScreen       onNav={onNav} />}
+        {screen === 'childSetup'         && <ChildSetupScreen       onNav={onNav} />}
+        {screen === 'pinSetup'           && <PinSetupScreen         onNav={onNav} childName={authCtx.childName} childAge={authCtx.childAge} childConsent={authCtx.childConsent ?? true} />}
+        {screen === 'inviteCode'         && <InviteCodeScreen       onNav={onNav} />}
+        {screen === 'inviteSuccess'      && <InviteSuccessScreen    onNav={onNav} inviteCode={authCtx.inviteCode} childName={authCtx.childName} />}
+
+        {screen === 'pathway'            && <PathwayScreen          onNav={onNav} />}
+        {screen === 'lesson'             && <LessonScreen           onNav={onNav} lessonId={lessonCtx.lessonId} unitId={lessonCtx.unitId} />}
+        {screen === 'lessonResult'       && <LessonResultScreen     onNav={onNav} unitId={lessonCtx.unitId} perfect={lessonCtx.perfect} />}
+        {screen === 'companyCreation'    && <CompanyCreationScreen  onNav={onNav} />}
+        {screen === 'companyRevenue'     && <CompanyRevenueScreen   onNav={onNav} />}
+        {screen === 'founderCelebration' && <FounderCelebration     onNav={onNav} />}
+        {screen === 'league'             && <LeagueScreen           onNav={onNav} />}
+        {screen === 'shop'               && <ShopScreen />}
+        {screen === 'profile'            && <ProfileScreen          onNav={onNav} />}
+        {screen === 'parentsLock'        && <ParentsLockScreen      onNav={onNav} />}
+        {screen === 'parents'            && <ParentDashboardScreen  onNav={onNav} />}
+        {screen === 'levelUp'            && <LevelUpScreen          onNav={onNav} level={levelUpValue || 2} />}
+        {screen === 'missions'           && <DailyMissionsScreen    onNav={onNav} />}
+        {screen === 'achievements'       && <AchievementsScreen     onNav={onNav} />}
+        {screen === 'streakMilestone'    && <StreakMilestoneScreen  onNav={onNav} streak={streakMilestone || 7} />}
+        {screen === 'paywall'            && <PaywallScreen          onNav={onNav} />}
+      </div>
+
+      {!noTab && <TabBar screen={screen} onNav={onNav} />}
+
+      {state.pendingToast && (
+        <ToastAchievement
+          achievement={state.pendingToast}
+          onDismiss={() => dispatch({ type: 'DISMISS_TOAST' })}
+        />
+      )}
+
+      {dailyBonus && (
+        <DailyBonusModal
+          bonus={dailyBonus}
+          onClaim={() => setDailyBonus(null)}
+        />
+      )}
+
+      <OfflineBanner />
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <div style={{ background: 'linear-gradient(135deg, #0D1726 0%, #111B35 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="relative w-full max-w-[420px] min-h-screen overflow-x-hidden overflow-y-auto" style={{ background: '#0C1222' }}>
+        <ErrorBoundary>
+          <ZapfyProvider>
+            <ZapfyApp />
+          </ZapfyProvider>
+        </ErrorBoundary>
+      </div>
+    </div>
+  )
+}
