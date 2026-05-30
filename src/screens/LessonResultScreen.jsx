@@ -8,6 +8,7 @@ import { playComplete } from '../lib/sound'
 import { getAITip } from '../lib/aiTips'
 import { getCopy } from '../lib/copy'
 import TreasureChest, { pickChestReward } from '../components/TreasureChest'
+import { isLastUnitOfModule } from '../data/modules'
 
 // ── CountUp: rola um número do zero até `target` ─────────────
 function CountUp({ target, duration = 900, prefix = '', suffix = '', className = '', style = {} }) {
@@ -64,7 +65,17 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
 
   const handleContinue = () => {
     if (unitId) dispatch({ type: 'COMPLETE_UNIT', unitId, perfect })
-    onNav('pathway')
+
+    const lastMod = isLastUnitOfModule(unitId)
+    if (lastMod?.mission) {
+      if (lastMod.mission.type === 'canvas') {
+        onNav('companyCreation')
+      } else {
+        onNav('mission', { moduleId: lastMod.id })
+      }
+    } else {
+      onNav('pathway')
+    }
   }
 
   const handleShare = async () => {
