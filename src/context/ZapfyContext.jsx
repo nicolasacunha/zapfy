@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useRef, useCallback } from 'react'
 import { supabase, IS_CONFIGURED } from '../lib/supabase'
-import { loadUserState, syncProgress, saveCompany, getChildProfiles } from '../lib/db'
+import { loadUserState, syncProgress, saveCompany, getChildProfiles, saveMissionReport } from '../lib/db'
 import { checkNewAchievements, getAchievement } from '../data/achievements'
 
 // ── Estado inicial ─────────────────────────────────────────────
@@ -321,9 +321,7 @@ export function ZapfyProvider({ children }) {
 
     if (action.type === 'COMPLETE_MISSION' && action.moduleId && action.report &&
         nextState.childProfileId && nextState.childProfileId !== 'mock-child') {
-      import('../lib/db').then(({ saveMissionReport }) =>
-        saveMissionReport(nextState.childProfileId, action.moduleId, action.report)
-      )
+      saveMissionReport(nextState.childProfileId, action.moduleId, action.report)
     }
   }, [scheduleSync])
 
