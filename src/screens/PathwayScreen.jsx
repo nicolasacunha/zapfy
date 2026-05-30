@@ -1,6 +1,6 @@
 import { Check, Lock, Star } from 'lucide-react'
 import { C } from '../tokens'
-import { MODULES } from '../data/modules'
+import { MODULES, isFirstUnitOfModule } from '../data/modules'
 import { useZapfy } from '../context/ZapfyContext'
 import Header from '../components/Header'
 import XPBar from '../components/XPBar'
@@ -326,7 +326,19 @@ export default function PathwayScreen({ onNav }) {
                         <div style={{ position: 'relative' }}>
                           <button
                             onClick={isActive
-                              ? () => onNav('lesson', { unitId: unit.id, lessonId: unit.lessonId })
+                              ? () => {
+                                  const firstMod = isFirstUnitOfModule(unit.id)
+                                  const introSeen = firstMod && state.seenModuleIntros?.includes(firstMod.id)
+                                  if (firstMod && !introSeen) {
+                                    onNav('moduleVideo', {
+                                      moduleId:  firstMod.id,
+                                      unitId:    unit.id,
+                                      lessonId:  unit.lessonId,
+                                    })
+                                  } else {
+                                    onNav('lesson', { unitId: unit.id, lessonId: unit.lessonId })
+                                  }
+                                }
                               : undefined}
                             disabled={isLocked}
                             className={isActive ? 'node-active' : ''}
