@@ -189,6 +189,27 @@ function ZapfyApp() {
     return () => clearTimeout(t)
   }, [state.isLoading, state.authUser])
 
+  // Alerta de churn: filho inativo por 3 dias recebe notificação personalizada
+  useEffect(() => {
+    if (state.isLoading || !state.authUser || !state.company) return
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
+    const LAST_SEEN_KEY = `zapfy_last_seen_${state.childProfileId}`
+    const lastSeen = parseInt(localStorage.getItem(LAST_SEEN_KEY) || '0', 10)
+    const now = Date.now()
+    localStorage.setItem(LAST_SEEN_KEY, String(now))
+    if (!lastSeen) return
+    const daysSince = (now - lastSeen) / 86_400_000
+    if (daysSince >= 3) {
+      const companyName = state.company.name
+      setTimeout(() => {
+        new Notification(`A ${companyName} está esperando você`, {
+          body: `Zappy tem uma missão nova. Não deixe sua empresa parada!`,
+          icon: '/pwa-192x192.png',
+        })
+      }, 3000)
+    }
+  }, [state.isLoading, state.authUser, state.company])
+
   // Routing baseado no estado de auth
   useEffect(() => {
     if (state.isLoading) return
