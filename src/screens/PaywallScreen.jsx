@@ -1,19 +1,16 @@
 import { useState } from 'react'
-import { Check, X, Crown, Star, Lock } from 'lucide-react'
+import { Check, X, Crown } from 'lucide-react'
 import { C } from '../tokens'
 import ZappyWithSkin from '../components/ZappyWithSkin'
 import { PRODUCTS, purchasePremium, restorePurchases } from '../lib/purchases'
 import { useZapfy } from '../context/ZapfyContext'
 
-const FEATURES = [
-  { icon: '✨', text: 'Zappy Dourado — skin exclusiva do mascote' },
-  { icon: '🚀', text: 'Zappy Astronauta — skin espacial do Zappy' },
-  { icon: '🧊', text: 'Congelar Streak ilimitado — proteja sua sequência' },
-  { icon: '🎰', text: 'Aposta de Streak sem limite de vezes' },
-  { icon: '🏆', text: 'Liga Premium — compita com os melhores do país' },
-  { icon: '💎', text: 'Bônus mensal de Gemas — receba 20💎 todo mês' },
-  { icon: '📊', text: 'Dashboard do Pai com dados avançados de aprendizado' },
-  { icon: '🎁', text: 'Apoie o Zapfy — educação gratuita para todas as crianças' },
+const MODULES_UNLOCKED = [
+  { icon: '🏢', title: 'Módulo 2 — Cria sua empresa', desc: 'Nome, produto, identidade e diferencial da empresa do seu filho' },
+  { icon: '🎯', title: 'Módulo 3 — Primeiro cliente', desc: 'Quem compraria, onde encontrar, como chegar até ele' },
+  { icon: '💰', title: 'Módulo 4 — Preço e valor', desc: 'Como precificar, negociar e defender o preço sem dar desconto' },
+  { icon: '🚀', title: 'Módulo 5 — Primeira venda', desc: 'Simulação completa + desafio: tentar vender para alguém de verdade' },
+  { icon: '📊', title: 'Dashboard do pai', desc: 'Veja cada missão concluída, empresa criada e progresso em tempo real' },
 ]
 
 export default function PaywallScreen({ onNav }) {
@@ -57,6 +54,12 @@ export default function PaywallScreen({ onNav }) {
     }
   }
 
+  const buttonLabel = loading
+    ? 'Processando…'
+    : plan === 'annual'
+      ? 'Começar 7 dias grátis • depois R$599/ano'
+      : 'Começar 7 dias grátis • depois R$69,90/mês'
+
   return (
     <div className="min-h-screen pb-8 flex flex-col" style={{ background: C.bg }}>
 
@@ -77,24 +80,38 @@ export default function PaywallScreen({ onNav }) {
           <Crown size={18} fill="#F97316" color="#F97316" />
         </div>
         <h1 className="text-2xl font-black text-white leading-tight">
-          Para quem leva<br />o negócio a sério
+          Seu filho vai criar<br />sua empresa de verdade.
         </h1>
-        <p className="text-white/70 text-sm font-semibold mt-2">
-          Todo o conteúdo educacional é sempre gratuito.
+        <p className="text-white/80 text-sm font-bold mt-2">
+          7 dias grátis — sem cartão de crédito
         </p>
       </div>
 
       <div className="flex-1 px-4 pt-5 flex flex-col gap-4">
 
-        {/* Features list */}
-        <div className="rounded-3xl border p-4 flex flex-col gap-3" style={{ background: C.card, borderColor: C.border }}>
-          {FEATURES.map((f, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <span className="text-xl w-7 flex-shrink-0">{f.icon}</span>
-              <span className="text-sm font-semibold flex-1" style={{ color: C.ink }}>{f.text}</span>
-              <Check size={16} color={C.success} strokeWidth={3} className="flex-shrink-0" />
+        {/* Modules unlocked */}
+        <div className="rounded-3xl border p-4 flex flex-col gap-4" style={{ background: C.card, borderColor: C.border }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-center" style={{ color: C.inkSoft }}>
+            O que é desbloqueado
+          </p>
+          {MODULES_UNLOCKED.map((m, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="text-xl w-7 flex-shrink-0 mt-0.5">{m.icon}</span>
+              <div className="flex-1">
+                <p className="text-sm font-extrabold leading-tight" style={{ color: C.ink }}>{m.title}</p>
+                <p className="text-xs font-semibold leading-snug mt-0.5" style={{ color: C.inkSoft }}>{m.desc}</p>
+              </div>
+              <Check size={16} color={C.success} strokeWidth={3} className="flex-shrink-0 mt-0.5" />
             </div>
           ))}
+        </div>
+
+        {/* Stat badge */}
+        <div className="rounded-2xl px-4 py-3 text-center"
+          style={{ background: `${C.primary}12`, border: `1.5px solid ${C.primary}30` }}>
+          <p className="text-xs font-bold leading-snug" style={{ color: C.primary }}>
+            "71% dos filhos de empreendedores chegaram aos 19 anos sem entender o negócio dos pais."
+          </p>
         </div>
 
         {/* Plan selector */}
@@ -135,9 +152,12 @@ export default function PaywallScreen({ onNav }) {
 
         {/* Subscribe button */}
         <button onClick={handleSubscribe} disabled={loading}
-          className="w-full py-4 rounded-2xl font-extrabold text-base text-white uppercase tracking-wide transition-all active:scale-95"
-          style={{ background: loading ? C.border : `linear-gradient(135deg, #1E40AF, #7C3AED)`, boxShadow: loading ? 'none' : '0 4px 0 #1E3A8A' }}>
-          {loading ? 'Processando…' : `Assinar por ${product.price}`}
+          className="w-full py-4 rounded-2xl font-extrabold text-sm text-white transition-all active:scale-95 leading-tight px-4"
+          style={{
+            background:  loading ? C.border : `linear-gradient(135deg, #1E40AF, #7C3AED)`,
+            boxShadow:   loading ? 'none' : '0 4px 0 #1E3A8A',
+          }}>
+          {buttonLabel}
         </button>
 
         <button onClick={handleRestore} disabled={loading}

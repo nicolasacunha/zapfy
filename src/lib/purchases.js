@@ -6,15 +6,15 @@ const RC_KEY = import.meta.env.VITE_REVENUECAT_KEY || ''
 
 export const PRODUCTS = {
   monthly: {
-    id:         'zapfy_premium_monthly',
-    price:      'R$14,90/mês',
-    priceValue: 14.9,
+    id:         'zapfy_monthly_6990',
+    price:      'R$69,90/mês',
+    priceValue: 69.9,
   },
   annual: {
-    id:         'zapfy_premium_annual',
-    price:      'R$99,90/ano',
-    priceValue: 99.9,
-    savings:    'Economize 44%',
+    id:         'zapfy_annual_59900',
+    price:      'R$599/ano',
+    priceValue: 599,
+    savings:    'Economize 29%',
   },
 }
 
