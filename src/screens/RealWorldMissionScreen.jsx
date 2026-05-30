@@ -223,18 +223,18 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
         <Zappy mood="cheer" size={130} />
       </div>
 
-      <p style={{ fontSize: 28, fontWeight: 900, color: C.ink, textAlign: 'center', marginBottom: 8 }}>
-        Missão cumprida!
-      </p>
-
       <div style={{
         background: `${color}18`, border: `1px solid ${color}40`,
-        borderRadius: 14, padding: '12px 20px', marginBottom: 32,
+        borderRadius: 14, padding: '12px 20px', marginBottom: 16,
       }}>
         <p style={{ fontSize: 18, fontWeight: 900, color: color, textAlign: 'center', margin: 0 }}>
           +{mission.xp} XP
         </p>
       </div>
+
+      <p style={{ fontSize: 28, fontWeight: 900, color: C.ink, textAlign: 'center', marginBottom: 24 }}>
+        Missão cumprida!
+      </p>
 
       <p style={{ fontSize: 14, color: C.inkSoft, textAlign: 'center', lineHeight: 1.7, marginBottom: 40 }}>
         Você fez o que a maioria nunca faz. Isso é empreendedorismo.

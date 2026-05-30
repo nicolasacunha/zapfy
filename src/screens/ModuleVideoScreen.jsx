@@ -15,13 +15,16 @@ export default function ModuleVideoScreen({ onNav, moduleId, lessonId, unitId })
 
   const [showSkip, setShowSkip] = useState(false)
   const skipTimerRef = useRef(null)
+  const noContent = !mod?.videoUrl && !slides.length
 
-  // Se não tiver vídeo nem slides, ir direto para a lição
-  if (!mod?.videoUrl && !slides.length) {
-    dispatch({ type: 'MARK_MODULE_INTRO_SEEN', moduleId })
-    onNav('lesson', { unitId, lessonId })
-    return null
-  }
+  useEffect(() => {
+    if (noContent) {
+      dispatch({ type: 'MARK_MODULE_INTRO_SEEN', moduleId })
+      onNav('lesson', { unitId, lessonId })
+    }
+  }, []) // runs once on mount
+
+  if (noContent) return null
 
   const finish = () => {
     dispatch({ type: 'MARK_MODULE_INTRO_SEEN', moduleId })
