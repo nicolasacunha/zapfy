@@ -1,0 +1,106 @@
+<style>
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 8px; }
+.card { border-radius: 14px; padding: 20px; border: 1.5px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); display: flex; flex-direction: column; gap: 10px; }
+.card-title { font-size: 15px; font-weight: 900; }
+.card-sub { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.5; }
+.tag { display: inline-block; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 100px; }
+.row { display: flex; flex-direction: column; gap: 4px; }
+.row-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; }
+.row-val { font-size: 13px; font-weight: 600; }
+.pros-cons { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.pro { font-size: 12px; color: #4ade80; }
+.con { font-size: 12px; color: #f87171; }
+</style>
+
+<h2>Turma ao Vivo — 3 Abordagens</h2>
+<p class="subtitle">Zappy como game master em sessão semanal de 30min. Grupos formados pelos pais. Vídeo com câmera.</p>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="option card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div>
+      <div class="card-sub">MVP · 1 semana</div>
+      <div class="card-title">Zapfy agenda, Zappy pós-sessão</div>
+    </div>
+    <div class="row">
+      <span class="row-label">Videochamada</span>
+      <span class="row-val">Zoom ou Meet externo — pais gerenciam</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Zappy</span>
+      <span class="row-val">Envia o desafio antes. Criança submete resposta no app depois. Zappy avalia e dá feedback individual via texto/voz.</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Preço</span>
+      <span class="row-val">R$29,90/mês (add-on ao Founder)</span>
+    </div>
+    <div class="pros-cons">
+      <span class="pro">✓ Lança essa semana</span>
+      <span class="pro">✓ Zero infraestrutura nova</span>
+      <span class="con">✗ Zappy não está na sessão — magia perdida</span>
+      <span class="con">✗ Coordenação fica com os pais</span>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="option card" data-choice="b" onclick="toggleSelect(this)" style="border-color: rgba(124,58,237,0.4); background: rgba(124,58,237,0.06);">
+    <div class="letter">B</div>
+    <div>
+      <div class="card-sub" style="color:#a78bfa">Recomendado · 3–4 semanas</div>
+      <div class="card-title">Sala Zapfy + Zappy como voz ao vivo</div>
+    </div>
+    <div class="row">
+      <span class="row-label">Videochamada</span>
+      <span class="row-val">Embed de Daily.co ou 100ms.live dentro do app Zapfy. Crianças entram sem sair do produto.</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Zappy</span>
+      <span class="row-val">Voz ao vivo (ElevenLabs + Claude). Apresenta desafio, ouve o debate (STT), interjeta com perguntas no momento certo, pontua no final. Aparece como painel/overlay com avatar animado.</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Preço</span>
+      <span class="row-val">R$49,90/mês (tier Turma)</span>
+    </div>
+    <div class="pros-cons">
+      <span class="pro">✓ Zappy presente na sessão — produto mágico</span>
+      <span class="pro">✓ Tudo dentro do Zapfy — dados de engajamento</span>
+      <span class="pro">✓ Buildável em 3-4 semanas com Daily.co SDK</span>
+      <span class="con">✗ Latência do STT pode quebrar fluxo</span>
+      <span class="con">✗ Requer moderação de conteúdo (câmeras de crianças)</span>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="option card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div>
+      <div class="card-sub">Full build · 2–3 meses</div>
+      <div class="card-title">Zappy como participante de vídeo</div>
+    </div>
+    <div class="row">
+      <span class="row-label">Videochamada</span>
+      <span class="row-val">WebRTC próprio com Zappy como participante visual — avatar animado com câmera virtual no feed das crianças.</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Zappy</span>
+      <span class="row-val">Aparece na grade de vídeo como outro participante. Reage visualmente ao debate (avatar emocional em tempo real). Faz perguntas, pontua, comemora.</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Preço</span>
+      <span class="row-val">R$79,90/mês (tier Premium)</span>
+    </div>
+    <div class="pros-cons">
+      <span class="pro">✓ Experiência mais rica do mercado — sem concorrente</span>
+      <span class="pro">✓ Zappy parece um colega de turma</span>
+      <span class="con">✗ Complexidade alta (WebRTC + avatar real-time)</span>
+      <span class="con">✗ 2-3 meses antes de testar com usuário real</span>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top: 24px; padding: 14px 16px; background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.25); border-radius: 12px; font-size: 13px; line-height: 1.7; opacity: 0.85;">
+  <strong>Por que B é o recomendado:</strong> entrega Zappy presente na sessão (o momento mágico) sem precisar construir WebRTC próprio. Daily.co tem SDK pra React, permite adicionar participante "bot" com áudio, e já tem moderação de conteúdo embutida. Lança em semanas, não meses. A versão C pode vir depois, quando houver dados reais de engajamento das turmas.
+</div>
