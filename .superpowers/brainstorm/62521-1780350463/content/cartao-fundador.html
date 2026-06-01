@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { background: #0C1222; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; gap: 48px; font-family: -apple-system, sans-serif; }
+h2 { color: #E6EDFF; font-size: 18px; font-weight: 800; text-align: center; margin: 0; }
+p.sub { color: #7C90B5; font-size: 13px; text-align: center; margin: 0; }
+.section { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 800px; }
+.section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #7C90B5; }
+
+/* === CARD INSTAGRAM STORIES (9:16) === */
+.card-stories {
+  width: 270px; height: 480px;
+  border-radius: 24px; overflow: hidden;
+  position: relative;
+  background: linear-gradient(160deg, #7C3AED 0%, #1E40AF 60%, #059669 100%);
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 24px;
+  box-shadow: 0 24px 64px rgba(124,58,237,0.5);
+}
+.card-stories::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+}
+.card-stories * { position: relative; z-index: 1; }
+.card-stories .badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  width: fit-content;
+}
+.card-stories .zappy {
+  font-size: 64px; text-align: center;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+  margin: 8px 0;
+}
+.card-stories .company-name {
+  font-size: 32px; font-weight: 900;
+  color: white; line-height: 1.1;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.card-stories .product {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.4; margin-top: 6px;
+}
+.card-stories .founder {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+}
+.card-stories .date {
+  font-size: 10px; color: rgba(255,255,255,0.4);
+  font-weight: 600; letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+.card-stories .zapfy-brand {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  text-align: right;
+}
+
+/* === CARD WHATSAPP (1:1) === */
+.card-whatsapp {
+  width: 300px; height: 300px;
+  border-radius: 20px; overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #1E40AF 0%, #7C3AED 100%);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 28px;
+  box-shadow: 0 16px 48px rgba(30,64,175,0.5);
+  gap: 8px; text-align: center;
+}
+.card-whatsapp::after {
+  content: 'zapfy';
+  position: absolute; bottom: 16px; right: 20px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.card-whatsapp .zappy { font-size: 48px; }
+.card-whatsapp .company-name {
+  font-size: 28px; font-weight: 900;
+  color: white; letter-spacing: -0.5px; line-height: 1.1;
+}
+.card-whatsapp .product {
+  font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600;
+}
+.card-whatsapp .founder {
+  font-size: 10px; color: rgba(255,255,255,0.5);
+  font-weight: 700; letter-spacing: 0.05em; margin-top: 6px;
+}
+
+/* === MILESTONE CARDS === */
+.milestones { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.milestone-card {
+  width: 140px; height: 160px;
+  border-radius: 16px; padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.milestone-card .icon { font-size: 32px; }
+.milestone-card .title { font-size: 12px; font-weight: 800; color: white; line-height: 1.2; }
+.milestone-card .sub { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 600; }
+.m1 { background: linear-gradient(135deg, #1E40AF, #0891B2); box-shadow: 0 8px 24px rgba(30,64,175,0.4); }
+.m2 { background: linear-gradient(135deg, #7C3AED, #EC4899); box-shadow: 0 8px 24px rgba(124,58,237,0.4); }
+.m3 { background: linear-gradient(135deg, #B45309, #F97316); box-shadow: 0 8px 24px rgba(180,83,9,0.4); }
+</style>
+</head>
+<body>
+
+<div style="text-align:center">
+  <h2>Cartão de Fundador — Design</h2>
+  <p class="sub" style="margin-top:8px">Gerado automaticamente quando o filho cria a empresa no Módulo 2</p>
+</div>
+
+<!-- Stories -->
+<div class="section">
+  <span class="section-label">Instagram Stories (9:16)</span>
+  <div class="card-stories">
+    <div>
+      <div class="badge">⚡ Empresa Fundada</div>
+      <div class="zappy">⚡</div>
+    </div>
+    <div>
+      <div class="company-name">TechKids</div>
+      <div class="product">Cursos de tecnologia para crianças do bairro</div>
+      <div class="founder">Fundado por Theo · São Paulo</div>
+      <div class="date">1 Jun 2026</div>
+    </div>
+    <div class="zapfy-brand">zapfy</div>
+  </div>
+</div>
+
+<!-- WhatsApp -->
+<div class="section">
+  <span class="section-label">WhatsApp (1:1)</span>
+  <div class="card-whatsapp">
+    <div class="zappy">⚡</div>
+    <div class="company-name">TechKids</div>
+    <div class="product">Cursos de tech para crianças</div>
+    <div class="founder">Fundado por Theo · São Paulo · 01/06/2026</div>
+  </div>
+</div>
+
+<!-- Milestone cards -->
+<div class="section">
+  <span class="section-label">Cards de Marco (Fase 2)</span>
+  <p style="color:#7C90B5;font-size:12px;text-align:center;margin:0">Além da empresa, um card por grande conquista</p>
+  <div class="milestones">
+    <div class="milestone-card m1">
+      <div class="icon">🔍</div>
+      <div class="title">Primeiro problema encontrado</div>
+      <div class="sub">Módulo 1 — Missão de Campo</div>
+    </div>
+    <div class="milestone-card m2">
+      <div class="icon">🏢</div>
+      <div class="title">Empresa criada!</div>
+      <div class="sub">TechKids fundada em Jun 2026</div>
+    </div>
+    <div class="milestone-card m3">
+      <div class="icon">🚀</div>
+      <div class="title">Primeira venda tentada</div>
+      <div class="sub">Módulo 5 — Missão Real</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
