@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*.local
+
+# iOS signing artifacts (não commitar — sensíveis)
+*.cer
+*.p12
+*.certSigningRequest
+*.mobileprovision
