@@ -118,20 +118,36 @@ body { margin: 0; }
    UTILITY CLASSES
 ───────────────────────────────────────────────────────────── */
 
-.screen-enter  { animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-.screen-exit   { animation: screen-exit  160ms ease-in both; }
-.slide-up      { animation: slide-up  .28s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.bounce-in     { animation: pop-in    .45s cubic-bezier(0.34, 1.26, 0.64, 1) both; }
-.pop-in        { animation: pop-in    .40s cubic-bezier(0.34, 1.26, 0.64, 1) both; }
-.card-rise     { animation: card-rise .34s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.shake         { animation: shake     .38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
-.correct-burst { animation: correct-burst .3s ease-out both; }
+/* screen-enter: applied via JS (useLayoutEffect + offsetWidth reflow) so WKWebView
+   fires the animation reliably. forwards-only fill: if animation doesn't fire,
+   element stays at natural opacity:1 instead of being permanently invisible. */
+.screen-enter  { animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: opacity, transform; }
+.screen-exit   { animation: screen-exit  160ms ease-in forwards; }
+.slide-up      { animation: slide-up  .28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.bounce-in     { animation: pop-in    .45s cubic-bezier(0.34, 1.26, 0.64, 1) forwards; }
+.pop-in        { animation: pop-in    .40s cubic-bezier(0.34, 1.26, 0.64, 1) forwards; }
+.card-rise     { animation: card-rise .34s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.shake         { animation: shake     .38s cubic-bezier(0.36, 0.07, 0.19, 0.97) none; }
+.correct-burst { animation: correct-burst .3s ease-out none; }
 .zappy-float   { animation: zappy-float 3s ease-in-out infinite; }
 .node-active   { animation: pulse-glow 2s ease-in-out infinite; }
-.tab-bounce    { animation: tab-bounce .42s cubic-bezier(0.34, 1.1, 0.64, 1) both; }
+
+/* Onboarding slide transitions */
+@keyframes ob-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(18px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+@keyframes ob-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.ob-mascot { animation: ob-pop  0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.ob-copy   { animation: ob-rise 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.06s forwards; }
+.ob-input::placeholder { color: rgba(230,237,255,.28); }
+.tab-bounce    { animation: tab-bounce .42s cubic-bezier(0.34, 1.1, 0.64, 1) none; }
 .fire-pulse    { animation: fire-pulse 1.6s ease-in-out infinite; }
 .xp-float      { animation: xp-float  .9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.heart-lose    { animation: heart-lose .4s ease-in-out both; }
+.heart-lose    { animation: heart-lose .4s ease-in-out none; }
 .spin          { animation: spin .9s linear infinite; }
 
 @keyframes shimmer {

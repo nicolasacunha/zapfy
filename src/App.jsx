@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { ZapfyProvider } from './context/ZapfyContext'
 import { useZapfy } from './context/ZapfyContext'
 import TabBar from './components/TabBar'
@@ -9,6 +9,8 @@ import OfflineBanner from './components/OfflineBanner'
 import { trackMission } from './lib/missions'
 import { recordSession } from './lib/screenTime'
 import { shouldShowBonus, claimBonus } from './lib/dailyBonus'
+import { trackScreen } from './lib/analytics'
+import { logSessionOpen } from './lib/pilotMetrics'
 
 // Auth screens
 import RoleSelectScreen    from './screens/auth/RoleSelectScreen'
@@ -92,13 +94,40 @@ function ZapfyApp() {
   const [dailyBonus,      setDailyBonus]      = useState(null)
   const screenWrapperRef = useRef(null)
 
-  // Rastreia tempo de tela
+  // Aplica a animação de entrada via JS após o React comitar o novo elemento de tela.
+  // Usar className="screen-enter" diretamente no JSX falha no WKWebView: o WebKit
+  // precisa de um ciclo de layout (leitura de offsetWidth) antes de disparar animações
+  // CSS em nós DOM recém-inseridos — sem isso o elemento trava em opacity:0.
+  // O fill-mode "forwards" garante que, mesmo se a animação não disparar, o elemento
+  // fique em opacity:1 (visível) em vez de preto.
+  useLayoutEffect(() => {
+    const el = screenWrapperRef.current
+    if (!el) return
+    void el.offsetWidth // força o WebKit a processar o layout → habilita a animação CSS
+    el.classList.add('screen-enter')
+  }, [screen])
+
+  // Rastreia tempo de tela — conta só o DELTA desde o último flush (não o
+  // elapsed total), senão cada troca de aba / remontagem re-soma tudo e infla.
+  // Tempo em background (aba oculta) é descartado.
   useEffect(() => {
-    const start = Date.now()
-    const flush = () => recordSession(Date.now() - start)
+    let last = Date.now()
+    const flush = () => {
+      const now = Date.now()
+      recordSession(now - last)
+      last = now
+    }
+    const onVis = () => {
+      if (document.hidden) flush()   // ao ocultar: contabiliza o tempo ativo
+      else last = Date.now()         // ao voltar: descarta o tempo oculto
+    }
     window.addEventListener('pagehide', flush)
-    document.addEventListener('visibilitychange', () => { if (document.hidden) flush() })
-    return flush
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onVis)
+      flush()
+    }
   }, [])
 
   const onNav = (s, ctx) => {
@@ -111,13 +140,15 @@ function ZapfyApp() {
       setVideoCtx(v => ({ ...v, ...ctx }))
     }
 
+    trackScreen(s)
+
     const el = screenWrapperRef.current
     if (el) {
-      el.style.animation = 'screen-exit 160ms ease-in both'
+      el.style.animation = 'screen-exit 160ms ease-in forwards'
       setTimeout(() => {
         el.style.animation = ''
         setScreen(s)
-      }, 150)
+      }, 170)
     } else {
       setScreen(s)
     }
@@ -147,15 +178,18 @@ function ZapfyApp() {
     }
   }, [state.pendingStreakMilestone])
 
-  // Daily login bonus
+  // Daily login bonus — só depois do perfil do filho existir E o onboarding ter terminado
   useEffect(() => {
-    if (state.isLoading || !state.authUser) return
+    if (state.isLoading || !state.authUser || !state.childProfileId) return
+    let onboarded = false
+    try { onboarded = !!localStorage.getItem('zapfy_onboarded') } catch { /* ignore */ }
+    if (!onboarded) return
     if (!shouldShowBonus()) return
     const bonus = claimBonus()
     if (!bonus) return
     setDailyBonus(bonus)
     dispatch({ type: 'DAILY_BONUS', zapcoins: bonus.zapcoins || 0, gems: bonus.gems || 0 })
-  }, [state.isLoading, state.authUser])
+  }, [state.isLoading, state.authUser, state.childProfileId])
 
   // Verifica expiração do streak freeze
   useEffect(() => {
@@ -210,6 +244,12 @@ function ZapfyApp() {
     }
   }, [state.isLoading, state.authUser, state.company])
 
+  // Piloto: marca sessão diária (base da retenção D1–D7), 1x por dia-calendário
+  useEffect(() => {
+    if (state.isLoading || !state.childProfileId) return
+    logSessionOpen(state.childProfileId)
+  }, [state.isLoading, state.childProfileId])
+
   // Routing baseado no estado de auth
   useEffect(() => {
     if (state.isLoading) return
@@ -238,7 +278,7 @@ function ZapfyApp() {
 
   return (
     <>
-      <div key={screen} className="screen-enter" ref={screenWrapperRef}>
+      <div key={screen} ref={screenWrapperRef}>
         {screen === 'onboarding'         && <OnboardingScreen       onNav={onNav} userName={state.user?.name} />}
         {screen === 'roleSelect'         && <RoleSelectScreen       onNav={onNav} />}
         {screen === 'parentAuth'         && <ParentAuthScreen       onNav={onNav} />}
