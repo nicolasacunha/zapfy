@@ -3,6 +3,8 @@ import { Coins, Gem, Crown, ChevronRight, Sparkles } from 'lucide-react'
 import { C } from '../tokens'
 import Zappy from '../components/Zappy'
 import { useZapfy } from '../context/ZapfyContext'
+import { COSMETICS } from '../lib/purchases'
+import { PAYWALL_ENABLED } from '../lib/flags'
 
 const IN_GAME_ITEMS = [
   { id: 'hearts',  e: '❤️', n: 'Refil de Vidas',   d: '5 vidas instantâneas',          price: 50,  cur: 'zap' },
@@ -12,9 +14,9 @@ const IN_GAME_ITEMS = [
 ]
 
 const SKINS = [
-  { id: 'golden',    e: '✨', n: 'Zappy Dourado',    d: 'Visual dourado exclusivo',   price: 'R$7,90', skin: 'golden',    available: true  },
-  { id: 'astronaut', e: '🚀', n: 'Zappy Astronauta', d: 'Skin espacial do Zappy',     price: 'R$7,90', skin: 'astronaut', available: false },
-  { id: 'ninja',     e: '🥷', n: 'Zappy Ninja',      d: 'Velocidade e furtividade',   price: 'R$7,90', skin: 'ninja',     available: false },
+  { id: 'golden',    e: '✨', n: COSMETICS.skin_golden.name,    d: 'Visual dourado exclusivo',  price: COSMETICS.skin_golden.price,    skin: 'golden',    available: true  },
+  { id: 'astronaut', e: '🚀', n: COSMETICS.skin_astro.name,     d: 'Skin espacial do Zappy',    price: COSMETICS.skin_astro.price,     skin: 'astronaut', available: false },
+  { id: 'ninja',     e: '🥷', n: COSMETICS.skin_ninja.name,     d: 'Velocidade e furtividade',  price: COSMETICS.skin_ninja.price,     skin: 'ninja',     available: false },
 ]
 
 export default function ShopScreen({ onNav }) {
@@ -25,17 +27,19 @@ export default function ShopScreen({ onNav }) {
 
   const handleBuyInGame = (it) => {
     if (boughtInGame.includes(it.id) || !canAfford(it)) return
+    if (it.id === 'xp2x' && state.xp2xActive) return // já ativo
     setBoughtInGame(b => [...b, it.id])
     if (it.id === 'hearts') dispatch({ type: 'RESTORE_HEARTS' })
     else if (it.id === 'freeze') dispatch({ type: 'BUY_STREAK_FREEZE' })
     else if (it.id === 'wager') dispatch({ type: 'START_WAGER', amount: it.price })
+    else if (it.id === 'xp2x') dispatch({ type: 'BUY_XP2X' })
     else if (it.cur === 'zap') dispatch({ type: 'SPEND_ZAPCOIN', amount: it.price })
     else dispatch({ type: 'SPEND_GEM', amount: it.price })
   }
 
   const handleBuySkin = (skin) => {
-    // Opens Founder/cosmetic purchase flow
-    if (onNav) onNav('paywall')
+    // Opens Founder/cosmetic purchase flow (desativado durante o piloto)
+    if (PAYWALL_ENABLED && onNav) onNav('paywall')
   }
 
   return (
@@ -58,7 +62,8 @@ export default function ShopScreen({ onNav }) {
 
       <div className="px-4 flex flex-col gap-6">
 
-        {/* Zapfy Founder CTA */}
+        {/* Zapfy Founder CTA — oculto durante o piloto (PAYWALL_ENABLED) */}
+        {PAYWALL_ENABLED && (
         <button
           onClick={() => onNav && onNav('paywall')}
           style={{
@@ -90,6 +95,7 @@ export default function ShopScreen({ onNav }) {
           </div>
           <ChevronRight size={20} color="rgba(255,255,255,0.6)" />
         </button>
+        )}
 
         {/* Skins do Zappy */}
         <div>
@@ -153,8 +159,9 @@ export default function ShopScreen({ onNav }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {IN_GAME_ITEMS.map(it => {
-              const isBought = boughtInGame.includes(it.id)
-              const afford   = canAfford(it)
+              const isXp2xActive = it.id === 'xp2x' && state.xp2xActive
+              const isBought = boughtInGame.includes(it.id) || isXp2xActive
+              const afford   = canAfford(it) && !isXp2xActive
               return (
                 <div key={it.id} style={{
                   background: C.card,
@@ -176,7 +183,7 @@ export default function ShopScreen({ onNav }) {
                       textTransform: 'uppercase', cursor: afford ? 'pointer' : 'default',
                     }}
                   >
-                    {isBought ? '✓ Comprado' : `${it.price} ${it.cur === 'zap' ? '🪙' : '💎'}`}
+                    {isXp2xActive ? '⚡ Ativo' : isBought ? '✓ Comprado' : `${it.price} ${it.cur === 'zap' ? '🪙' : '💎'}`}
                   </button>
                 </div>
               )

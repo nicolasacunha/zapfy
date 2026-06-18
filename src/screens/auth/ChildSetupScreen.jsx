@@ -8,7 +8,7 @@ export default function ChildSetupScreen({ onNav }) {
   const [consent, setConsent] = useState(false)
 
   const ageNum     = Number(age)
-  const needsLGPD  = ageNum >= 5 && ageNum < 13
+  const needsLGPD  = ageNum >= 5 && ageNum < 18 // LGPD Art. 14: menores de 18 anos
   const dataValid  = name.trim().length >= 2 && ageNum >= 5 && ageNum <= 18
   const valid      = dataValid && (!needsLGPD || consent)
 
@@ -29,9 +29,9 @@ export default function ChildSetupScreen({ onNav }) {
         <div>
           <label className="text-white/80 text-xs font-bold mb-1 block">Nome da criança</label>
           <input
-            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none"
-            style={{ color: C.ink, background: 'white' }}
-            placeholder="Ex: Joãozinho"
+            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none placeholder-white/40"
+            style={{ color: 'white', background: 'rgba(255,255,255,.18)', border: '2px solid rgba(255,255,255,.3)' }}
+            placeholder="Joãozinho"
             value={name}
             onChange={e => setName(e.target.value)}
             autoFocus
@@ -44,9 +44,9 @@ export default function ChildSetupScreen({ onNav }) {
             type="number"
             min="5"
             max="18"
-            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none"
-            style={{ color: C.ink, background: 'white' }}
-            placeholder="Ex: 11"
+            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none placeholder-white/40"
+            style={{ color: 'white', background: 'rgba(255,255,255,.18)', border: '2px solid rgba(255,255,255,.3)' }}
+            placeholder="11"
             value={age}
             onChange={e => setAge(e.target.value)}
           />

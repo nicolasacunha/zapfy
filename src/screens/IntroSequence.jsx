@@ -77,7 +77,7 @@ export default function IntroSequence({ onDone, userName }) {
       <span className="ist-spark ist-spark-3" style={{ bottom: '24%', left: '16%', color: b.glow }}>✦</span>
 
       {/* Barra de progresso (beats) */}
-      <div style={{ display: 'flex', gap: 5, padding: '16px 16px 0', position: 'relative', zIndex: 2 }}>
+      <div style={{ display: 'flex', gap: 5, padding: '16px 16px 0', paddingTop: 'max(16px, env(safe-area-inset-top, 0px))', position: 'relative', zIndex: 2 }}>
         {BEATS.map((_, i) => (
           <div key={i} style={{
             flex: 1, height: 3, borderRadius: 2,
@@ -131,7 +131,7 @@ export default function IntroSequence({ onDone, userName }) {
       </div>
 
       {/* CTA final / dica de toque */}
-      <div style={{ padding: '0 24px 40px', position: 'relative', zIndex: 2 }}>
+      <div style={{ padding: '0 24px', paddingBottom: 'max(40px, env(safe-area-inset-bottom, 0px))', position: 'relative', zIndex: 2 }}>
         {isLast ? (
           <button
             onClick={onDone}

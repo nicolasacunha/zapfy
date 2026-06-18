@@ -148,18 +148,18 @@ function ZapfyApp() {
       setTimeout(() => {
         el.style.animation = ''
         setScreen(s)
-      }, 170)
+      }, 200)
     } else {
       setScreen(s)
     }
   }
 
-  // Auto-marca missão de streak ao carregar o estado (streak já existente)
+  // Auto-marca missão de streak sempre que streak mudar
   useEffect(() => {
     if (!state.isLoading && state.streak > 0) {
       trackMission('streak', state.streak)
     }
-  }, [state.isLoading])
+  }, [state.isLoading, state.streak])
 
   // Detecta level-up e navega para a tela comemorativa
   useEffect(() => {
@@ -190,6 +190,15 @@ function ZapfyApp() {
     setDailyBonus(bonus)
     dispatch({ type: 'DAILY_BONUS', zapcoins: bonus.zapcoins || 0, gems: bonus.gems || 0 })
   }, [state.isLoading, state.authUser, state.childProfileId])
+
+  // Expiração do bônus 2× XP
+  useEffect(() => {
+    if (!state.xp2xActive || !state.xp2xExpiry) return
+    const remaining = state.xp2xExpiry - Date.now()
+    if (remaining <= 0) { dispatch({ type: 'EXPIRE_XP2X' }); return }
+    const t = setTimeout(() => dispatch({ type: 'EXPIRE_XP2X' }), remaining)
+    return () => clearTimeout(t)
+  }, [state.xp2xActive, state.xp2xExpiry, dispatch])
 
   // Verifica expiração do streak freeze
   useEffect(() => {
@@ -342,14 +351,18 @@ function ZapfyApp() {
 
 export default function App() {
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0D1726 0%, #111B35 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="relative w-full max-w-[420px] min-h-screen overflow-x-hidden overflow-y-auto" style={{ background: '#0C1222' }}>
-        <ErrorBoundary>
-          <ZapfyProvider>
-            <ZapfyApp />
-          </ZapfyProvider>
-        </ErrorBoundary>
-      </div>
+    <div
+      className="relative w-full min-h-screen overflow-x-hidden overflow-y-auto"
+      style={{
+        background: '#0C1222',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}
+    >
+      <ErrorBoundary>
+        <ZapfyProvider>
+          <ZapfyApp />
+        </ZapfyProvider>
+      </ErrorBoundary>
     </div>
   )
 }

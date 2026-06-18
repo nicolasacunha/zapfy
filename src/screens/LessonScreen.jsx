@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Check } from 'lucide-react'
 import { C } from '../tokens'
+import zappyFace from '../assets/zappy-face.png'
 import { useZapfy } from '../context/ZapfyContext'
 import { LESSONS } from '../data/lessons'
 import Hearts from '../components/Hearts'
@@ -26,6 +27,9 @@ export default function LessonScreen({ onNav, lessonId }) {
   const [shakeKey,   setShakeKey]   = useState(0)
   const [heartsLeft, setHeartsLeft] = useState(state.hearts)
   const [hasError,   setHasError]   = useState(false)
+
+  // Sincroniza heartsLeft com state.hearts para capturar RESTORE_HEARTS comprado mid-lesson
+  useEffect(() => { setHeartsLeft(state.hearts) }, [state.hearts])
 
   // match state
   const [ex2Left,    setEx2Left]    = useState(null)
@@ -162,6 +166,18 @@ export default function LessonScreen({ onNav, lessonId }) {
 
       {/* Content */}
       <div className="flex-1 px-4 pt-3 pb-2 overflow-auto" key={exIdx}>
+        {cur.hint && (
+          <div className="flex items-start gap-3 mb-4 slide-up">
+            <img src={zappyFace} alt="Zappy" width={36}
+              className="flex-shrink-0 mt-0.5"
+              style={{ filter: 'drop-shadow(0 0 6px rgba(77,127,255,.35))' }} />
+            <div className="flex-1 rounded-2xl rounded-tl-sm px-3 py-2.5"
+              style={{ background: `${C.primary}10`, border: `1.5px solid ${C.primary}25` }}>
+              <p className="text-[10px] font-extrabold uppercase tracking-wider mb-1" style={{ color: C.primary }}>Zappy</p>
+              <p className="text-sm font-semibold leading-snug" style={{ color: C.ink }}>{cur.hint}</p>
+            </div>
+          </div>
+        )}
         <p className="text-xl font-extrabold mb-5 leading-snug" style={{ color: C.ink }}>{interp(cur.q)}</p>
 
         {/* Multiple choice */}
@@ -221,7 +237,7 @@ export default function LessonScreen({ onNav, lessonId }) {
                   return (
                     <button key={i} onClick={() => !matched && handleEx2Left(i)}
                       className="p-3 rounded-2xl border-2 text-left text-xs font-bold leading-tight transition-all"
-                      style={{ borderColor: matched ? C.success : selLeft ? C.primary : isWrng ? C.danger : C.border, background: matched ? '#F0FDF4' : selLeft ? `${C.primary}12` : isWrng ? '#FEF2F2' : C.card }}>
+                      style={{ color: C.ink, borderColor: matched ? C.success : selLeft ? C.primary : isWrng ? C.danger : C.border, background: matched ? `${C.success}24` : selLeft ? `${C.primary}1F` : isWrng ? `${C.danger}24` : C.card }}>
                       {p.left}
                     </button>
                   )
@@ -235,7 +251,7 @@ export default function LessonScreen({ onNav, lessonId }) {
                   return (
                     <button key={i} onClick={() => !matched && handleEx2Right(i)}
                       className="p-3 rounded-2xl border-2 text-left text-xs font-bold leading-tight transition-all"
-                      style={{ borderColor: matched ? C.success : isWrng ? C.danger : ex2Left !== null ? C.primary : C.border, background: matched ? '#F0FDF4' : isWrng ? '#FEF2F2' : ex2Left !== null ? `${C.primary}08` : C.card }}>
+                      style={{ color: C.ink, borderColor: matched ? C.success : isWrng ? C.danger : ex2Left !== null ? C.primary : C.border, background: matched ? `${C.success}24` : isWrng ? `${C.danger}24` : ex2Left !== null ? `${C.primary}14` : C.card }}>
                       {p.right}
                     </button>
                   )

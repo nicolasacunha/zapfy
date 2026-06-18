@@ -2,6 +2,8 @@ import { createContext, useContext, useReducer, useEffect, useRef, useCallback }
 import { supabase, IS_CONFIGURED } from '../lib/supabase'
 import { loadUserState, syncProgress, saveCompany, getChildProfiles, saveMissionReport } from '../lib/db'
 import { checkNewAchievements, getAchievement } from '../data/achievements'
+import { recordXP } from '../lib/xpHistory'
+import { logPilotEvent } from '../lib/pilotMetrics'
 
 // ── Estado inicial ─────────────────────────────────────────────
 const INIT = {
@@ -47,6 +49,8 @@ const INIT = {
   dailyXpGoal:           20,
   streakWager:           null,
   zapfySkin:             'default',
+  xp2xActive:            false,
+  xp2xExpiry:            null,
 }
 
 // Modo mock: sem Supabase configurado
@@ -81,6 +85,51 @@ const SYNC_ACTIONS = new Set([
   'COMPLETE_UNIT', 'COMPLETE_MODULE', 'LOSE_HEART', 'RESTORE_HEARTS', 'REGEN_HEARTS',
   'SPEND_ZAPCOIN', 'SPEND_GEM', 'UNLOCK_FOUNDER', 'COMPLETE_MISSION',
 ])
+
+// ── Persistência local (offline-first) ─────────────────────────
+// Garante que o progresso fique intacto ao fechar/reabrir, mesmo se o sync do
+// Supabase falhar. O merge nunca regride: união de listas, máximo de números.
+const LS_PROGRESS = 'zapfy_progress'
+const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate','league','leaguePosition',
+  'completedUnits','completedModules','currentModule','seenModuleIntros','company',
+  'missionReports','lessonChoices','user']
+
+function saveLocalProgress(s) {
+  if (!s || !s.childProfileId) return
+  try {
+    const snap = {}
+    for (const k of PERSIST_FIELDS) if (s[k] !== undefined) snap[k] = s[k]
+    localStorage.setItem(LS_PROGRESS, JSON.stringify(snap))
+  } catch { /* quota / indisponível */ }
+}
+function loadLocalProgress() {
+  try { return JSON.parse(localStorage.getItem(LS_PROGRESS) || 'null') } catch { return null }
+}
+const uniqArr = (a = [], b = []) => Array.from(new Set([...(a || []), ...(b || [])]))
+function mergeProgress(base, local) {
+  if (!local) return base
+  // Para streakLastDate: data mais recente vence (local pode estar mais atualizado)
+  const mergedStreakDate = base.streakLastDate && local.streakLastDate
+    ? (base.streakLastDate > local.streakLastDate ? base.streakLastDate : local.streakLastDate)
+    : (base.streakLastDate || local.streakLastDate || null)
+  return {
+    ...base,
+    xp:               Math.max(base.xp ?? 0, local.xp ?? 0),
+    zapcoins:         Math.max(base.zapcoins ?? 0, local.zapcoins ?? 0),
+    gems:             Math.max(base.gems ?? 0, local.gems ?? 0),
+    streak:           Math.max(base.streak ?? 0, local.streak ?? 0),
+    streakLastDate:   mergedStreakDate,
+    currentModule:    Math.max(base.currentModule ?? 1, local.currentModule ?? 1),
+    hearts:           base.hearts ?? local.hearts,
+    completedUnits:   uniqArr(base.completedUnits, local.completedUnits),
+    completedModules: uniqArr(base.completedModules, local.completedModules),
+    seenModuleIntros: uniqArr(base.seenModuleIntros, local.seenModuleIntros),
+    company:          base.company || local.company || null,
+    missionReports:   { ...(local.missionReports || {}), ...(base.missionReports || {}) },
+    lessonChoices:    { ...(local.lessonChoices || {}), ...(base.lessonChoices || {}) },
+    user:             base.user?.name ? base.user : (local.user || base.user),
+  }
+}
 
 // ── Helper: checa e aplica conquistas novas ────────────────────
 function withAchievements(prevUnlocked, next) {
@@ -123,11 +172,30 @@ function reducer(state, action) {
       if (state.completedUnits.includes(unitId)) return state
       const prevUnlocked = state.unlockedAchievements || []
       const prevLevel    = Math.floor(state.xp / 500)
-      const newXp        = state.xp + 25
-      const newLevel     = Math.floor(newXp / 500)
-      const newStreak    = state.streak + 1
-      const MILESTONES   = [7, 30, 100, 365]
-      const milestone    = MILESTONES.includes(newStreak) ? newStreak : (state.pendingStreakMilestone || null)
+      // xp2x: dobra XP se item ativo
+      const xpGain = state.xp2xActive ? 50 : 25
+      const newXp  = state.xp + xpGain
+      const newLevel = Math.floor(newXp / 500)
+      // Streak: incrementa apenas uma vez por dia-calendário
+      const todayStr = new Date().toISOString().slice(0, 10)
+      const lastDate = state.streakLastDate
+      let newStreak
+      if (lastDate === todayStr) {
+        newStreak = state.streak // já jogou hoje — não incrementa
+      } else if (lastDate) {
+        const yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+        const yStr = yesterday.toISOString().slice(0, 10)
+        if (lastDate === yStr || state.streakFreezeActive) {
+          newStreak = state.streak + 1 // ontem ou freeze ativo — continua
+        } else {
+          newStreak = 1 // pulou mais de 1 dia sem freeze — reinicia
+        }
+      } else {
+        newStreak = 1 // primeira lição ever
+      }
+      const MILESTONES = [7, 30, 100, 365]
+      const milestone  = MILESTONES.includes(newStreak) ? newStreak : (state.pendingStreakMilestone || null)
       // Verifica wager
       let wager = state.streakWager
       if (wager && !wager.completed) {
@@ -136,15 +204,15 @@ function reducer(state, action) {
       }
       const next = {
         ...state,
-        streak:               newStreak,
-        xp:                   newXp,
-        zapcoins:             state.zapcoins + 10,
-        hearts:               5,
-        completedUnits:       [...state.completedUnits, unitId],
-        perfectLessons:       action.perfect ? (state.perfectLessons || 0) + 1 : (state.perfectLessons || 0),
-        pendingLevelUp:       newLevel > prevLevel ? newLevel : (state.pendingLevelUp || null),
+        streak:                newStreak,
+        streakLastDate:        todayStr,
+        xp:                    newXp,
+        zapcoins:              state.zapcoins + 10,
+        completedUnits:        [...state.completedUnits, unitId],
+        perfectLessons:        action.perfect ? (state.perfectLessons || 0) + 1 : (state.perfectLessons || 0),
+        pendingLevelUp:        newLevel > prevLevel ? newLevel : (state.pendingLevelUp || null),
         pendingStreakMilestone: milestone,
-        streakWager:          wager,
+        streakWager:           wager,
       }
       return withAchievements(prevUnlocked, next)
     }
@@ -233,6 +301,19 @@ function reducer(state, action) {
     case 'EXPIRE_STREAK_FREEZE':
       return { ...state, streakFreezeActive: false, streakFreezeExpiry: null }
 
+    case 'BUY_XP2X': {
+      if (state.zapcoins < 200) return state
+      return {
+        ...state,
+        zapcoins:   state.zapcoins - 200,
+        xp2xActive: true,
+        xp2xExpiry: Date.now() + 15 * 60 * 1000,
+      }
+    }
+
+    case 'EXPIRE_XP2X':
+      return { ...state, xp2xActive: false, xp2xExpiry: null }
+
     case 'DISMISS_STREAK_MILESTONE':
       return { ...state, pendingStreakMilestone: null }
 
@@ -289,9 +370,10 @@ const ZapfyContext = createContext(null)
 
 export function ZapfyProvider({ children }) {
   const [state, rawDispatch] = useReducer(reducer, INIT)
-  const stateRef    = useRef(state)
-  const syncTimer   = useRef(null)
-  stateRef.current  = state
+  const stateRef         = useRef(state)
+  const syncTimer        = useRef(null)
+  const isInitializingRef = useRef(false)
+  stateRef.current       = state
 
   const scheduleSync = useCallback((nextState) => {
     if (!IS_CONFIGURED || !nextState.childProfileId || nextState.childProfileId === 'mock-child') return
@@ -302,8 +384,30 @@ export function ZapfyProvider({ children }) {
   }, [])
 
   const dispatch = useCallback((action) => {
-    rawDispatch(action)
+    // Computa nextState antes do rawDispatch para que dispatches encadeados no mesmo
+    // ciclo usem o estado correto como base (stateRef ainda aponta para o render anterior)
     const nextState = reducer(stateRef.current, action)
+    stateRef.current = nextState
+    rawDispatch(action)
+    saveLocalProgress(nextState) // persiste local a cada mudança (offline-first)
+
+    if (action.type === 'COMPLETE_UNIT') recordXP(25)
+
+    // ── Piloto: log de eventos por criança (D1–D7 + engajamento) ──
+    const pcid = nextState.childProfileId
+    switch (action.type) {
+      case 'COMPLETE_UNIT':
+        logPilotEvent('lesson_complete', { unit_id: action.unitId }, pcid); break
+      case 'COMPLETE_MODULE':
+        logPilotEvent('module_complete', { module_id: action.moduleId }, pcid); break
+      case 'COMPLETE_MISSION':
+        logPilotEvent('mission_complete', { module_id: action.moduleId, withProof: !!action.report }, pcid); break
+      case 'FOUND_COMPANY':
+        logPilotEvent('company_created', { name: nextState.company?.name || null }, pcid); break
+      case 'UNLOCK_FOUNDER':
+        logPilotEvent('founder_unlocked', {}, pcid); break
+      default: break
+    }
 
     if (SYNC_ACTIONS.has(action.type)) {
       scheduleSync(nextState)
@@ -332,14 +436,16 @@ export function ZapfyProvider({ children }) {
 
       if (isChild) {
         const loaded = await loadUserState(authUser.id)
-        rawDispatch({ type: 'LOAD_STATE', payload: { ...loaded, authUser, childProfileId: authUser.id } })
+        const merged = loaded ? mergeProgress(loaded, loadLocalProgress()) : loaded
+        rawDispatch({ type: 'LOAD_STATE', payload: { ...merged, authUser, childProfileId: authUser.id } })
       } else {
         const children = await getChildProfiles(authUser.id)
         if (children.length > 0) {
           const child  = children[0]
           const loaded = await loadUserState(child.id)
+          const merged = loaded ? mergeProgress(loaded, loadLocalProgress()) : loaded
           rawDispatch({ type: 'LOAD_STATE', payload: {
-            ...loaded, authUser, childProfileId: child.id, parentProfileId: authUser.id,
+            ...merged, authUser, childProfileId: child.id, parentProfileId: authUser.id,
           }})
         } else {
           rawDispatch({ type: 'SET_AUTH', payload: { authUser, parentProfileId: authUser.id, childProfileId: null } })
@@ -358,18 +464,27 @@ export function ZapfyProvider({ children }) {
 
   useEffect(() => {
     if (!IS_CONFIGURED) {
-      rawDispatch({ type: 'LOAD_STATE', payload: MOCK_STATE })
+      rawDispatch({ type: 'LOAD_STATE', payload: mergeProgress(MOCK_STATE, loadLocalProgress()) })
       return
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) initUserState(session.user)
-      else rawDispatch({ type: 'SET_LOADING', value: false })
+      if (session?.user) {
+        isInitializingRef.current = true
+        initUserState(session.user)
+      } else {
+        rawDispatch({ type: 'SET_LOADING', value: false })
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) initUserState(session.user)
-      else if (event === 'SIGNED_OUT') rawDispatch({ type: 'RESET' })
+      if (event === 'SIGNED_IN' && session?.user) {
+        // getSession já disparou initUserState — pula a chamada duplicada do SIGNED_IN
+        if (isInitializingRef.current) { isInitializingRef.current = false; return }
+        initUserState(session.user)
+      } else if (event === 'SIGNED_OUT') {
+        rawDispatch({ type: 'RESET' })
+      }
     })
 
     return () => subscription.unsubscribe()
