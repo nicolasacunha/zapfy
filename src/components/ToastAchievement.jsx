@@ -12,7 +12,7 @@ export default function ToastAchievement({ achievement, onDismiss }) {
 
   return (
     <div
-      className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 slide-up"
+      className="fixed bottom-24 inset-x-0 mx-auto z-50 slide-up"
       style={{ width: 'min(360px, calc(100vw - 32px))' }}
       onClick={onDismiss}>
       <div className="flex items-center gap-3 p-4 rounded-2xl shadow-lg"

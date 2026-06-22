@@ -5,6 +5,7 @@ import { useZapfy } from '../context/ZapfyContext'
 import Zappy from '../components/Zappy'
 import { MODULES } from '../data/modules'
 import { getLast7Days, getWeekTotal } from '../lib/screenTime'
+import { exportPilotData, pilotSummary } from '../lib/pilotMetrics'
 
 export default function ParentDashboardScreen({ onNav }) {
   const { state } = useZapfy()
@@ -30,8 +31,8 @@ export default function ParentDashboardScreen({ onNav }) {
   ]
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: C.bg }}>
-      <div className="flex items-center gap-3 px-4 pt-4 pb-4" style={{ background: C.primary }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
+      <div className="flex items-center gap-3 px-4 pb-4" style={{ flexShrink: 0, background: C.primary, paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
         <button onClick={() => onNav('pathway')} className="w-10 h-10 rounded-xl flex items-center justify-center">
           <ArrowLeft size={22} color="white" />
         </button>
@@ -44,7 +45,8 @@ export default function ParentDashboardScreen({ onNav }) {
         </div>
       </div>
 
-      <div className="px-4 pt-4 flex flex-col gap-4">
+      <div className="px-4 pt-4 pb-6 flex flex-col gap-4"
+        style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
@@ -65,7 +67,7 @@ export default function ParentDashboardScreen({ onNav }) {
         <div className="rounded-3xl border p-4" style={{ background: C.card, borderColor: C.border }}>
           <p className="font-extrabold mb-3" style={{ color: C.ink }}>Progresso no app</p>
           <div className="flex justify-between mb-1">
-            <span className="text-xs font-bold" style={{ color: C.inkSoft }}>Módulo {state.currentModule} de 5</span>
+            <span className="text-xs font-bold" style={{ color: C.inkSoft }}>Módulo {state.currentModule} de {MODULES.length}</span>
             <span className="text-xs font-extrabold" style={{ color: C.primary }}>{progress}%</span>
           </div>
           <div className="h-3 rounded-full overflow-hidden" style={{ background: C.border }}>
@@ -159,9 +161,41 @@ export default function ParentDashboardScreen({ onNav }) {
             </div>
           ))}
         </div>
+
+        {/* Dados do piloto (Link School) */}
+        {(() => {
+          const s = pilotSummary()
+          return (
+            <div className="rounded-3xl border p-4" style={{ background: C.card, borderColor: C.border }}>
+              <p className="font-extrabold mb-1" style={{ color: C.ink }}>Dados do piloto</p>
+              <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                Exporte e envie pro time do Zapfy no WhatsApp. Mede se {state.user.name} voltou nos primeiros dias.
+              </p>
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {[
+                  { l: 'Voltou no D1', v: s.returned_d1 ? 'Sim' : 'Ainda não', c: s.returned_d1 ? C.success : C.inkSoft },
+                  { l: 'Voltou no D7', v: s.returned_d7 ? 'Sim' : 'Ainda não', c: s.returned_d7 ? C.success : C.inkSoft },
+                  { l: 'Missões c/ prova', v: String(s.missions_with_proof), c: C.primary },
+                ].map((m, i) => (
+                  <div key={i} className="rounded-xl p-2.5" style={{ background: C.bg }}>
+                    <p className="text-[10px] font-bold mb-1" style={{ color: C.inkSoft }}>{m.l}</p>
+                    <p className="text-sm font-black" style={{ color: m.c }}>{m.v}</p>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => exportPilotData(state.user.name)}
+                className="w-full py-3 rounded-2xl font-extrabold text-white text-sm"
+                style={{ background: C.primary }}
+              >
+                Exportar dados do piloto (JSON)
+              </button>
+            </div>
+          )
+        })()}
       </div>
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] px-4 pb-4 pt-3 bg-white border-t z-40" style={{ borderColor: C.border }}>
+      <div className="w-full px-4 pt-3 bg-white border-t" style={{ flexShrink: 0, borderColor: C.border, paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}>
         <button className="w-full py-4 rounded-2xl font-extrabold text-white uppercase tracking-wide relative overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${C.primary}, #7C3AED)`, boxShadow: `0 4px 0 ${C.primaryDk}` }}>
           Zapfy Premium — cosméticos e extras
