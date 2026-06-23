@@ -69,7 +69,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
           animation: 'zappy-float 3s ease-in-out infinite',
           marginBottom: 24,
         }}>
-          <Zappy mood="cheer" size={120} />
+          <Zappy mood="cheer" size={152} />
         </div>
 
         <div style={{
@@ -139,7 +139,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
           animation: 'zappy-float 3s ease-in-out infinite',
           marginBottom: 28,
         }}>
-          <Zappy mood="think" size={100} />
+          <Zappy mood="think" size={130} />
         </div>
 
         <p style={{ fontSize: 20, fontWeight: 900, color: C.ink, textAlign: 'center', marginBottom: 10 }}>
@@ -220,7 +220,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
         animation: 'zappy-pulse 0.6s ease-out',
         marginBottom: 24,
       }}>
-        <Zappy mood="cheer" size={130} />
+        <Zappy mood="cheer" size={165} />
       </div>
 
       <div style={{
@@ -282,7 +282,7 @@ function FieldRenderer({ field, value, error, color, onChange }) {
           style={{
             width: '100%', background: C.card, border: `1.5px solid ${error ? C.danger : C.border}`,
             borderRadius: 12, padding: '12px 14px', color: C.ink,
-            fontSize: 14, fontFamily: 'inherit', resize: 'none', outline: 'none',
+            fontSize: 16, fontFamily: 'inherit', resize: 'none', outline: 'none',
             transition: 'border-color 0.15s',
           }}
           onFocus={e => { e.target.style.borderColor = color }}
@@ -342,7 +342,7 @@ function FieldRenderer({ field, value, error, color, onChange }) {
               width: '100%', background: C.card,
               border: `1.5px solid ${error ? C.danger : C.border}`,
               borderRadius: 12, padding: `12px 14px 12px ${field.prefix ? '36px' : '14px'}`,
-              color: C.ink, fontSize: 14, fontFamily: 'inherit', outline: 'none',
+              color: C.ink, fontSize: 16, fontFamily: 'inherit', outline: 'none',
             }}
             onFocus={e => { e.target.style.borderColor = color }}
             onBlur={e => { e.target.style.borderColor = error ? C.danger : C.border }}

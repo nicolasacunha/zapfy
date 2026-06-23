@@ -4,13 +4,53 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#1E40AF" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0C1222" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Zapfy" />
     <meta name="description" content="Aprenda empreendedorismo de forma divertida" />
     <title>Zapfy</title>
+    <script>
+      // DEBUG: mostra qualquer erro de JS na tela (em vez de tela preta).
+      // Remover depois que o bug do app nativo estiver resolvido.
+      (function () {
+        function show(label, msg) {
+          try {
+            var d = document.getElementById('__zapfy_err__')
+            if (!d) {
+              d = document.createElement('div')
+              d.id = '__zapfy_err__'
+              d.style.cssText =
+                'position:fixed;inset:0;z-index:2147483647;background:#fff;color:#b00020;' +
+                'font:12px/1.5 -apple-system,system-ui,monospace;padding:46px 16px 24px;' +
+                'overflow:auto;white-space:pre-wrap;word-break:break-word;-webkit-user-select:text;user-select:text'
+              ;(document.body || document.documentElement).appendChild(d)
+              var h = document.createElement('div')
+              h.textContent = 'Zapfy — erro capturado (tire um print disto):'
+              h.style.cssText = 'font-weight:700;color:#111;margin-bottom:10px'
+              d.appendChild(h)
+            }
+            var p = document.createElement('div')
+            p.style.cssText = 'margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid #eee'
+            p.textContent = label + ': ' + msg
+            d.appendChild(p)
+          } catch (e) {}
+        }
+        window.addEventListener('error', function (e) {
+          var m = (e && e.message) || ''
+          if (e && e.error && e.error.stack) m += '\n' + e.error.stack
+          else if (e && e.filename) m += ' @ ' + e.filename + ':' + e.lineno
+          show('JS ERROR', m || String(e))
+        })
+        window.addEventListener('unhandledrejection', function (e) {
+          var r = e && e.reason
+          var m = r && r.message ? r.message : String(r)
+          if (r && r.stack) m += '\n' + r.stack
+          show('PROMISE', m)
+        })
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
