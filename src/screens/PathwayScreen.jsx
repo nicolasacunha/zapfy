@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import XPBar from '../components/XPBar'
 import ZappyWithSkin from '../components/ZappyWithSkin'
 import ZappyCompanion from '../components/ZappyCompanion'
+import ZappyWelcomeBack from '../components/ZappyWelcomeBack'
 import { useHeartTimer } from '../hooks/useHeartTimer'
 import { getCopy } from '../lib/copy'
 import { getMissions } from '../lib/missions'
@@ -121,6 +122,9 @@ export default function PathwayScreen({ onNav }) {
         </div>
         <XPBar pct={xpPct} />
       </div>
+
+      {/* Abraço de boas-vindas no retorno (1x por sessão) */}
+      <ZappyWelcomeBack />
 
       {/* Companheiro vivo — humor do Zappy + reação ao toque */}
       <ZappyCompanion />
