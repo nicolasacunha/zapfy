@@ -6,7 +6,7 @@ import Zappy from '../components/Zappy'
 import { useZapfy } from '../context/ZapfyContext'
 import { LESSONS } from '../data/lessons'
 import Hearts from '../components/Hearts'
-import { playCorrect, playWrong } from '../lib/sound'
+import { playCorrect, playWrong, playComboAccent } from '../lib/sound'
 import { hapticSuccess, hapticError } from '../lib/haptic'
 import { trackMission } from '../lib/missions'
 
@@ -46,6 +46,14 @@ export default function LessonScreen({ onNav, lessonId }) {
   const [ex6Step,    setEx6Step]    = useState(0)
   const [ex6Choices, setEx6Choices] = useState([])
   const [ex6Done,    setEx6Done]    = useState(false)
+
+  // Combo — sequência de acertos seguidos (zera ao errar)
+  const [combo, setCombo] = useState(0)
+  useEffect(() => {
+    if (feedback === 'correct') setCombo(c => c + 1)
+    else if (feedback === 'wrong') setCombo(0)
+  }, [feedback])
+  useEffect(() => { if (combo >= 2) playComboAccent(combo) }, [combo])
 
   const cur = exercises[exIdx]
   const prog = (exIdx / exercises.length) * 100
@@ -351,10 +359,18 @@ export default function LessonScreen({ onNav, lessonId }) {
         </div>
       )}
 
-      {/* Zappy reage ao acerto/erro */}
+      {/* Zappy reage ao acerto/erro — escala com o combo */}
       {feedback && (
-        <div className="flex justify-center -mb-1 pop-in" key={`react-${feedback}-${exIdx}`}>
-          <Zappy mood={feedback === 'correct' ? 'radiante' : 'ops'} size={58} />
+        <div className="flex flex-col items-center -mb-1 pop-in" key={`react-${feedback}-${exIdx}-${combo}`}>
+          {feedback === 'correct' && combo >= 3 && (
+            <span className="text-xs font-extrabold mb-0.5" style={{ color: C.accent }}>
+              Combo x{combo}! 🔥
+            </span>
+          )}
+          <Zappy
+            mood={feedback === 'correct' ? (combo >= 3 ? 'comemoracao' : 'radiante') : 'ops'}
+            size={feedback === 'correct' && combo >= 3 ? 72 : 58}
+          />
         </div>
       )}
 

@@ -6,6 +6,7 @@ import Btn from '../components/Btn'
 import { MODULES } from '../data/modules'
 import { useZapfy } from '../context/ZapfyContext'
 import { hapticSuccess } from '../lib/haptic'
+import { playLevelUp } from '../lib/sound'
 
 export default function RealWorldMissionScreen({ onNav, moduleId }) {
   const { state, dispatch } = useZapfy()
@@ -47,6 +48,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
     })
 
     hapticSuccess()
+    playLevelUp()
     setPhase('done')
   }
 

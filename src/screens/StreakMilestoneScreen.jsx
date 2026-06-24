@@ -4,6 +4,7 @@ import { useZapfy } from '../context/ZapfyContext'
 import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
 import { hapticSuccess } from '../lib/haptic'
+import { playLevelUp } from '../lib/sound'
 
 const MILESTONE_DATA = {
   7:   { title: '7 dias seguidos 🔥', sub: '7 dias sem parar. É o começo de um hábito que fica.', gems: 2, emoji: '🔥' },
@@ -30,6 +31,7 @@ export default function StreakMilestoneScreen({ onNav, streak }) {
   useEffect(() => {
     dispatch({ type: 'DAILY_BONUS', gems: data.gems })
     hapticSuccess()
+    playLevelUp()
   }, [])
 
   const handleDismiss = () => {

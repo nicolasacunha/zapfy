@@ -5,15 +5,21 @@ import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
 import { getCopy } from '../lib/copy'
 import { hapticSuccess } from '../lib/haptic'
+import { playLevelUp, playEvolve } from '../lib/sound'
 import { evolutionStage } from '../lib/zappyState'
 
 export default function LevelUpScreen({ onNav, level }) {
   const { state, dispatch } = useZapfy()
-  useEffect(() => { hapticSuccess() }, [])
 
   // Este nível é exatamente o limiar de uma nova forma? Então o Zappy evoluiu.
   const stage      = evolutionStage(level)
   const justEvolved = stage.minLevel === level && level > 1
+
+  useEffect(() => {
+    hapticSuccess()
+    if (justEvolved) playEvolve()
+    else playLevelUp()
+  }, [])
 
   const palette  = ['#F97316','#1E40AF','#22C55E','#FACC15','#A855F7']
   const confetti = useRef(

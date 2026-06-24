@@ -43,6 +43,36 @@ export function playTap() {
   tone(820, 0.04, 'square', 0.12)
 }
 
+// Fanfarra de subir de nível — arpejo ascendente
+export function playLevelUp() {
+  tone(523, 0.12)
+  setTimeout(() => tone(659, 0.12), 120)
+  setTimeout(() => tone(784, 0.12), 240)
+  setTimeout(() => tone(1047, 0.30), 360)
+}
+
+// Evolução — fanfarra maior e mais épica
+export function playEvolve() {
+  tone(440, 0.12)
+  setTimeout(() => tone(587, 0.12), 120)
+  setTimeout(() => tone(740, 0.12), 240)
+  setTimeout(() => tone(880, 0.14), 360)
+  setTimeout(() => tone(1175, 0.36, 'triangle', 0.4), 520)
+}
+
+// Recompensa (bônus, baú) — chime alegre
+export function playReward() {
+  tone(784, 0.08, 'triangle', 0.3)
+  setTimeout(() => tone(1047, 0.18, 'triangle', 0.3), 90)
+}
+
+// Acento de combo — sobe de tom conforme a sequência de acertos (capado)
+export function playComboAccent(n) {
+  const steps = [659, 784, 880, 988, 1175, 1319, 1568]
+  const f = steps[Math.min(Math.max(n - 2, 0), steps.length - 1)]
+  tone(f, 0.10, 'triangle', 0.22)
+}
+
 export function isMuted() { return _muted }
 
 export function setMuted(val) {

@@ -3,6 +3,8 @@ import { Coins, Gem, X } from 'lucide-react'
 import { C } from '../tokens'
 import Zappy from './Zappy'
 import { getDayRewards } from '../lib/dailyBonus'
+import { playReward } from '../lib/sound'
+import { hapticSuccess } from '../lib/haptic'
 
 export default function DailyBonusModal({ bonus, onClaim }) {
   const [claimed, setClaimed] = useState(false)
@@ -10,6 +12,8 @@ export default function DailyBonusModal({ bonus, onClaim }) {
 
   const handle = () => {
     setClaimed(true)
+    playReward()
+    hapticSuccess()
     setTimeout(onClaim, 600)
   }
 
