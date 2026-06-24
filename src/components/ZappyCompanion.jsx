@@ -42,6 +42,7 @@ const pick = (arr, seed) => arr[seed % arr.length]
 export default function ZappyCompanion() {
   const { state } = useZapfy()
   const energy = state.zappyEnergy ?? 80
+  const name = state.zappyName || 'Zappy'
   const mood = moodFromEnergy(energy)
 
   // Semente estável por sessão (varia entre aberturas, não pisca no render)
@@ -79,7 +80,7 @@ export default function ZappyCompanion() {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontSize: 13.5, fontWeight: 800, color: C.ink, margin: 0, lineHeight: 1.3 }}>
-          O Zappy {poke || statusLine}
+          O {name} {poke || statusLine}
         </p>
         <p style={{ fontSize: 10.5, fontWeight: 600, color: C.inkSoft, margin: '2px 0 0' }}>
           {subLine}

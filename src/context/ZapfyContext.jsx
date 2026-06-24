@@ -56,6 +56,7 @@ const INIT = {
   // Relacionamento do Zappy (máquina de estados v2)
   zappyEnergy:           80,
   zappyLastActive:       null,
+  zappyName:             'Zappy',
 }
 
 // Modo mock: sem Supabase configurado
@@ -99,7 +100,7 @@ const SYNC_ACTIONS = new Set([
 const LS_PROGRESS = 'zapfy_progress'
 const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate','league','leaguePosition',
   'completedUnits','completedModules','currentModule','seenModuleIntros','company',
-  'missionReports','lessonChoices','user','zappyEnergy','zappyLastActive']
+  'missionReports','lessonChoices','user','zappyEnergy','zappyLastActive','zappyName']
 
 function saveLocalProgress(s) {
   if (!s || !s.childProfileId) return
@@ -382,6 +383,11 @@ function reducer(state, action) {
 
     case 'ZAPPY_SET_LAST_ACTIVE': // simula data do último acesso (demo)
       return { ...state, zappyLastActive: action.date }
+
+    case 'SET_ZAPPY_NAME': {
+      const name = (action.name || '').trim().slice(0, 14)
+      return { ...state, zappyName: name || 'Zappy' }
+    }
 
     default:
       return state

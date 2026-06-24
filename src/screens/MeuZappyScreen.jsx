@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { ArrowLeft, Flame, Heart } from 'lucide-react'
+import { ArrowLeft, Flame, Heart, Pencil, Check } from 'lucide-react'
 import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
 import Zappy from '../components/Zappy'
@@ -10,7 +10,11 @@ import {
 } from '../lib/zappyState'
 
 export default function MeuZappyScreen({ onNav }) {
-  const { state } = useZapfy()
+  const { state, dispatch } = useZapfy()
+  const name = state.zappyName || 'Zappy'
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(name)
+  const saveName = () => { dispatch({ type: 'SET_ZAPPY_NAME', name: draft }); setEditing(false) }
   const energy = state.zappyEnergy ?? 80
   const level  = levelFromXp(state.xp)
   const stage  = evolutionStage(level)
@@ -42,7 +46,7 @@ export default function MeuZappyScreen({ onNav }) {
         <button onClick={() => onNav('profile')} className="w-10 h-10 rounded-xl flex items-center justify-center">
           <ArrowLeft size={22} color="white" />
         </button>
-        <p className="font-extrabold text-white text-lg">Meu Zappy</p>
+        <p className="font-extrabold text-white text-lg">Meu {name}</p>
       </div>
 
       {/* Palco — toca pra fazer carinho */}
@@ -70,9 +74,31 @@ export default function MeuZappyScreen({ onNav }) {
 
         {/* Identidade + energia */}
         <div className="rounded-3xl border p-4" style={{ background: C.card, borderColor: C.border }}>
-          <div className="flex items-center justify-between mb-1">
-            <p className="font-extrabold" style={{ color: C.ink, fontSize: 18 }}>Zappy {stage.label}</p>
-            <span className="text-xs font-bold" style={{ color: C.primary }}>{meta?.label}</span>
+          <div className="flex items-center justify-between mb-1 gap-2">
+            {editing ? (
+              <div className="flex items-center gap-2 flex-1">
+                <input
+                  value={draft}
+                  onChange={e => setDraft(e.target.value)}
+                  autoFocus maxLength={14}
+                  placeholder="Nome do Zappy"
+                  style={{
+                    flex: 1, fontSize: 16, fontWeight: 800, color: C.ink, background: C.bg,
+                    border: `1.5px solid ${C.primary}`, borderRadius: 10, padding: '6px 10px', outline: 'none',
+                  }}
+                />
+                <button onClick={saveName} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: C.primary }}>
+                  <Check size={16} color="white" strokeWidth={3} />
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => { setDraft(name); setEditing(true) }}
+                className="flex items-center gap-2" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                <p className="font-extrabold" style={{ color: C.ink, fontSize: 18 }}>{name} <span style={{ color: C.inkSoft, fontWeight: 700, fontSize: 14 }}>· {stage.label}</span></p>
+                <Pencil size={14} color={C.inkSoft} />
+              </button>
+            )}
+            {!editing && <span className="text-xs font-bold" style={{ color: C.primary }}>{meta?.label}</span>}
           </div>
           <div className="h-3 rounded-full overflow-hidden" style={{ background: C.border }}>
             <div className="h-full rounded-full" style={{ width: `${energy}%`, background: C.primary, transition: 'width .3s' }} />
