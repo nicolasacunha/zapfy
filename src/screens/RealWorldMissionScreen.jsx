@@ -5,6 +5,7 @@ import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
 import { MODULES } from '../data/modules'
 import { useZapfy } from '../context/ZapfyContext'
+import { hapticSuccess } from '../lib/haptic'
 
 export default function RealWorldMissionScreen({ onNav, moduleId }) {
   const { state, dispatch } = useZapfy()
@@ -45,6 +46,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
       report,
     })
 
+    hapticSuccess()
     setPhase('done')
   }
 
@@ -220,7 +222,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
         animation: 'zappy-pulse 0.6s ease-out',
         marginBottom: 24,
       }}>
-        <Zappy mood="cheer" size={165} />
+        <Zappy mood="comemoracao" size={185} />
       </div>
 
       <div style={{

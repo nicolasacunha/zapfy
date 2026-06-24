@@ -40,13 +40,14 @@ import StreakMilestoneScreen   from './screens/StreakMilestoneScreen'
 import PaywallScreen           from './screens/PaywallScreen'
 import ModuleVideoScreen      from './screens/ModuleVideoScreen'
 import RealWorldMissionScreen from './screens/RealWorldMissionScreen'
+import ZappyLabScreen        from './screens/ZappyLabScreen'
 
 const NO_TAB = new Set([
   'lesson', 'lessonResult', 'roleSelect', 'parentAuth', 'childSetup',
   'pinSetup', 'inviteCode', 'inviteSuccess',
   'parentsLock', 'parents', 'companyCreation', 'founderCelebration',
   'onboarding', 'levelUp', 'missions', 'achievements', 'companyRevenue',
-  'streakMilestone', 'paywall', 'moduleVideo', 'mission',
+  'streakMilestone', 'paywall', 'moduleVideo', 'mission', 'zappyLab',
 ])
 
 function LoadingScreen() {
@@ -93,17 +94,16 @@ function ZapfyApp() {
   const [streakMilestone, setStreakMilestone] = useState(null)
   const [dailyBonus,      setDailyBonus]      = useState(null)
   const screenWrapperRef = useRef(null)
+  const firstRender = useRef(true)
 
-  // Aplica a animação de entrada via JS após o React comitar o novo elemento de tela.
-  // Usar className="screen-enter" diretamente no JSX falha no WKWebView: o WebKit
-  // precisa de um ciclo de layout (leitura de offsetWidth) antes de disparar animações
-  // CSS em nós DOM recém-inseridos — sem isso o elemento trava em opacity:0.
-  // O fill-mode "forwards" garante que, mesmo se a animação não disparar, o elemento
-  // fique em opacity:1 (visível) em vez de preto.
   useLayoutEffect(() => {
     const el = screenWrapperRef.current
     if (!el) return
-    void el.offsetWidth // força o WebKit a processar o layout → habilita a animação CSS
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    void el.offsetWidth
     el.classList.add('screen-enter')
   }, [screen])
 
@@ -281,6 +281,11 @@ function ZapfyApp() {
     })
   }, [state.isLoading, state.authUser, state.childProfileId])
 
+  // Atalho de demo: abrir localhost/#lab vai direto pro Zappy Lab (sem login)
+  if (typeof window !== 'undefined' && window.location.hash.slice(1) === 'lab') {
+    return <ZappyLabScreen onNav={() => { window.location.hash = ''; window.location.reload() }} />
+  }
+
   if (state.isLoading || screen === null) return <LoadingScreen />
 
   const noTab = NO_TAB.has(screen)
@@ -326,6 +331,7 @@ function ZapfyApp() {
             moduleId={missionModuleId}
           />
         )}
+        {screen === 'zappyLab'           && <ZappyLabScreen          onNav={onNav} />}
       </div>
 
       {!noTab && <TabBar screen={screen} onNav={onNav} />}
@@ -355,7 +361,7 @@ export default function App() {
       className="relative w-full min-h-screen overflow-x-hidden overflow-y-auto"
       style={{
         background: '#0C1222',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        overscrollBehavior: 'none',
       }}
     >
       <ErrorBoundary>

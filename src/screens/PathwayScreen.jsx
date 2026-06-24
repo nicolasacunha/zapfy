@@ -5,6 +5,7 @@ import { useZapfy } from '../context/ZapfyContext'
 import Header from '../components/Header'
 import XPBar from '../components/XPBar'
 import ZappyWithSkin from '../components/ZappyWithSkin'
+import ZappyCompanion from '../components/ZappyCompanion'
 import { useHeartTimer } from '../hooks/useHeartTimer'
 import { getCopy } from '../lib/copy'
 import { getMissions } from '../lib/missions'
@@ -19,13 +20,13 @@ function InfoCard({ icon, title, sub, badge, badgeColor, badgeBg, onClick }) {
       style={{
         margin: '0 16px 12px',
         width: 'calc(100% - 32px)',
-        background: C.card,
+        background: '#131D33',
         borderRadius: 18,
         padding: '11px 14px',
         display: 'flex', alignItems: 'center', gap: 12,
         textAlign: 'left',
         boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.35)',
-        border: `1px solid ${C.border}`,
+        border: '1.5px solid rgba(255,255,255,0.08)',
         transition: 'transform .09s var(--ease-expo)',
         cursor: onClick ? 'pointer' : 'default',
       }}
@@ -121,6 +122,9 @@ export default function PathwayScreen({ onNav }) {
         <XPBar pct={xpPct} />
       </div>
 
+      {/* Companheiro vivo — humor do Zappy + reação ao toque */}
+      <ZappyCompanion />
+
       {/* Quick-access cards */}
       <InfoCard
         icon={allDone ? '✅' : '📋'}
@@ -184,19 +188,16 @@ export default function PathwayScreen({ onNav }) {
 
           return (
             <div key={mod.id} className="card-rise stagger"
-              style={{
-                '--i': modIdx,
-                background: C.card,
-                borderRadius: 20,
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 4px 28px rgba(0,0,0,0.45)',
-                overflow: 'hidden',
-              }}>
+              style={{ '--i': modIdx }}>
 
               {/* Module header — full-color band */}
               <div style={{
                 background: headerBg,
+                margin: '0 16px',
+                borderRadius: 16,
                 padding: '13px 16px',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                marginBottom: 4,
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <div style={{
@@ -258,7 +259,7 @@ export default function PathwayScreen({ onNav }) {
               {/* Company creation CTA */}
               {mod.isCompanyCreation && (
                 <div style={{
-                  padding: '20px 16px',
+                  padding: '16px 16px 20px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
                 }}>
                   {!locked && !state.company ? (
@@ -294,9 +295,9 @@ export default function PathwayScreen({ onNav }) {
               {/* Unit nodes — zigzag path */}
               {mod.units.length > 0 && (
                 <div style={{
-                  padding: '20px 0',
+                  padding: '16px 0 24px',
                   display: 'flex', flexDirection: 'column', alignItems: 'stretch',
-                  opacity: locked ? 0.5 : 1,
+                  opacity: locked ? 0.45 : 1,
                 }}>
                   {mod.units.map((unit, idx) => {
                     const uStatus  = locked ? 'locked' : getUnitStatus(unit)
@@ -343,13 +344,15 @@ export default function PathwayScreen({ onNav }) {
                             disabled={isLocked}
                             className={isActive ? 'node-active' : ''}
                             style={{
-                              width: 56, height: 56, borderRadius: '50%',
+                              width: isActive ? 68 : 56, height: isActive ? 68 : 56, borderRadius: '50%',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              border: `4px solid ${isDone ? C.successDk : isActive ? mod.color : '#A8B8CC'}`,
-                              background: isDone ? C.success : isActive ? mod.color : '#CBD5E1',
-                              boxShadow: isDone || isActive
-                                ? `0 4px 0 ${isDone ? C.successDk : mod.color}, 0 6px 18px ${(isDone ? C.success : mod.color) + '50'}`
-                                : '0 2px 0 #A8B8CC',
+                              border: `4px solid ${isDone ? C.successDk : isActive ? mod.color : '#2A3A50'}`,
+                              background: isDone ? C.success : isActive ? mod.color : '#1E2D45',
+                              boxShadow: isActive
+                                ? `0 6px 0 ${mod.color}CC, 0 8px 24px ${mod.color}70`
+                                : isDone
+                                  ? `0 4px 0 ${C.successDk}, 0 6px 16px ${C.success}40`
+                                  : '0 3px 0 #1A2535',
                               cursor: isActive ? 'pointer' : 'default',
                               transition: 'transform .09s var(--ease-expo)',
                             }}

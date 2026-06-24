@@ -3,6 +3,7 @@ import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
 import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
+import { hapticSuccess } from '../lib/haptic'
 
 const MILESTONE_DATA = {
   7:   { title: '7 dias seguidos 🔥', sub: '7 dias sem parar. É o começo de um hábito que fica.', gems: 2, emoji: '🔥' },
@@ -28,6 +29,7 @@ export default function StreakMilestoneScreen({ onNav, streak }) {
 
   useEffect(() => {
     dispatch({ type: 'DAILY_BONUS', gems: data.gems })
+    hapticSuccess()
   }, [])
 
   const handleDismiss = () => {
@@ -53,7 +55,7 @@ export default function StreakMilestoneScreen({ onNav, streak }) {
       <div className="text-8xl animate-bounce">{data.emoji}</div>
 
       <div className="zappy-float">
-        <Zappy mood="cheer" size={140} />
+        <Zappy mood="comemoracao" size={140} />
       </div>
 
       <div className="text-center">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { X, Check } from 'lucide-react'
 import { C } from '../tokens'
 import zappyFace from '../assets/zappy-face.png'
+import Zappy from '../components/Zappy'
 import { useZapfy } from '../context/ZapfyContext'
 import { LESSONS } from '../data/lessons'
 import Hearts from '../components/Hearts'
@@ -149,7 +150,7 @@ export default function LessonScreen({ onNav, lessonId }) {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: C.bg }}>
       {/* Topbar */}
-      <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+      <div className="flex items-center gap-3 px-4 pb-2" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
         <button onClick={() => onNav('pathway')} className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100">
           <X size={22} color={C.inkSoft} />
         </button>
@@ -335,15 +336,25 @@ export default function LessonScreen({ onNav, lessonId }) {
 
       {/* Heart refill offer */}
       {heartsLeft === 0 && !feedback && (
-        <div className="mx-4 mb-2 p-3 rounded-2xl border-2 flex items-center justify-between" style={{ borderColor: C.danger, background: '#FEF2F2' }}>
-          <div>
-            <p className="text-sm font-extrabold" style={{ color: C.danger }}>Vidas esgotadas!</p>
-            <p className="text-xs" style={{ color: C.inkSoft }}>Modo prática: continue sem XP</p>
+        <div className="mx-4 mb-2 p-3 rounded-2xl border-2 flex items-center justify-between gap-2" style={{ borderColor: C.danger, background: '#FEF2F2' }}>
+          <div className="flex items-center gap-2">
+            <div className="flex-shrink-0"><Zappy mood="ops" size={40} /></div>
+            <div>
+              <p className="text-sm font-extrabold" style={{ color: C.danger }}>Acabaram as vidas — sem stress.</p>
+              <p className="text-xs" style={{ color: C.inkSoft }}>Modo prática: segue sem XP.</p>
+            </div>
           </div>
           <button onClick={() => { if (state.zapcoins >= 50) dispatch({ type: 'RESTORE_HEARTS' }) }}
             className="px-3 py-2 rounded-xl text-sm font-extrabold text-white" style={{ background: C.accent }}>
             +5 vidas (50 🪙)
           </button>
+        </div>
+      )}
+
+      {/* Zappy reage ao acerto/erro */}
+      {feedback && (
+        <div className="flex justify-center -mb-1 pop-in" key={`react-${feedback}-${exIdx}`}>
+          <Zappy mood={feedback === 'correct' ? 'radiante' : 'ops'} size={58} />
         </div>
       )}
 

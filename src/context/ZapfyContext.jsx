@@ -4,6 +4,7 @@ import { loadUserState, syncProgress, saveCompany, getChildProfiles, saveMission
 import { checkNewAchievements, getAchievement } from '../data/achievements'
 import { recordXP } from '../lib/xpHistory'
 import { logPilotEvent } from '../lib/pilotMetrics'
+import { registerActivity, clampEnergy, decayEnergy } from '../lib/zappyState'
 
 // ── Estado inicial ─────────────────────────────────────────────
 const INIT = {
@@ -51,6 +52,10 @@ const INIT = {
   zapfySkin:             'default',
   xp2xActive:            false,
   xp2xExpiry:            null,
+
+  // Relacionamento do Zappy (máquina de estados v2)
+  zappyEnergy:           80,
+  zappyLastActive:       null,
 }
 
 // Modo mock: sem Supabase configurado
@@ -71,6 +76,8 @@ const MOCK_STATE = {
   parentPin:        null,
   company:          { name: 'TechKids', type: 'digital', product: 'App de jogos educativos', isFounder: false },
   unlockedAchievements: ['primeira_licao', 'streak_7', 'empresa_criada'],
+  zappyEnergy:       95,
+  zappyLastActive:   null,
   seenModuleIntros:  [1],
   completedMissions: [],
   missionReports:    {},
@@ -92,7 +99,7 @@ const SYNC_ACTIONS = new Set([
 const LS_PROGRESS = 'zapfy_progress'
 const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate','league','leaguePosition',
   'completedUnits','completedModules','currentModule','seenModuleIntros','company',
-  'missionReports','lessonChoices','user']
+  'missionReports','lessonChoices','user','zappyEnergy','zappyLastActive']
 
 function saveLocalProgress(s) {
   if (!s || !s.childProfileId) return
@@ -202,6 +209,8 @@ function reducer(state, action) {
         const daysIn = newStreak - wager.startStreak
         if (daysIn >= 7) wager = { ...wager, completed: true, won: true }
       }
+      // Zappy ganha energia toda vez que a criança aparece e joga
+      const zappyAct = registerActivity(state.zappyEnergy)
       const next = {
         ...state,
         streak:                newStreak,
@@ -213,6 +222,8 @@ function reducer(state, action) {
         pendingLevelUp:        newLevel > prevLevel ? newLevel : (state.pendingLevelUp || null),
         pendingStreakMilestone: milestone,
         streakWager:           wager,
+        zappyEnergy:           zappyAct.energy,
+        zappyLastActive:       zappyAct.lastActiveDate,
       }
       return withAchievements(prevUnlocked, next)
     }
@@ -360,6 +371,18 @@ function reducer(state, action) {
         lessonChoices: { ...state.lessonChoices, [action.lessonId]: action.choices },
       }
 
+    // ── Zappy: máquina de estados de relacionamento ──────────────
+    case 'ZAPPY_ACTIVITY': {
+      const act = registerActivity(state.zappyEnergy)
+      return { ...state, zappyEnergy: act.energy, zappyLastActive: act.lastActiveDate }
+    }
+
+    case 'ZAPPY_SET_ENERGY': // controle direto (demo / Zappy Lab)
+      return { ...state, zappyEnergy: clampEnergy(action.value) }
+
+    case 'ZAPPY_SET_LAST_ACTIVE': // simula data do último acesso (demo)
+      return { ...state, zappyLastActive: action.date }
+
     default:
       return state
   }
@@ -373,7 +396,19 @@ export function ZapfyProvider({ children }) {
   const stateRef         = useRef(state)
   const syncTimer        = useRef(null)
   const isInitializingRef = useRef(false)
+  const zappyDecayedRef  = useRef(false)
   stateRef.current       = state
+
+  // App-open: o Zappy perde energia conforme os dias de sumiço (uma vez por sessão).
+  // A recuperação vem ao concluir lição (registerActivity), então voltar é gostoso.
+  useEffect(() => {
+    if (state.isLoading || zappyDecayedRef.current) return
+    zappyDecayedRef.current = true
+    const decayed = decayEnergy(state.zappyEnergy, state.zappyLastActive)
+    if (decayed !== state.zappyEnergy) {
+      rawDispatch({ type: 'ZAPPY_SET_ENERGY', value: decayed })
+    }
+  }, [state.isLoading])
 
   const scheduleSync = useCallback((nextState) => {
     if (!IS_CONFIGURED || !nextState.childProfileId || nextState.childProfileId === 'mock-child') return

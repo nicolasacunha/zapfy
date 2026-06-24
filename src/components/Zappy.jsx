@@ -1,4 +1,50 @@
 import { C } from '../tokens'
+import { moodFromEnergy } from '../lib/zappyState'
+import zappyHappy    from '../assets/zappy-happy.png'
+import zappySad      from '../assets/zappy-sad.png'
+import zappyCheer    from '../assets/zappy-cheer.png'
+import zappyThink    from '../assets/zappy-think.png'
+import zappyNeutral  from '../assets/zappy-neutral.png'
+import zappySurprise from '../assets/zappy-surprise.png'
+// Estados de relacionamento v2 (Higgsfield)
+import zRadiante    from '../assets/zappy/radiante.png'
+import zSaudade     from '../assets/zappy/saudade.png'
+import zQuietinho   from '../assets/zappy/quietinho.png'
+import zCochilando  from '../assets/zappy/cochilando.png'
+import zOps         from '../assets/zappy/ops.png'
+import zOrgulhoso   from '../assets/zappy/orgulhoso.png'
+import zComemoracao from '../assets/zappy/comemoracao.png'
+import zChama       from '../assets/zappy/chama.png'
+import zAcenando    from '../assets/zappy/acenando.png'
+// Evolução (formas)
+import zBrotinho   from '../assets/zappy/brotinho.png'
+import zHeroi      from '../assets/zappy/heroi.png'
+import zLenda      from '../assets/zappy/lenda.png'
+
+const MOOD_IMGS = {
+  happy:    zappyHappy,
+  sad:      zappySad,
+  cheer:    zappyCheer,
+  think:    zappyThink,
+  sleep:    zappyNeutral,
+  neutral:  zappyNeutral,
+  surprise: zappySurprise,
+  // v2 — humores de vínculo + reações
+  radiante:    zRadiante,
+  animado:     zappyHappy,
+  quietinho:   zQuietinho,
+  saudade:     zSaudade,
+  cochilando:  zCochilando,
+  ops:         zOps,
+  orgulhoso:   zOrgulhoso,
+  comemoracao: zComemoracao,
+  chama:       zChama,
+  acenando:    zAcenando,
+  // evolução (formas)
+  brotinho:    zBrotinho,
+  heroi:       zHeroi,
+  lenda:       zLenda,
+}
 
 const SKIN_COLORS = {
   default:    C.primary,
@@ -6,7 +52,24 @@ const SKIN_COLORS = {
   astronaut:  '#7C3AED',
 }
 
-export default function Zappy({ mood = 'happy', size = 80, skin = 'default' }) {
+export default function Zappy({ mood, energy, size = 80, skin = 'default', float = false }) {
+  // Se `energy` (0–100) for passado e não houver mood explícito, resolve o
+  // humor de vínculo a partir da energia (Camada 1 da máquina de estados).
+  const resolved = mood || (typeof energy === 'number' ? moodFromEnergy(energy) : 'happy')
+
+  // Skins não-default ainda usam SVG para manter variação de cor
+  if (skin === 'default') {
+    const src = MOOD_IMGS[resolved] || zappyHappy
+    return (
+      <img
+        src={src}
+        alt=""
+        className={float ? 'zappy-float' : undefined}
+        style={{ width: size, height: size, objectFit: 'contain' }}
+      />
+    )
+  }
+
   const bodyColor = SKIN_COLORS[skin] || C.primary
   const eyeDefs = {
     happy: {
@@ -33,9 +96,9 @@ export default function Zappy({ mood = 'happy', size = 80, skin = 'default' }) {
       le: null, re: null, mouth:'M 40 65 Q 50 68 60 65', lb: null, rb: null, zzz: true,
     },
   }
-  const m = eyeDefs[mood] || eyeDefs.happy
-  const cheer = mood === 'cheer'
-  const sleep = mood === 'sleep'
+  const m = eyeDefs[resolved] || eyeDefs.happy
+  const cheer = resolved === 'cheer'
+  const sleep = resolved === 'sleep'
   const eye = (arr) => arr ? arr.map(([cx,cy,r,fill,op=1],i) => <circle key={i} cx={cx} cy={cy} r={r} fill={fill} opacity={op}/>) : null
 
   return (
@@ -65,7 +128,7 @@ export default function Zappy({ mood = 'happy', size = 80, skin = 'default' }) {
           <ellipse cx="63" cy="47" rx="12" ry="7" fill="white"/>
           <path d="M 51 47 Q 63 43 75 47" stroke="#0F172A" strokeWidth="3" fill="none" strokeLinecap="round"/>
         </>
-      ) : mood === 'think' ? (
+      ) : resolved === 'think' ? (
         <>
           {eye(m.le)}
           <ellipse cx="63" cy="49" rx="12" ry="8" fill="white"/>

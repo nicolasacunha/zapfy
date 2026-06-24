@@ -20,7 +20,7 @@ export default function DailyBonusModal({ bonus, onClaim }) {
 
         {/* Header */}
         <div className="flex flex-col items-center gap-2 mb-5">
-          <div className="zappy-float"><Zappy mood="cheer" size={72} /></div>
+          <div className="zappy-float"><Zappy mood={claimed ? 'orgulhoso' : 'surprise'} size={72} /></div>
           <h2 className="text-2xl font-black text-center" style={{ color: C.ink }}>
             {claimed ? 'Recompensa recebida!' : 'Recompensa diária!'}
           </h2>

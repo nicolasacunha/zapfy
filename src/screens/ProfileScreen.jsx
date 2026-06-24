@@ -3,7 +3,9 @@ import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
 import { ACHIEVEMENTS } from '../data/achievements'
 import Header from '../components/Header'
-import ZappyWithSkin from '../components/ZappyWithSkin'
+import Zappy from '../components/Zappy'
+import { getWeekXP } from '../lib/xpHistory'
+import { evolutionStage, nextEvolution } from '../lib/zappyState'
 
 const LEVEL_TITLES = ['Curioso', 'Aprendiz', 'Empreendedor', 'Estrategista', 'Visionário', 'Fundador', 'Lenda']
 
@@ -15,8 +17,10 @@ export default function ProfileScreen({ onNav }) {
   const days  = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
   const level = Math.floor(state.xp / 500) + 1
   const title = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)]
-  const weekXP= [120, 180, 80, 0, 150, 95, 75]
-  const maxXP = Math.max(...weekXP)
+  const stage = evolutionStage(level)
+  const nextEvo = nextEvolution(level)
+  const weekXP = getWeekXP()
+  const maxXP  = Math.max(...weekXP, 1)
 
 
   return (
@@ -27,7 +31,7 @@ export default function ProfileScreen({ onNav }) {
         {/* User card */}
         <div className="rounded-3xl border p-4 flex items-center gap-4" style={{ background: C.card, borderColor: C.border }}>
           <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ background: `${C.primary}15` }}>
-            <ZappyWithSkin mood="happy" size={60} />
+            <Zappy mood={stage.key} size={62} />
           </div>
           <div className="flex-1">
             <p className="text-xl font-black" style={{ color: C.ink }}>{state.user.name}</p>
@@ -38,6 +42,9 @@ export default function ProfileScreen({ onNav }) {
               <Flame size={14} fill={C.accent} color={C.accent} />
               <span className="text-sm font-bold" style={{ color: C.accent }}>{state.streak} dias de streak</span>
             </div>
+            <p className="text-xs font-bold mt-1" style={{ color: C.primary }}>
+              Zappy {stage.label}{nextEvo ? <span style={{ color: C.inkSoft, fontWeight: 600 }}> · evolui no Nível {nextEvo.minLevel}</span> : ' · forma máxima'}
+            </p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-black" style={{ color: C.primary }}>{state.xp}</p>
@@ -111,6 +118,21 @@ export default function ProfileScreen({ onNav }) {
             </div>
           )}
         </div>
+
+        {/* Demo interna — Zappy Lab (máquina de estados v2) */}
+        {onNav && (
+          <button onClick={() => onNav('zappyLab')}
+            className="rounded-3xl border p-4 flex items-center gap-3"
+            style={{ background: C.card, borderColor: C.primary }}>
+            <span className="text-2xl">🧪</span>
+            <div style={{ textAlign: 'left' }}>
+              <p className="text-sm font-extrabold" style={{ color: C.ink }}>Zappy Lab</p>
+              <p className="text-[11px] font-semibold" style={{ color: C.inkSoft }}>
+                Demonstração da máquina de estados (v2)
+              </p>
+            </div>
+          </button>
+        )}
       </div>
     </div>
   )

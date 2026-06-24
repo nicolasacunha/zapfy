@@ -9,6 +9,7 @@ import { getAITip } from '../lib/aiTips'
 import { getCopy } from '../lib/copy'
 import TreasureChest, { pickChestReward } from '../components/TreasureChest'
 import { isLastUnitOfModule } from '../data/modules'
+import { PAYWALL_ENABLED } from '../lib/flags'
 
 // ── CountUp: rola um número do zero até `target` ─────────────
 function CountUp({ target, duration = 900, prefix = '', suffix = '', className = '', style = {} }) {
@@ -125,9 +126,9 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
 
       <div className="flex flex-col items-center px-6 pt-10 pb-8 gap-6 w-full z-20">
 
-        {/* Hero */}
+        {/* Hero — reage ao desempenho */}
         <div className="bounce-in" style={{ animationDelay: '0ms' }}>
-          <Zappy mood="cheer" size={130} />
+          <Zappy mood={perfect ? 'radiante' : 'orgulhoso'} size={130} />
         </div>
 
         <div className="text-center slide-up" style={{ animationDelay: '80ms' }}>
@@ -171,8 +172,8 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
           <TreasureChest reward={chestReward} onCollect={handleChestCollect} />
         )}
 
-        {/* Upsell premium */}
-        {!state.isPremium && (
+        {/* Upsell premium — oculto durante o piloto (PAYWALL_ENABLED) */}
+        {PAYWALL_ENABLED && !state.isPremium && (
           <div className="w-full rounded-2xl border-2 p-4 card-rise stagger" style={{ '--i': 4, borderColor: C.warning, background: `${C.warning}10` }}>
             <p className="font-extrabold text-sm mb-1" style={{ color: C.ink }}>
               ⚡ Quer dobrar XP nas próximas 3 lições?
