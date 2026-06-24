@@ -4,7 +4,7 @@ import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
 import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
-import { playComplete } from '../lib/sound'
+import { playComplete, playEvolve } from '../lib/sound'
 import { getAITip } from '../lib/aiTips'
 import { getCopy } from '../lib/copy'
 import TreasureChest, { pickChestReward } from '../components/TreasureChest'
@@ -53,7 +53,7 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
   ).current
 
   useEffect(() => {
-    const t = setTimeout(playComplete, 300)
+    const t = setTimeout(perfect ? playEvolve : playComplete, 300)
     getAITip(state.company, unitId).then(t => { setTip(t); setTipLoading(false) })
     return () => clearTimeout(t)
   }, [])
@@ -132,9 +132,19 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
         </div>
 
         <div className="text-center slide-up" style={{ animationDelay: '80ms' }}>
-          <p className="text-4xl font-black" style={{ color: C.ink }}>Arrasou.</p>
+          {perfect && (
+            <div className="pop-in" style={{
+              display: 'inline-block', marginBottom: 8, padding: '4px 14px', borderRadius: 999,
+              background: '#A855F71F', border: '1.5px solid #A855F7',
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 900, color: '#A855F7' }}>💎 Lição perfeita!</span>
+            </div>
+          )}
+          <p className="text-4xl font-black" style={{ color: C.ink }}>{perfect ? 'Perfeito.' : 'Arrasou.'}</p>
           <p className="text-lg font-semibold" style={{ color: C.inkSoft }}>
-            {getCopy('lessonComplete', { company: state.company, user: state.user })}
+            {perfect
+              ? 'Zero erro. O Zappy tá impressionado.'
+              : getCopy('lessonComplete', { company: state.company, user: state.user })}
           </p>
         </div>
 
