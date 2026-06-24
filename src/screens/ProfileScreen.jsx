@@ -30,9 +30,11 @@ export default function ProfileScreen({ onNav }) {
 
         {/* User card */}
         <div className="rounded-3xl border p-4 flex items-center gap-4" style={{ background: C.card, borderColor: C.border }}>
-          <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ background: `${C.primary}15` }}>
+          <button onClick={() => onNav && onNav('meuZappy')}
+            className="w-20 h-20 rounded-full flex items-center justify-center"
+            style={{ background: `${C.primary}15`, border: 'none', cursor: 'pointer', flexShrink: 0 }}>
             <Zappy mood={stage.key} size={62} />
-          </div>
+          </button>
           <div className="flex-1">
             <p className="text-xl font-black" style={{ color: C.ink }}>{state.user.name}</p>
             <p className="text-sm font-semibold" style={{ color: C.inkSoft }}>

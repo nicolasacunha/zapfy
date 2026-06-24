@@ -41,13 +41,14 @@ import PaywallScreen           from './screens/PaywallScreen'
 import ModuleVideoScreen      from './screens/ModuleVideoScreen'
 import RealWorldMissionScreen from './screens/RealWorldMissionScreen'
 import ZappyLabScreen        from './screens/ZappyLabScreen'
+import MeuZappyScreen        from './screens/MeuZappyScreen'
 
 const NO_TAB = new Set([
   'lesson', 'lessonResult', 'roleSelect', 'parentAuth', 'childSetup',
   'pinSetup', 'inviteCode', 'inviteSuccess',
   'parentsLock', 'parents', 'companyCreation', 'founderCelebration',
   'onboarding', 'levelUp', 'missions', 'achievements', 'companyRevenue',
-  'streakMilestone', 'paywall', 'moduleVideo', 'mission', 'zappyLab',
+  'streakMilestone', 'paywall', 'moduleVideo', 'mission', 'zappyLab', 'meuZappy',
 ])
 
 function LoadingScreen() {
@@ -332,6 +333,7 @@ function ZapfyApp() {
           />
         )}
         {screen === 'zappyLab'           && <ZappyLabScreen          onNav={onNav} />}
+        {screen === 'meuZappy'           && <MeuZappyScreen          onNav={onNav} />}
       </div>
 
       {!noTab && <TabBar screen={screen} onNav={onNav} />}
