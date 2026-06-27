@@ -1,28 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Grandstander:wght@700;800;900&family=Figtree:wght@400;500;600;700;800;900&display=swap');
+/* Fontes self-hosted (não depende do Google por rede — funciona no app nativo) */
+@font-face { font-family: 'Grandstander'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/grandstander-700.woff2') format('woff2'); }
+@font-face { font-family: 'Grandstander'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/grandstander-800.woff2') format('woff2'); }
+@font-face { font-family: 'Grandstander'; font-style: normal; font-weight: 900; font-display: swap; src: url('/fonts/grandstander-900.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/figtree-400.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/figtree-500.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/figtree-600.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/figtree-700.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/figtree-800.woff2') format('woff2'); }
+@font-face { font-family: 'Figtree'; font-style: normal; font-weight: 900; font-display: swap; src: url('/fonts/figtree-900.woff2') format('woff2'); }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-display: 'Grandstander', cursive;
+  --font-display: 'Grandstander', system-ui, sans-serif;
   --font-body:    'Figtree', system-ui, sans-serif;
   --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring:  cubic-bezier(0.34, 1.26, 0.64, 1);
 }
 
 * { font-family: var(--font-body); box-sizing: border-box; }
-body { margin: 0; }
+html { margin: 0; background: #0C1222; overscroll-behavior: none; }
+body { margin: 0; background: #0C1222; overscroll-behavior: none; }
 .font-display { font-family: var(--font-display) !important; }
 
 /* ─────────────────────────────────────────────────────────────
    KEYFRAMES
 ───────────────────────────────────────────────────────────── */
 
-/* Screen transition — fade + rise, snappy ease-out-expo */
+/* Screen transition — only transforms; opacity never animated so WKWebView
+   throttling can't leave the screen permanently invisible. */
 @keyframes screen-enter {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { transform: translateY(12px); }
+  to   { transform: translateY(0); }
 }
 
 @keyframes screen-exit {
@@ -37,21 +48,21 @@ body { margin: 0; }
 
 /* Generic fade up — used for feedback banners, tooltips */
 @keyframes slide-up {
-  from { transform: translateY(16px) scale(.97); opacity: 0; }
-  to   { transform: translateY(0)    scale(1);   opacity: 1; }
+  from { transform: translateY(16px) scale(.97); }
+  to   { transform: translateY(0)    scale(1); }
 }
 
 /* Celebration entrance — reward cards, badges */
 @keyframes pop-in {
-  0%   { transform: scale(0.65); opacity: 0; }
+  0%   { transform: scale(0.65); }
   65%  { transform: scale(1.10); }
-  100% { transform: scale(1);    opacity: 1; }
+  100% { transform: scale(1); }
 }
 
 /* Staggered card rise — pathway nodes, dashboard cards */
 @keyframes card-rise {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { transform: translateY(22px); }
+  to   { transform: translateY(0); }
 }
 
 /* Wrong answer shake */
@@ -118,10 +129,10 @@ body { margin: 0; }
    UTILITY CLASSES
 ───────────────────────────────────────────────────────────── */
 
-/* screen-enter: applied via JS (useLayoutEffect + offsetWidth reflow) so WKWebView
-   fires the animation reliably. forwards-only fill: if animation doesn't fire,
-   element stays at natural opacity:1 instead of being permanently invisible. */
-.screen-enter  { animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: opacity, transform; }
+/* screen-enter: applied via JS (useLayoutEffect + offsetWidth reflow). Only
+   transforms — never opacity — so WKWebView throttling cannot leave the screen
+   permanently invisible. Content is visible at opacity:1 from the first frame. */
+.screen-enter  { animation: screen-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .screen-exit   { animation: screen-exit  160ms ease-in forwards; }
 .slide-up      { animation: slide-up  .28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .bounce-in     { animation: pop-in    .45s cubic-bezier(0.34, 1.26, 0.64, 1) forwards; }
@@ -134,12 +145,12 @@ body { margin: 0; }
 
 /* Onboarding slide transitions */
 @keyframes ob-pop {
-  from { opacity: 0; transform: scale(0.92) translateY(18px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+  from { transform: scale(0.92) translateY(18px); }
+  to   { transform: scale(1)    translateY(0); }
 }
 @keyframes ob-rise {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  from { transform: translateY(16px); }
+  to   { transform: translateY(0); }
 }
 .ob-mascot { animation: ob-pop  0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .ob-copy   { animation: ob-rise 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.06s forwards; }

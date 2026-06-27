@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
 import { C } from '../../tokens'
 import Zappy from '../../components/Zappy'
 import { exchangeInviteCode } from '../../lib/auth'
@@ -25,57 +24,151 @@ export default function InviteCodeScreen({ onNav }) {
     }
   }
 
+  const disabled = loading || formatted.length < 4
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: C.bg }}>
-      <div className="flex items-center gap-3 px-4 pt-5 pb-4" style={{ background: C.primary }}>
-        <button onClick={() => onNav('roleSelect')} className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.15)' }}>
-          <ArrowLeft size={20} color="white" />
-        </button>
-        <p className="font-extrabold text-white text-lg">Entrar com código</p>
-      </div>
-
-      <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6">
-        <div className="zappy-float"><Zappy mood="happy" size={110} /></div>
-
-        <div className="text-center">
-          <h2 className="text-2xl font-black mb-2" style={{ color: C.ink }}>Qual é seu código?</h2>
-          <p className="font-semibold" style={{ color: C.inkSoft }}>
-            Peça o código de 6 letras/números para o seu responsável.
-          </p>
-        </div>
-
-        <div className="w-full">
-          <input
-            className="w-full rounded-2xl px-4 py-4 font-black text-3xl text-center tracking-[.25em] uppercase outline-none border-2 transition-all"
+    <div
+      className="h-screen overflow-hidden flex flex-col"
+      style={{
+        background: '#0C1222',
+        paddingLeft: 24,
+        paddingRight: 24,
+        paddingTop: 'max(32px, env(safe-area-inset-top))',
+        paddingBottom: 'max(32px, env(safe-area-inset-bottom))',
+      }}
+    >
+      {/* Mascot + speech bubble */}
+      <div className="flex flex-col items-center" style={{ paddingTop: 16 }}>
+        {/* Speech bubble */}
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div
             style={{
-              borderColor: formatted.length === 6 ? C.primary : C.border,
-              color: C.ink, background: C.card,
-              letterSpacing: '0.25em',
+              background: '#1A2640',
+              borderRadius: 20,
+              padding: '18px 24px',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 800,
+              fontSize: 20,
+              color: '#E6EDFF',
+              textAlign: 'center',
+              lineHeight: 1.3,
             }}
-            placeholder="ABC123"
-            value={formatted}
-            onChange={e => setCode(e.target.value)}
-            maxLength={6}
-            autoCapitalize="characters"
-            onKeyDown={e => e.key === 'Enter' && handleEnter()}
+          >
+            Qual é o seu código de convite?
+          </div>
+          {/* Triangle pointing down */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: -12,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '12px solid transparent',
+              borderRight: '12px solid transparent',
+              borderTop: '12px solid #1A2640',
+            }}
           />
         </div>
 
-        {error && (
-          <p className="text-sm font-bold text-center rounded-xl py-2 px-3 w-full" style={{ background: `${C.danger}15`, color: C.danger }}>
-            {error}
-          </p>
-        )}
+        {/* Zappy */}
+        <div className="zappy-float" style={{ marginTop: 20 }}>
+          <Zappy mood="happy" size={90} />
+        </div>
+      </div>
 
+      {/* Form */}
+      <div style={{ marginTop: 32, width: '100%' }}>
+        <label
+          style={{
+            display: 'block',
+            textTransform: 'uppercase',
+            fontSize: 11,
+            color: '#7C90B5',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            marginBottom: 8,
+          }}
+        >
+          Código de acesso
+        </label>
+
+        <input
+          style={{
+            width: '100%',
+            background: 'rgba(255,255,255,0.07)',
+            border: '1.5px solid rgba(255,255,255,0.13)',
+            borderRadius: 14,
+            padding: 16,
+            fontSize: 22,
+            fontWeight: 800,
+            textAlign: 'center',
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: 'white',
+            outline: 'none',
+            boxSizing: 'border-box',
+          }}
+          placeholder="ABC123"
+          value={formatted}
+          onChange={e => setCode(e.target.value)}
+          maxLength={6}
+          autoCapitalize="characters"
+          onKeyDown={e => e.key === 'Enter' && handleEnter()}
+        />
+
+        <div
+          style={{
+            fontSize: 13,
+            color: '#FF6060',
+            textAlign: 'center',
+            marginTop: 8,
+            minHeight: 20,
+          }}
+        >
+          {error}
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div style={{ marginTop: 'auto' }}>
         <button
           onClick={handleEnter}
-          disabled={loading || formatted.length < 6}
-          className="w-full py-4 rounded-2xl font-extrabold text-white uppercase tracking-wide"
+          disabled={disabled}
           style={{
-            background: loading || formatted.length < 6 ? C.border : C.primary,
-            boxShadow: loading || formatted.length < 6 ? 'none' : `0 4px 0 ${C.primaryDk}`,
-          }}>
-          {loading ? 'Verificando…' : 'Entrar →'}
+            width: '100%',
+            padding: '16px 0',
+            borderRadius: 16,
+            fontWeight: 800,
+            fontSize: 16,
+            color: 'white',
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            border: 'none',
+            cursor: disabled ? 'default' : 'pointer',
+            background: disabled ? C.locked : C.success,
+            boxShadow: disabled ? 'none' : `0 4px 0 ${C.successDk}`,
+            opacity: disabled ? 0.6 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
+          {loading ? 'Verificando…' : 'Entrar'}
+        </button>
+
+        <button
+          onClick={() => onNav('roleSelect')}
+          style={{
+            display: 'block',
+            margin: '16px auto 0',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 13,
+            color: C.inkSoft,
+          }}
+        >
+          ← Voltar
         </button>
       </div>
     </div>

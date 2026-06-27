@@ -1,41 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
 
+// NOTE: vite-plugin-pwa (service worker) was removed on purpose.
+// A service worker breaks the native iOS (Capacitor) build: after an app
+// update, the cached SW serves the old app shell, which points at asset
+// filenames that no longer exist in the new bundle -> black screen.
+// Capacitor already serves the web assets locally, so no SW is needed.
+// If a web/PWA deployment is needed later, re-add VitePWA ONLY for that build.
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
-      manifest: {
-        name: 'Zapfy — Aprenda a Empreender',
-        short_name: 'Zapfy',
-        description: 'Aprenda empreendedorismo de forma divertida',
-        theme_color: '#1E40AF',
-        background_color: '#F8FAFC',
-        display: 'standalone',
-        orientation: 'portrait',
-        start_url: '/',
-        icons: [
-          {
-            src: '/icon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any maskable',
-          },
-        ],
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts-cache' },
-          },
-        ],
-      },
-    }),
-  ],
+  plugins: [react()],
 })

@@ -74,7 +74,7 @@ export default function CompanyRevenueScreen({ onNav }) {
     <div className="min-h-screen pb-8" style={{ background: C.bg }}>
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-4 pb-4" style={{ background: C.primary }}>
+      <div className="flex items-center gap-3 px-4 pb-4" style={{ background: C.primary, paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
         <button onClick={() => onNav('pathway')} className="w-10 h-10 rounded-xl flex items-center justify-center">
           <ArrowLeft size={22} color="white" />
         </button>

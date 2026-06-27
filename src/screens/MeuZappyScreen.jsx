@@ -6,7 +6,7 @@ import Zappy from '../components/Zappy'
 import { playTap, playReward } from '../lib/sound'
 import { hapticSuccess } from '../lib/haptic'
 import {
-  moodFromEnergy, moodMeta, evolutionStage, nextEvolution, levelFromXp, EVOLUTIONS,
+  moodMeta, evolutionStage, nextEvolution, levelFromXp, EVOLUTIONS,
 } from '../lib/zappyState'
 
 export default function MeuZappyScreen({ onNav }) {

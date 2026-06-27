@@ -1,24 +1,45 @@
+import { useState, useEffect } from 'react'
 import { Trophy, TrendingUp, TrendingDown } from 'lucide-react'
 import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
+import { supabase, IS_CONFIGURED } from '../lib/supabase'
 import Header from '../components/Header'
 
-const ARROWS = [null, '↓', null, '↑', '↑', '↓', null, '↑', '↓', null]
+const AVATARS = ['🦁', '🦊', '🐻', '🦋', '🐼', '🌟', '🦅', '🐯', '🌸', '🐸']
 
 export default function LeagueScreen({ onNav }) {
   const { state } = useZapfy()
+  const [others, setOthers] = useState([])
 
-  const others = [
-    { name: 'Liz',     xp: 1480, av: '🦁' },
-    { name: 'Manu',    xp: 1250, av: '🦊' },
-    { name: 'Bento',   xp: 1050, av: '🐻' },
-    { name: 'Cecília', xp: 780,  av: '🦋' },
-    { name: 'Heitor',  xp: 650,  av: '🐼' },
-    { name: 'Aurora',  xp: 520,  av: '🌟' },
-    { name: 'Davi',    xp: 410,  av: '🦅' },
-    { name: 'Miguel',  xp: 280,  av: '🐯' },
-    { name: 'Helena',  xp: 150,  av: '🌸' },
-  ]
+  useEffect(() => {
+    if (!IS_CONFIGURED || !state.league || !state.childProfileId) return
+
+    async function fetchLeaderboard() {
+      const { data: rows, error } = await supabase
+        .from('progress')
+        .select('user_id, xp')
+        .eq('league', state.league)
+        .neq('user_id', state.childProfileId)
+        .order('xp', { ascending: false })
+        .limit(9)
+
+      if (error || !rows?.length) return
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', rows.map(r => r.user_id))
+
+      const nameMap = Object.fromEntries((profiles || []).map(p => [p.id, p.name]))
+      setOthers(rows.map((r, i) => ({
+        name: nameMap[r.user_id] || 'Founder',
+        xp:   r.xp,
+        av:   AVATARS[i % AVATARS.length],
+      })))
+    }
+
+    fetchLeaderboard()
+  }, [state.league, state.childProfileId])
 
   const lb = [
     ...others,
@@ -84,7 +105,7 @@ export default function LeagueScreen({ onNav }) {
       <div className="px-4 flex flex-col gap-2">
         {lb.map((p, i) => {
           const rank  = i + 1
-          const arrow = ARROWS[i]
+          const arrow = null
           return (
             <div key={i} className="flex items-center gap-3 p-3 rounded-2xl border-2"
               style={{ borderColor: p.me ? C.primary : C.border, background: p.me ? `${C.primary}10` : C.card }}>

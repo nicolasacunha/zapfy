@@ -9,15 +9,18 @@ export default function ParentsLockScreen({ onNav }) {
   const [pin, setPin] = useState('')
   const [err, setErr] = useState(false)
 
+  // PIN configurado: do estado (Supabase) ou do localStorage (fallback confiável).
+  const savedPin = (() => { try { return localStorage.getItem('zapfy_parent_pin') } catch { return null } })()
+  const configuredPin = state.parentPin || savedPin
+
   const digit = async (d) => {
     if (pin.length >= 4) return
     const np = pin + d
     setPin(np)
     if (np.length === 4) {
-      // Modo mock (sem hash): comparação direta
-      const isValid = state.parentPin
-        ? (state.parentPin.length > 10 ? await verifyPin(np, state.parentPin) : np === state.parentPin)
-        : np === '1234'
+      const isValid = configuredPin
+        ? (configuredPin.length > 10 ? await verifyPin(np, configuredPin) : np === configuredPin)
+        : np === '1234' // só quando nenhum PIN foi configurado (dev/mock)
       if (isValid) {
         setTimeout(() => onNav('parents'), 80)
       } else {
@@ -33,7 +36,7 @@ export default function ParentsLockScreen({ onNav }) {
       <div className="text-center">
         <p className="text-2xl font-black text-white mb-1">Painel dos pais</p>
         <p className="text-white/70 font-semibold">Digite o PIN para entrar</p>
-        <p className="text-white/40 text-xs mt-1">PIN padrão: 1234</p>
+        {!configuredPin && <p className="text-white/40 text-xs mt-1">PIN padrão: 1234</p>}
       </div>
       <div className={`flex gap-4 ${err ? 'shake' : ''}`}>
         {Array.from({ length: 4 }).map((_, i) => (

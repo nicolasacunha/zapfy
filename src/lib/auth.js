@@ -44,6 +44,7 @@ export async function signOut() {
 export async function createChildProfile({ name, age, parentPinHash, lgpdConsented = true }) {
   requireSupabase()
   const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Sessão expirada. Faça login novamente.')
   const { data, error } = await supabase.functions.invoke('create-child-profile', {
     body: { name, age, parent_pin_hash: parentPinHash, lgpd_consented: lgpdConsented },
     headers: { Authorization: `Bearer ${session.access_token}` },

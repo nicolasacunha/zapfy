@@ -24,12 +24,12 @@ port = 54324
 
 [auth]
 enabled = true
-# Desativar email confirmation em dev para facilitar testes
 enable_signup = true
-double_confirm_changes = false
-enable_confirmations = false
 site_url = "http://localhost:5173"
 additional_redirect_urls = ["http://localhost:5173"]
 
-[functions]
+[functions.create-child-profile]
 verify_jwt = true
+
+[functions.exchange-invite-code]
+verify_jwt = false

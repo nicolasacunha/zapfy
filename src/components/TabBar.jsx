@@ -59,7 +59,7 @@ export default function TabBar({ screen, onNav }) {
         borderTop: `1px solid ${C.border}`,
         boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',
       }}>
-      <div className="flex px-1 pt-1.5 pb-2">
+      <div className="flex px-2 pt-2 pb-2" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom, 8px))' }}>
         {tabs.map((t, i) => {
           const active    = i === safeIdx
           const justActed = active && prevActive !== i
@@ -70,15 +70,14 @@ export default function TabBar({ screen, onNav }) {
               onClick={() => { playTap(); onNav(t.id) }}
               style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
-                alignItems: 'center', gap: 3, padding: '0 4px',
+                alignItems: 'center', gap: 4, padding: '6px 4px',
+                background: 'none', border: 'none', cursor: 'pointer',
               }}
             >
-              {/* Icon with pill background when active */}
+              {/* Icon — no pill background, just color shift */}
               <div style={{
-                padding: '5px 14px', borderRadius: 12,
-                background: active ? C.primaryLt : 'transparent',
-                transition: 'background 0.2s var(--ease-expo)',
                 position: 'relative',
+                transition: 'transform 0.15s var(--ease-expo)',
               }}>
                 <span
                   className={justActed ? 'tab-bounce' : ''}

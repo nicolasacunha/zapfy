@@ -1,25 +1,25 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.zapfy.app',
+  appId: 'app.naclabs.zapfy',
   appName: 'Zapfy',
   webDir: 'dist',
   ios: {
-    contentInset: 'automatic',
+    contentInset: 'never',
     preferredContentMode: 'mobile',
-    backgroundColor: '#1E40AF',
-    scrollEnabled: false,
+    backgroundColor: '#0C1222',
+    scrollEnabled: true,
   },
   plugins: {
     SplashScreen: {
       launchAutoHide: true,
       launchShowDuration: 600,
-      backgroundColor: '#1E40AF',
+      backgroundColor: '#0C1222',
       showSpinner: false,
     },
     StatusBar: {
       style: 'Dark',
-      backgroundColor: '#1E40AF',
+      backgroundColor: '#0C1222',
     },
   },
 }

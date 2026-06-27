@@ -46,7 +46,7 @@ export default function ShopScreen({ onNav }) {
     <div className="min-h-screen pb-24" style={{ background: C.bg }}>
 
       {/* Header */}
-      <div className="px-4 pt-4 pb-3">
+      <div className="px-4 pb-3" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
         <h1 className="text-2xl font-black" style={{ color: C.ink }}>Loja</h1>
         <div className="flex gap-3 mt-2">
           <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-sm" style={{ background: `${C.warning}20` }}>

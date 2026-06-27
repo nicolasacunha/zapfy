@@ -18,7 +18,7 @@ export default function DailyMissionsScreen({ onNav }) {
     <div className="min-h-screen flex flex-col screen-enter" style={{ background: C.bg }}>
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+      <div className="flex items-center gap-3 px-4 pb-3" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
         <button onClick={() => onNav('pathway')}
           className="w-10 h-10 rounded-xl flex items-center justify-center"
           style={{ background: '#F1F5F9' }}>

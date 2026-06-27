@@ -8,6 +8,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Empreendedor enxerga o que os outros ignoram. Onde tem problema sem solução, tem uma oportunidade esperando.',
         q: 'Em qual destas situações tem MAIS chance de uma boa oportunidade de negócio?',
         opts: [
           { e: '🛒', t: 'Padaria sem fila às 3h da tarde',               ok: false },
@@ -20,6 +21,7 @@ export const LESSONS = {
       },
       {
         type: 'match',
+        hint: 'Cada problema tem uma solução específica que alivia exatamente aquela dor. Tenta conectar um a um.',
         q: 'Conecte o problema do cliente com a oportunidade que ele revela.',
         pairs: [
           { left: 'Esqueci o carregador e meu celular morreu na escola', right: 'Aluguel de carregadores no recreio' },
@@ -30,6 +32,7 @@ export const LESSONS = {
       },
       {
         type: 'order',
+        hint: 'Todo founder passa por esses mesmos passos. A ordem importa — pula um e você perde tempo.',
         q: 'Coloque na ordem certa os passos para achar uma oportunidade:',
         items: [
           { id: 0, text: '👁️ Observe o que as pessoas reclamam' },
@@ -42,6 +45,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Você tem R$50 e um problema na sua frente. O que um founder faria diferente de todo mundo aqui?',
         q: 'Você está no recreio. 3 amigos desesperados com celular morto. Você tem R$50. O que faz?',
         opts: [
           { e: '🍔', t: 'Compra um lanche pra você',                                    ok: false },
@@ -54,6 +58,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Spoiler: oportunidade não é ter uma ideia genial. É enxergar algo que outros não pararam pra ver.',
         q: 'Qual destas frases descreve MELHOR o que é uma oportunidade de negócio?',
         opts: [
           { e: '💡', t: 'Uma ideia genial que ninguém pensou antes',           ok: false },
@@ -66,6 +71,7 @@ export const LESSONS = {
       },
       {
         type: 'composite',
+        hint: 'Chega de exemplo dos outros. Agora você monta a sua própria oportunidade do zero.',
         q: 'Sua vez. Monte sua primeira oportunidade:',
         steps: [
           { q: 'Onde você vai olhar?',        opts: ['🏫 Escola', '🏘️ Bairro', '📱 Online'] },
@@ -82,6 +88,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Pensa em algo que você já comprou com prazer. O que fez você querer pagar por aquilo?',
         q: 'Quem cria valor em um negócio?',
         opts: [
           { e: '🤑', t: 'Quem tem mais dinheiro',                       ok: false },
@@ -94,6 +101,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'O valor que um produto tem não é o que custa fazer. É o que representa pra quem está comprando.',
         q: 'João faz bolos e vende por R$30. Custa R$10 pra fazer. Qual é o valor que João cria?',
         opts: [
           { e: '🎂', t: 'O bolo em si',                                   ok: false },
@@ -106,6 +114,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Todo mundo tem uma habilidade. A pergunta do founder é: quem precisaria tanto disso que pagaria?',
         q: 'Ana sabe desenhar muito bem. Como ela pode criar valor com isso?',
         opts: [
           { e: '🎨', t: 'Desenhar pra ela mesma se divertir',             ok: false },
@@ -118,6 +127,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Quanto mais difícil de substituir você for, mais o cliente depende de você. Aí o valor sobe.',
         q: 'Qual destes negócios cria MAIS valor por unidade vendida?',
         opts: [
           { e: '🍬', t: 'Balinhas a R$0,50 cada',                        ok: false },
@@ -136,6 +146,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Zappy sempre faz essa pergunta: isso é problema ou oportunidade? A resposta muda tudo que vem depois.',
         q: 'Seu amigo está com fome no recreio e esqueceu o lanche. O que isso representa?',
         opts: [
           { e: '😢', t: 'Um problema só do seu amigo',         ok: false },
@@ -148,6 +159,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Demanda é diferente de oferta. Demanda é o que as pessoas precisam. Oferta é o que existe pra resolver.',
         q: 'Você percebe que todo mundo na sua rua tem cachorro mas não tem petshop perto. O que isso significa?',
         opts: [
           { e: '🐕', t: 'As pessoas adoram cachorro',           ok: false },
@@ -160,6 +172,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Dinheiro não é o único recurso que um founder tem. Qual recurso você já carrega com você agora?',
         q: 'Qual destes problemas você conseguiria resolver com R$0?',
         opts: [
           { e: '✏️', t: 'Ensinar colegas em matérias que você é bom',    ok: true  },
@@ -172,6 +185,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Essa definição vai ficar com você pra vida toda. Lê devagar antes de responder.',
         q: 'Empreendedorismo é sobre:',
         opts: [
           { e: '💰', t: 'Ficar rico rápido',                              ok: false },
@@ -190,6 +204,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'A maioria dos maiores negócios do mundo resolve um problema bem simples. Simples, não fácil.',
         q: 'Uma boa ideia de negócio precisa de:',
         opts: [
           { e: '💡', t: 'Ser 100% original e nunca ter sido feita',       ok: false },
@@ -202,6 +217,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Antes de qualquer produto ou nome ou Instagram existe sempre a mesma coisa. Sempre.',
         q: 'Pedro quer começar um negócio mas não sabe por onde. Qual é o melhor primeiro passo?',
         opts: [
           { e: '📱', t: 'Criar um Instagram pra marca',                   ok: false },
@@ -214,6 +230,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A melhor ideia não é a mais ambiciosa. É a que você consegue testar amanhã, com o que tem hoje.',
         q: 'Qual destas é a melhor ideia de negócio para um jovem de 12 anos?',
         opts: [
           { e: '✂️', t: 'Cortar cabelo de vizinhos por R$10',            ok: true  },
@@ -226,6 +243,7 @@ export const LESSONS = {
       },
       {
         type: 'composite',
+        hint: 'Chega de aprender. Hora de criar. Essa é sua primeira ideia de verdade.',
         q: 'Agora é a sua vez. Crie sua primeira ideia:',
         steps: [
           { q: 'Que habilidade você tem?',           opts: ['✏️ Desenho/Arte', '📚 Estudos', '🎮 Tecnologia'] },
@@ -243,6 +261,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Teste rápido: você consegue dizer o nome em voz alta sem gaguejar? Se não, provavelmente não é o nome certo.',
         q: 'O nome do seu negócio deve ser:',
         opts: [
           { e: '🧩', t: 'Complicado pra parecer sério',                      ok: false },
@@ -255,6 +274,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Nome bom é aquele que o seu cliente fala para os amigos sem precisar soletrar.',
         q: 'Qual destes é um bom nome para um negócio de doces artesanais?',
         opts: [
           { e: '🍬', t: 'ConfeitariaArteDocesMKT_2024',                      ok: false },
@@ -267,6 +287,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Nome ótimo com dono errado cria problema legal. Uma pesquisa de 5 minutos evita dor de cabeça futura.',
         q: 'Antes de decidir um nome, o que você deve verificar?',
         opts: [
           { e: '🎲', t: 'Se parece bonito no papel',                         ok: false },
@@ -279,6 +300,7 @@ export const LESSONS = {
       },
       {
         type: 'composite',
+        hint: 'Hora de dar nome ao que você está construindo. Um bom nome é o começo da sua marca.',
         q: 'Agora crie o nome do seu negócio:',
         steps: [
           { q: 'Que tipo de negócio é?',             opts: ['🛒 Produto físico', '⚡ Serviço', '📱 Digital'] },
@@ -295,6 +317,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Logo é só o rosto. Identidade é a personalidade inteira — o jeito que você aparece pro mundo.',
         q: 'O que é a identidade de uma marca?',
         opts: [
           { e: '🖼️', t: 'Só o logo e as cores',                               ok: false },
@@ -307,6 +330,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Antes de responder, pensa: que cor te faz confiar mais numa marca de saúde? Por quê?',
         q: 'Por que uma marca precisa de cores escolhidas com intenção?',
         opts: [
           { e: '😍', t: 'Só pra ficar bonito',                                 ok: false },
@@ -319,6 +343,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Tom de voz é como você escreve uma mensagem para o cliente. Formal ou amigável — cada um atrai uma pessoa diferente.',
         q: 'Qual é o tom de voz certo para um negócio de tutoria para crianças?',
         opts: [
           { e: '😎', t: 'Formal e técnico, pra parecer autoridade',            ok: false },
@@ -331,6 +356,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Fecha os olhos. Que sensação você quer que o cliente tenha quando vê o nome da sua empresa pela primeira vez?',
         q: 'Você quer que as pessoas sintam ___ ao ver seu negócio:',
         opts: [
           { e: '🤝', t: '"Esse eu confio e quero recomendar"',                 ok: true  },
@@ -349,6 +375,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Todo negócio tem concorrente. Diferencial é o motivo pelo qual o cliente te escolhe em vez de qualquer outra opção.',
         q: 'O que é o diferencial de um negócio?',
         opts: [
           { e: '💸', t: 'Ser mais barato que todo mundo',                     ok: false },
@@ -361,6 +388,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Preço parecido, ingrediente parecido. O que faz um valer mais que o outro na cabeça do comprador?',
         q: 'Dois negócios de brigadeiro. Um usa chocolate belga e entrega em caixas premium. Qual é o diferencial?',
         opts: [
           { e: '🍫', t: 'O chocolate é mais gostoso',                         ok: false },
@@ -373,6 +401,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A pergunta certa te força a pensar no cliente, não em você. Qual dessas faz isso?',
         q: 'Qual pergunta melhor ajuda a descobrir seu diferencial?',
         opts: [
           { e: '💰', t: '"Por que eu deveria cobrar mais do que os outros?"', ok: false },
@@ -385,6 +414,7 @@ export const LESSONS = {
       },
       {
         type: 'composite',
+        hint: 'Não existe negócio sem diferencial — existe negócio que ainda não sabe qual é o seu.',
         q: 'Defina o diferencial do seu negócio:',
         steps: [
           { q: 'Quem é seu concorrente direto?',         opts: ['🏪 Loja estabelecida', '👤 Outro jovem empreendedor', '🤷 Ninguém ainda faz isso'] },
@@ -403,6 +433,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Quando você tenta vender para todo mundo, acaba convencendo ninguém. Quanto mais específico, mais fácil.',
         q: 'Quem compraria {product} da sua empresa {companyName}?',
         opts: [
           { e: '👤', t: 'Todo mundo, qualquer pessoa',                    ok: false },
@@ -415,6 +446,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A diferença entre imaginar e saber é uma conversa de 10 minutos com uma pessoa real.',
         q: 'Você quer saber quem é seu cliente ideal. O que você faz?',
         opts: [
           { e: '🤔', t: 'Imagina na sua cabeça quem seria',               ok: false },
@@ -427,6 +459,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Seu próximo cliente não está em São Paulo nem na internet. Está muito mais perto do que você pensa.',
         q: 'Seu primeiro cliente provavelmente está:',
         opts: [
           { e: '🌐', t: 'Na internet, em algum lugar do Brasil',          ok: false },
@@ -439,6 +472,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Existe um jeito rápido, gratuito e infalível de descobrir o que o cliente quer. Só um.',
         q: 'Como você descobre o que seu cliente realmente quer?',
         opts: [
           { e: '💭', t: 'Adivinhar o que ele provavelmente quer',         ok: false },
@@ -458,6 +492,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Pensa na última vez que você pagou por algo que poderia ter feito sozinho. Por que pagou?',
         q: 'Por que alguém pagaria por {product} em vez de fazer sozinho?',
         opts: [
           { e: '⏰', t: 'Porque economiza tempo',                         ok: true  },
@@ -470,6 +505,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Clientes não pagam por esforço. Pagam por resultado. Quanto mais certo e rápido, mais dispostos a pagar.',
         q: 'Qual destas razões faz um cliente querer pagar mais?',
         opts: [
           { e: '⚡', t: 'Resultado rápido e garantido',                   ok: true  },
@@ -482,6 +518,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Dois brigadeiros, sabor parecido, preço diferente. O que faz alguém escolher o mais caro?',
         q: 'Sofia cobra R$5 por brigadeiro. A Cacau Show cobra R$12. Por que alguém pagaria mais?',
         opts: [
           { e: '🍫', t: 'Porque o da Cacau Show é mais gostoso',         ok: false },
@@ -494,6 +531,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: '"É caro" é a objeção mais comum do mundo. E quase nunca quer dizer o que parece.',
         q: 'Seu cliente potencial disse "é caro". O que isso significa?',
         opts: [
           { e: '💔', t: 'Ele nunca vai comprar',                          ok: false },
@@ -513,6 +551,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Canal certo é onde o cliente já está, não onde você gosta de estar.',
         q: 'Onde seu cliente ideal provavelmente passa mais tempo?',
         opts: [
           { e: '📱', t: 'Instagram e TikTok',                             ok: false },
@@ -525,6 +564,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Para os primeiros clientes, o canal mais poderoso é também o mais subestimado.',
         q: 'Você quer vender {product}. Qual canal faz mais sentido para o seu primeiro cliente?',
         opts: [
           { e: '🤝', t: 'Indicação de alguém que você já conhece',        ok: true  },
@@ -537,6 +577,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A diferença entre vendedor e chato é simples: um ouve antes de falar, o outro não.',
         q: 'Como você abordaria um cliente que nunca ouviu falar de você?',
         opts: [
           { e: '📢', t: 'Gritando "compre meu produto" na rua',           ok: false },
@@ -549,6 +590,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Não começa pelo maior — começa pelo mais fácil. Velocidade importa mais do que tamanho no início.',
         q: 'Você tem 3 potenciais clientes em mente. Qual você abordaria primeiro?',
         opts: [
           { e: '🌟', t: 'O mais famoso e influente',                      ok: false },
@@ -568,6 +610,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Tem uma diferença enorme entre apresentar um negócio e contar como você chegou até aqui.',
         q: 'Qual é o melhor jeito de apresentar {companyName} para alguém pela primeira vez?',
         opts: [
           { e: '📖', t: 'Ler um script que você decorou',                 ok: false },
@@ -580,6 +623,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: '30 segundos, uma frase. Qual deixaria você curioso se outra pessoa dissesse pra você?',
         q: 'Você tem 30 segundos para falar de {companyName}. O que você diz?',
         opts: [
           { e: '📋', t: 'Lista todos os produtos e serviços que oferece', ok: false },
@@ -592,6 +636,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: '"Vou pensar" sem data é o mesmo que não. Você controla essa parte da conversa mais do que parece.',
         q: 'O cliente disse "vou pensar". O que você faz?',
         opts: [
           { e: '⏳', t: 'Espera indefinidamente ele voltar',              ok: false },
@@ -604,6 +649,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A venda raramente fecha na primeira conversa. O que você faz depois é o que separa quem fecha de quem não fecha.',
         q: 'Depois da primeira conversa com um cliente em potencial, o que você faz?',
         opts: [
           { e: '😴', t: 'Espera ele entrar em contato',                   ok: false },
@@ -624,6 +670,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Custo é o que você vê. Valor é o que o cliente sente. São perspectivas opostas do mesmo produto.',
         q: 'Qual é a diferença entre custo e valor?',
         opts: [
           { e: '💸', t: 'São a mesma coisa',                              ok: false },
@@ -636,6 +683,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Parece que preço é sobre você. Na prática, preço é sobre o que o cliente acha que vale.',
         q: 'Para {product} da {companyName}, o que importa mais para o preço?',
         opts: [
           { e: '💰', t: 'Só o quanto custou pra fazer',                   ok: false },
@@ -648,6 +696,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Não existe margem certa no manual. Existe o que o cliente está disposto a pagar pelo resultado.',
         q: 'Sua {companyName} gasta R$20 pra fazer algo. Quanto você pode cobrar?',
         opts: [
           { e: '💸', t: 'R$22 (10% de margem)',                           ok: false },
@@ -660,6 +709,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Baixar preço é a resposta mais fácil. Aumentar o valor percebido é a resposta que faz o negócio crescer.',
         q: 'Como você aumenta o valor percebido de {product}?',
         opts: [
           { e: '📉', t: 'Baixando o preço',                               ok: false },
@@ -679,6 +729,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'O erro mais comum de precificação é começar pelo custo. Founders que crescem começam pelo cliente.',
         q: 'Você vai precificar {product}. Por onde começa?',
         opts: [
           { e: '🔢', t: 'Calcula o custo e multiplica por 2',             ok: false },
@@ -691,6 +742,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Copiar preço do concorrente parece seguro. Mas "seguro" aqui pode ser o contrário do que você quer.',
         q: 'Seu concorrente cobra R$50. Você deve:',
         opts: [
           { e: '📉', t: 'Cobrar R$45 pra ser mais barato',                ok: false },
@@ -703,6 +755,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Preço não sobe porque você precisa de mais dinheiro. Sobe porque você tem mais prova de valor.',
         q: 'Quando você pode aumentar seu preço?',
         opts: [
           { e: '📅', t: 'No aniversário da empresa',                      ok: false },
@@ -715,6 +768,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Desconto automático custa dinheiro agora e posicionamento no futuro.',
         q: 'O cliente diz "tá bom, mas pode dar um desconto?" O que você faz?',
         opts: [
           { e: '🎁', t: 'Dá desconto imediatamente pra fechar logo',      ok: false },
@@ -734,6 +788,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Quando alguém diz "caro", raramente é sobre o número. É sobre o valor que ainda não enxergou.',
         q: 'Um cliente quer comprar {product} mas diz que o preço está alto. Sua resposta:',
         opts: [
           { e: '😰', t: '"Pode ser... quanto você quer pagar?"',           ok: false },
@@ -746,6 +801,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'O primeiro número define o terreno da conversa. Quem ancora primeiro, controla mais.',
         q: 'Na negociação, quem deve fazer a primeira oferta?',
         opts: [
           { e: '🤐', t: 'Nunca você — espera o cliente falar primeiro',   ok: false },
@@ -758,6 +814,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Jeito de pagar faz parte da negociação. O que importa é se o total faz sentido pro seu negócio.',
         q: 'O cliente quer {product} mas pede pra pagar em 3x. Você:',
         opts: [
           { e: '❌', t: 'Recusa — só aceita à vista',                    ok: false },
@@ -770,6 +827,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Verbal é promessa. Escrito é contrato. Qual dos dois protege os dois lados?',
         q: 'Depois de combinado o preço, o que você faz?',
         opts: [
           { e: '🤝', t: 'Aperta a mão e confia na memória',              ok: false },
@@ -789,6 +847,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Qualquer um vende. Pouquíssimos entregam o que prometeram, do jeito que prometeram, no prazo que prometeram.',
         q: 'O que significa entregar {product} com responsabilidade?',
         opts: [
           { e: '⏰', t: 'Entregar no prazo combinado, mesmo que não seja o ideal', ok: false },
@@ -801,6 +860,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Atraso acontece. A questão nunca é se vai acontecer — é o que você faz quando acontece.',
         q: 'Você vai atrasar a entrega de {product}. O que faz?',
         opts: [
           { e: '🤐', t: 'Não fala nada e entrega quando puder',           ok: false },
@@ -813,6 +873,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Insatisfação é oportunidade disfarçada. O resultado depende de como você responde.',
         q: 'O cliente não ficou 100% satisfeito com {product}. O que você faz?',
         opts: [
           { e: '😤', t: 'Defende seu trabalho e explica por que está certo', ok: false },
@@ -825,6 +886,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Entrega feita não é fim — é o começo do próximo cliente. O que você faz nas próximas 24 horas importa.',
         q: 'Depois de entregar {product} e o cliente ficar satisfeito, o que você faz?',
         opts: [
           { e: '😴', t: 'Descansa — missão cumprida',                     ok: false },
@@ -845,6 +907,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Preparação não é quantidade de slide. É profundidade sobre o problema do cliente.',
         q: 'Antes de tentar vender {product}, o que você precisa ter preparado?',
         opts: [
           { e: '📋', t: 'Um catálogo completo de tudo que você oferece',  ok: false },
@@ -857,6 +920,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Cliente que está comprando se comporta diferente de cliente que está só olhando. Aprenda a ler isso.',
         q: 'Qual é o melhor sinal de que um cliente está pronto para comprar?',
         opts: [
           { e: '😊', t: 'Ele sorri muito durante a conversa',             ok: false },
@@ -869,6 +933,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Urgência falsa todo mundo sente. Urgência real vem de um lugar honesto — e é a única que funciona no longo prazo.',
         q: 'Como você cria urgência para vender {product}?',
         opts: [
           { e: '🤥', t: 'Inventa que tem estoque limitado',               ok: false },
@@ -881,6 +946,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A meta da primeira conversa não é fechar. É entender tão bem que o cliente sente que você já resolveu o problema.',
         q: 'Você vai fazer sua primeira venda de {product}. Qual é sua meta para essa conversa?',
         opts: [
           { e: '💰', t: 'Fechar a qualquer custo',                        ok: false },
@@ -900,6 +966,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Aqui começa uma venda real. Sua primeira resposta define o tom de tudo que vem depois.',
         q: 'Cliente: "Olá, vi que você oferece {product}. Me conta mais." Sua resposta:',
         opts: [
           { e: '📖', t: 'Lista tudo que o produto faz',                   ok: false },
@@ -912,6 +979,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Preço sem contexto parece caro. Contexto + preço parece justo. A diferença é a ordem.',
         q: 'Cliente: "Entendo, mas quanto custa?" Você ainda não falou de valor. O que faz?',
         opts: [
           { e: '💸', t: 'Fala o preço logo',                              ok: false },
@@ -924,6 +992,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Esse é o momento onde a maioria dos founders para de controlar a venda. Você não precisa parar.',
         q: 'Cliente: "Preciso pensar mais um pouco." O que você diz?',
         opts: [
           { e: '✅', t: '"Claro! Posso te mandar um resumo e marcamos uma data pra retornar?"', ok: true },
@@ -936,6 +1005,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Você fechou. Agora os próximos 5 minutos são os mais importantes da venda.',
         q: 'Cliente: "Ok, vou fechar!" O que vem agora?',
         opts: [
           { e: '🎉', t: 'Comemora muito e manda áudio de 5 minutos de agradecimento', ok: false },
@@ -949,6 +1019,592 @@ export const LESSONS = {
     ],
   },
 
+  // ── MÓDULO 6 ─────────────────────────────────────────────────────────────────
+
+  'm6-marketing': {
+    title: 'O que é marketing de verdade',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Marketing de escola é propaganda. Marketing de founder é o que faz o cliente contar pra alguém sem você pedir.',
+        q: 'O que é marketing de verdade?',
+        opts: [
+          { e: '📣', t: 'Fazer propaganda em todo lugar',                         ok: false },
+          { e: '🤝', t: 'Fazer as pessoas quererem te indicar para outras',       ok: true  },
+          { e: '📱', t: 'Ter muitos seguidores nas redes',                        ok: false },
+          { e: '💰', t: 'Gastar dinheiro em anúncios',                            ok: false },
+        ],
+        cf: 'Isso! Marketing de verdade é quando o cliente te indica sem você pedir.',
+        wf: 'Isso é tática. Marketing real é o que acontece quando o cliente conta pra alguém.',
+      },
+      {
+        type: 'mc',
+        hint: 'Com R$50 você pode fazer barulho ou fazer resultado. Qual desses causa impacto real em 7 dias?',
+        q: 'João tem R$50 para divulgar seus brigadeiros na escola. O que gera mais resultado?',
+        opts: [
+          { e: '📄', t: 'Imprime flyers e distribui nas salas',                   ok: false },
+          { e: '🍫', t: 'Dá 10 brigadeiros para os 10 alunos mais populares',     ok: true  },
+          { e: '📸', t: 'Cria conta no Instagram',                                ok: false },
+          { e: '🏷️', t: 'Coloca adesivo na mochila',                              ok: false },
+        ],
+        cf: 'Prova social + pessoas influentes = boca a boca real. Brigadeiro na boca vale mais que papel.',
+        wf: 'Flyer vai para o lixo. Brigadeiro na boca fica na memória — e gera indicação.',
+      },
+      {
+        type: 'match',
+        hint: 'Quatro tipos, quatro funções. Cada um tem hora certa — e os 4 juntos formam um sistema.',
+        q: 'Conecte cada tipo de marketing com o que ele faz na prática.',
+        pairs: [
+          { left: 'Boca a boca',   right: 'Cliente satisfeito conta para 3 amigos sem você pedir' },
+          { left: 'Prova social',  right: 'Foto de cliente real usando e aprovando o produto'       },
+          { left: 'Urgência',      right: '"Só mais 2 unidades disponíveis hoje"'                   },
+          { left: 'Autoridade',    right: '"Já ajudei 12 colegas da escola X"'                      },
+        ],
+        cf: 'Cada tipo tem hora certa. Os 4 juntos formam um negócio que cresce sozinho.',
+      },
+      {
+        type: 'order',
+        hint: 'Boca a boca não é sorte. É um ciclo que qualquer founder pode criar de propósito.',
+        q: 'Coloque na ordem certa o ciclo do boca a boca:',
+        items: [
+          { id: 0, text: 'Entregar mais do que foi prometido' },
+          { id: 1, text: 'O cliente fica surpreso e satisfeito' },
+          { id: 2, text: 'O cliente conta para alguém' },
+          { id: 3, text: 'Um novo cliente aparece sem você ter pedido' },
+        ],
+        scrambled: [0, 3, 1, 2],
+        cf: 'Esse ciclo é o marketing mais barato e eficiente que existe.',
+      },
+      {
+        type: 'mc',
+        hint: 'Marketing com zero reais exige saber o que cria memória no cliente — não o que cria barulho.',
+        q: 'Maria vende presilhas feitas à mão. Qual ação vai gerar mais indicações espontâneas?',
+        opts: [
+          { e: '📱', t: 'Postar todo dia nas redes',                              ok: false },
+          { e: '📦', t: 'Embrulhar com mensagem personalizada para cada cliente', ok: true  },
+          { e: '💸', t: 'Dar desconto para quem compra mais',                     ok: false },
+          { e: '🎨', t: 'Criar um logo bonito',                                   ok: false },
+        ],
+        cf: 'Personalização cria conexão. Conexão cria indicação. Indicação cria venda nova.',
+        wf: 'Frequência nas redes não substitui a experiência que faz o cliente tirar foto.',
+      },
+    ],
+  },
+
+  'm6-historia': {
+    title: 'Sua história como ferramenta',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Produto qualquer um tem. A história de como você chegou até aqui é a única que não dá pra copiar.',
+        q: 'Por que contar como você começou seu negócio importa?',
+        opts: [
+          { e: '👔', t: 'Para parecer mais profissional',                         ok: false },
+          { e: '🤝', t: 'Pessoas compram de quem confiam — história cria confiança', ok: true },
+          { e: '📋', t: 'Porque é obrigatório ter',                               ok: false },
+          { e: '📣', t: 'Porque todo mundo conta',                                ok: false },
+        ],
+        cf: 'Produto qualquer um vende. História é o que diferencia. Dois brigadeiros iguais — o de quem tem história vende mais.',
+        wf: 'Profissionalismo ajuda, mas não convence. História convence porque é real.',
+      },
+      {
+        type: 'mc',
+        hint: 'Tem uma diferença enorme entre falar de produto e contar uma história. Qual cria conexão real?',
+        q: 'Pedro vende limonada na escola. Qual abertura de história convence mais?',
+        opts: [
+          { e: '🤷', t: '"Meu produto é muito bom e barato"',                     ok: false },
+          { e: '❤️', t: '"Comecei porque minha avó estava no hospital e precisei ajudar com as despesas"', ok: true },
+          { e: '📅', t: '"Vendo há 2 semanas"',                                    ok: false },
+          { e: '📺', t: '"Aprendi a fazer em um vídeo do YouTube"',               ok: false },
+        ],
+        cf: 'Contexto real + motivação pessoal = história que as pessoas repetem para outros.',
+        wf: '"Bom e barato" é o que todo mundo diz. Ninguém repete isso para um amigo.',
+      },
+      {
+        type: 'match',
+        hint: 'Cada parte da história faz o cliente sentir algo diferente. As três juntas formam algo que vende.',
+        q: 'Conecte cada parte da história com o que ela comunica ao cliente.',
+        pairs: [
+          { left: 'Por que comecei',      right: 'Minha motivação é real, não é só dinheiro' },
+          { left: 'O problema que resolvo', right: 'Você precisa disso e eu entendi antes'   },
+          { left: 'Um resultado real',    right: 'Não é só promessa — já funcionou'           },
+        ],
+        cf: 'As 3 partes juntas formam uma história que vende sem precisar convencer.',
+      },
+      {
+        type: 'composite',
+        hint: 'Você já tem uma história. O que falta é montar os blocos na ordem que convence.',
+        q: 'Monte os 3 blocos da sua história:',
+        steps: [
+          { q: 'Por que você começou?', opts: ['Por precisar de dinheiro real', 'Por ver um problema que ninguém resolvia', 'Por querer aprender a empreender'] },
+          { q: 'Que problema você resolve?', opts: ['Falta de produto específico', 'Preço alto do concorrente', 'Inconveniência — algo difícil de achar'] },
+          { q: 'Que resultado você já teve?', opts: ['Primeiro cliente satisfeito', 'Primeira venda real', 'Feedback positivo de alguém'] },
+        ],
+        cf: 'Você tem uma história. Agora é só contar quando alguém perguntar "o que você vende?"',
+      },
+    ],
+  },
+
+  'm6-canais2': {
+    title: 'Onde divulgar seu negócio',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Zero real não é desculpa para zero ação. Qual canal funciona sem nenhum investimento?',
+        q: 'Você tem R$0 para marketing. Qual canal começa hoje?',
+        opts: [
+          { e: '📸', t: 'Instagram',                                              ok: false },
+          { e: '🗣️', t: 'Conversa direta com pessoas que você já conhece',       ok: true  },
+          { e: '🎥', t: 'YouTube',                                                ok: false },
+          { e: '📧', t: 'Email marketing',                                        ok: false },
+        ],
+        cf: 'Canal mais poderoso no começo = conversa humana. Zero custo, resultado imediato.',
+        wf: 'Rede social sem dinheiro e sem base não gera nada nos primeiros 30 dias.',
+      },
+      {
+        type: 'match',
+        hint: 'Canal errado na hora errada desperdiça energia. Canal certo na hora certa multiplica resultado.',
+        q: 'Conecte cada canal com o momento certo de usá-lo.',
+        pairs: [
+          { left: 'Conversa direta',       right: 'Primeiros 10 clientes'                           },
+          { left: 'Lista de WhatsApp',     right: 'Quando já tem 5+ clientes satisfeitos'           },
+          { left: 'Redes sociais',         right: 'Quando tem prova social para mostrar'             },
+          { left: 'Flyers',                right: 'Quando o público não está no digital'             },
+        ],
+        cf: 'Cada canal tem hora. Ir na ordem errada gasta energia sem resultado.',
+      },
+      {
+        type: 'mc',
+        hint: '7 dias, objetivo claro. Qual ação produz resultado em 7 dias e não em 7 meses?',
+        q: 'Ana quer divulgar seu serviço de ajudar a organizar festinhas. O que traz mais resultado em 7 dias?',
+        opts: [
+          { e: '📸', t: 'Criar conta no Instagram e postar 3 vezes',             ok: false },
+          { e: '📞', t: 'Mandar mensagem para 10 mães que ela conhece',          ok: true  },
+          { e: '📄', t: 'Imprimir panfletos e distribuir no bairro',             ok: false },
+          { e: '🎨', t: 'Criar um logo bonito primeiro',                         ok: false },
+        ],
+        cf: '10 mensagens para conhecidos = resultado em dias. Instagram leva meses sem base.',
+        wf: 'Logo e Instagram são para depois que o produto já foi validado.',
+      },
+      {
+        type: 'order',
+        hint: 'Existe uma sequência que funciona para todo negócio novo. Pular etapas custa tempo.',
+        q: 'Coloque na ordem certa a sequência de canais para um negócio novo:',
+        items: [
+          { id: 0, text: 'Conversa direta com pessoas próximas' },
+          { id: 1, text: 'Pedir indicação para quem já comprou' },
+          { id: 2, text: 'Criar lista de WhatsApp com clientes' },
+          { id: 3, text: 'Aparecer nas redes com prova social real' },
+        ],
+        scrambled: [0, 2, 3, 1],
+        cf: 'Essa sequência é o caminho de todo negócio bem-sucedido: da conversa para a escala.',
+      },
+    ],
+  },
+
+  'm6-retencao': {
+    title: 'Clientes que voltam',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Tem um número que todo founder precisa saber. Quanto a mais custa conseguir um cliente novo versus manter um antigo?',
+        q: 'O que custa mais para um negócio?',
+        opts: [
+          { e: '🔄', t: 'Manter um cliente que já comprou',                      ok: false },
+          { e: '🆕', t: 'Conseguir um cliente completamente novo',               ok: true  },
+          { e: '📦', t: 'Entregar bem para um cliente antigo',                   ok: false },
+          { e: '📱', t: 'Responder mensagem rapidamente',                        ok: false },
+        ],
+        cf: 'Conseguir cliente novo custa até 5x mais do que manter quem já comprou. Retenção é investimento.',
+        wf: 'Manter cliente exige trabalho, mas é bem mais barato que conquistar um novo do zero.',
+      },
+      {
+        type: 'mc',
+        hint: 'Fidelização não é programa de pontos. É o que faz o cliente voltar sem você precisar pedir.',
+        q: 'Pedro tem 5 clientes fiéis de brigadeiro. O que vai fazer eles comprarem de novo na semana?',
+        opts: [
+          { e: '✨', t: 'Lançar um sabor novo sem avisar e surpreender',         ok: true  },
+          { e: '💸', t: 'Dar desconto para quem comprar mais de 10',             ok: false },
+          { e: '📢', t: 'Mandar mensagem todo dia lembrando que tem produto',   ok: false },
+          { e: '🏷️', t: 'Criar cartão fidelidade com pontos',                   ok: false },
+        ],
+        cf: 'Surpresa positiva = experiência memorável = cliente que volta sem você precisar pedir.',
+        wf: 'Desconto funciona uma vez. Surpresa cria lealdade que dura.',
+      },
+      {
+        type: 'match',
+        hint: 'Pequenas ações criam grandes reações. Conecta o gesto com o que ele desperta no cliente.',
+        q: 'Conecte cada ação com o que ela provoca no cliente.',
+        pairs: [
+          { left: 'Lembrar o nome do cliente',               right: 'Cliente sente que é especial, não mais um'     },
+          { left: 'Entregar antes do prazo combinado',        right: 'Cliente recomenda para outros imediatamente'   },
+          { left: 'Avisar sobre novidade antes de todo mundo', right: 'Cliente sente exclusividade e lealdade'       },
+        ],
+        cf: 'Fidelização não é programa de pontos. É fazer o cliente sentir que você se importa de verdade.',
+      },
+      {
+        type: 'composite',
+        hint: 'Os clientes que você já tem são o ativo mais subestimado de todo negócio que está começando.',
+        q: 'Pense nos seus clientes atuais:',
+        steps: [
+          { q: 'Você sabe o nome dos seus clientes?', opts: ['Sim, conheço todos', 'Alguns', 'Ainda não tenho mas vou guardar'] },
+          { q: 'O que você poderia fazer para surpreender alguém?', opts: ['Entregar antes do prazo', 'Incluir algo pequeno de brinde', 'Mandar mensagem de agradecimento'] },
+          { q: 'Com que frequência ideal você venderia ao mesmo cliente?', opts: ['Todo dia', 'Toda semana', 'Todo mês'] },
+        ],
+        cf: 'Essas 3 respostas são o começo do seu plano de fidelização.',
+      },
+    ],
+  },
+
+  // ── MÓDULO 7 ─────────────────────────────────────────────────────────────────
+
+  'm7-receita': {
+    title: 'Receita não é lucro',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Receita é o que parece que você ganhou. Lucro é o que você realmente ganhou. A diferença importa demais.',
+        q: 'João vendeu R$200 em cookies essa semana. Gastou R$80 em ingredientes. Qual é o lucro de João?',
+        opts: [
+          { e: '💰', t: 'R$200',  ok: false },
+          { e: '✅', t: 'R$120',  ok: true  },
+          { e: '❌', t: 'R$80',   ok: false },
+          { e: '🤷', t: 'R$280',  ok: false },
+        ],
+        cf: 'R$200 − R$80 = R$120. O dinheiro que sobra depois dos custos é o que importa.',
+        wf: 'Receita é o que entrou. Lucro é o que sobrou depois de pagar tudo.',
+      },
+      {
+        type: 'mc',
+        hint: 'Faturamento alto não significa negócio saudável. O que importa é o que sobra depois de tudo.',
+        q: 'Maria faturou R$500 esse mês mas tem só R$50 no bolso. O que aconteceu?',
+        opts: [
+          { e: '😨', t: 'Ela perdeu o dinheiro',                                 ok: false },
+          { e: '🎯', t: 'Ela gastou R$450 em custos do negócio',                 ok: true  },
+          { e: '😔', t: 'Ela foi roubada',                                       ok: false },
+          { e: '🤔', t: 'Ela ganhou muito pouco por venda',                      ok: false },
+        ],
+        cf: 'Receita alta com custo descontrolado = lucro pequeno. Controlar custo é tão importante quanto vender.',
+        wf: 'R$500 entrou. R$450 saiu em custos. Sobrou R$50. Esse é o lucro real.',
+      },
+      {
+        type: 'match',
+        hint: 'Receita, custo e lucro são a base de qualquer negócio no mundo. Esses três conceitos andam juntos.',
+        q: 'Conecte cada conceito com sua definição correta.',
+        pairs: [
+          { left: 'Receita', right: 'Tudo que entrou de dinheiro pelas vendas'              },
+          { left: 'Custo',   right: 'Tudo que você gastou para produzir e entregar'         },
+          { left: 'Lucro',   right: 'O que sobrou depois de pagar todos os custos'          },
+        ],
+        cf: 'Esses 3 conceitos são a base de qualquer negócio no mundo.',
+      },
+      {
+        type: 'mc',
+        hint: 'Quantidade e preço são dados. Margem é o que revela se o negócio é saudável ou não.',
+        q: 'Pedro vendeu R$150 e gastou R$90. Ele quer saber se o negócio vale a pena. O que deve calcular?',
+        opts: [
+          { e: '📊', t: 'A margem de lucro (% que sobra de cada venda)',         ok: true  },
+          { e: '👥', t: 'O total de clientes',                                   ok: false },
+          { e: '🏷️', t: 'O preço de cada produto',                              ok: false },
+          { e: '📦', t: 'A quantidade vendida',                                  ok: false },
+        ],
+        cf: 'Margem = Lucro ÷ Receita × 100. Pedro: R$60 ÷ R$150 × 100 = 40%. Boa margem!',
+        wf: 'Quantidade e preço são dados, mas a margem revela se o negócio é saudável.',
+      },
+      {
+        type: 'order',
+        hint: 'Fazer essa conta todo mês é o hábito financeiro que separa quem sobrevive de quem fecha.',
+        q: 'Coloque na ordem certa os passos para calcular o lucro do mês:',
+        items: [
+          { id: 0, text: 'Some tudo que você vendeu (receita total)' },
+          { id: 1, text: 'Liste todos os gastos do mês (custos)' },
+          { id: 2, text: 'Subtraia os custos da receita' },
+          { id: 3, text: 'Decida o que fazer com o que sobrou' },
+        ],
+        scrambled: [0, 3, 1, 2],
+        cf: 'Fazer isso todo mês é o hábito financeiro mais importante de um empreendedor.',
+      },
+    ],
+  },
+
+  'm7-custos': {
+    title: 'Seus custos reais',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Material é o custo mais óbvio. Mas existe um custo que founder nenhum gosta de admitir.',
+        q: 'Ana faz pulseiras e acha que seu único custo é o material. O que ela está esquecendo?',
+        opts: [
+          { e: '🤷', t: 'Nada — material é o único custo',                      ok: false },
+          { e: '⏰', t: 'O tempo que ela gasta fazendo cada pulseira',           ok: true  },
+          { e: '🏷️', t: 'O preço que ela cobra',                                ok: false },
+          { e: '📦', t: 'A quantidade que ela vende',                            ok: false },
+        ],
+        cf: 'Tempo é custo. Se você gasta 2h por pulseira que vende a R$10, você pagou R$5/hora pra trabalhar.',
+        wf: 'Material é custo direto. Mas tempo, deslocamento e energia também custam.',
+      },
+      {
+        type: 'mc',
+        hint: 'Sempre existem mais custos do que os que aparecem primeiro. Custo oculto é o que quebra negócio pequeno.',
+        q: 'Quais são TODOS os custos de Pedro para vender limonada na escola?',
+        opts: [
+          { e: '🍋', t: 'Só os limões',                                          ok: false },
+          { e: '✅', t: 'Limões, açúcar, copos, gelo, deslocamento e tempo de preparo', ok: true },
+          { e: '🍚', t: 'Limões e açúcar',                                       ok: false },
+          { e: '🥤', t: 'Limões, açúcar e copos',                                ok: false },
+        ],
+        cf: 'Custo real = tudo que você gastou para produzir e entregar. Esquecer um custo = calcular lucro falso.',
+        wf: 'Sempre existem mais custos do que parecem. Custo oculto é o que quebra negócio pequeno.',
+      },
+      {
+        type: 'match',
+        hint: 'Três tipos de custo, três perspectivas do que você realmente gasta para entregar.',
+        q: 'Conecte cada tipo de custo com seu exemplo.',
+        pairs: [
+          { left: 'Custo direto',     right: 'Material que vai dentro do produto'         },
+          { left: 'Custo indireto',   right: 'Embalagem, transporte e ferramentas'         },
+          { left: 'Custo de tempo',   right: 'Horas que você dedicou para produzir'        },
+        ],
+        cf: 'Os 3 tipos juntos formam seu custo total real. Ignore qualquer um e o lucro calculado é falso.',
+      },
+      {
+        type: 'composite',
+        hint: 'Quem conhece o custo real define preço justo — para o cliente e para si mesmo.',
+        q: 'Vamos calcular seus custos reais:',
+        steps: [
+          { q: 'Qual é seu maior custo direto?', opts: ['Material ou ingrediente', 'Embalagem', 'Transporte'] },
+          { q: 'Quanto tempo você gasta por venda?', opts: ['Menos de 30 min', '30 min a 1 hora', 'Mais de 1 hora'] },
+          { q: 'Você inclui o seu tempo no preço?', opts: ['Sim', 'Não, mas vou incluir', 'Não sabia que deveria'] },
+        ],
+        cf: 'Quem calcula o custo real define um preço justo — para o cliente e para si mesmo.',
+      },
+    ],
+  },
+
+  'm7-reinvestimento': {
+    title: 'O que fazer com o lucro',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Primeiro mês com lucro. A decisão que você toma agora define se o negócio cresce ou para.',
+        q: 'Você teve R$200 de lucro no primeiro mês. O que um empreendedor faz?',
+        opts: [
+          { e: '🎉', t: 'Gasta tudo porque mereceu',                             ok: false },
+          { e: '🔒', t: 'Guarda tudo e não mexe',                                ok: false },
+          { e: '✅', t: 'Divide: parte investe no negócio, parte guarda',        ok: true  },
+          { e: '🏆', t: 'Compra algo para o negócio parecer maior',             ok: false },
+        ],
+        cf: 'Reinvestir parte do lucro faz o negócio crescer. Guardar uma parte protege contra imprevistos.',
+        wf: 'Gastar tudo para o crescimento. Guardar tudo nunca melhora o produto.',
+      },
+      {
+        type: 'mc',
+        hint: 'Reinvestir em quê? A resposta muda dependendo de onde está o gargalo do negócio.',
+        q: 'Pedro lucrou R$120 e quer produzir mais. O que faz sentido reinvestir primeiro?',
+        opts: [
+          { e: '👤', t: 'Contratar alguém para ajudar',                          ok: false },
+          { e: '✅', t: 'Comprar mais ingredientes para aumentar a produção',    ok: true  },
+          { e: '🎨', t: 'Criar um logo bonito',                                  ok: false },
+          { e: '🏦', t: 'Abrir conta em banco',                                  ok: false },
+        ],
+        cf: 'Reinvestir em produção = mais produto = mais vendas. É o ciclo do crescimento.',
+        wf: 'Logo e banco têm hora certa. Agora o que gera mais venda é mais produto disponível.',
+      },
+      {
+        type: 'order',
+        hint: 'Existe uma ordem que protege o negócio e ainda te deixa comemorar. Qual seria ela?',
+        q: 'Coloque na ordem certa como decidir o que fazer com o lucro:',
+        items: [
+          { id: 0, text: 'Separe o mínimo para cobrir os custos do próximo mês' },
+          { id: 1, text: 'Reserve uma parte para imprevistos (mínimo 20%)' },
+          { id: 2, text: 'Decida quanto reinvestir para crescer' },
+          { id: 3, text: 'O que sobrar é seu — pode usar' },
+        ],
+        scrambled: [0, 2, 1, 3],
+        cf: 'Essa ordem protege o negócio e ainda deixa dinheiro no seu bolso.',
+      },
+      {
+        type: 'mc',
+        hint: 'Com R$300 para reinvestir, uma escolha errada paralisa o negócio. Uma escolha certa multiplica.',
+        q: 'Ana lucrou R$300 e quer reinvestir. O que vai gerar mais resultado imediato?',
+        opts: [
+          { e: '✅', t: 'Comprar mais material para dobrar a produção',          ok: true  },
+          { e: '📱', t: 'Pagar alguém para postar nas redes',                    ok: false },
+          { e: '📋', t: 'Imprimir catálogos profissionais',                      ok: false },
+          { e: '🔧', t: 'Comprar equipamento que usa raramente',                 ok: false },
+        ],
+        cf: 'Mais produto disponível = mais vendas imediatas. Marketing e equipamento vêm depois.',
+        wf: 'Marketing sem produto suficiente cria demanda que você não consegue atender.',
+      },
+    ],
+  },
+
+  // ── MÓDULO 8 ─────────────────────────────────────────────────────────────────
+
+  'm8-qualidade': {
+    title: 'Crescer sem perder qualidade',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Crescer rápido parece bom. Mas tem um limite — e quando você passa, o cliente sente.',
+        q: 'Pedro tem 3 clientes fiéis e decide aceitar 10 pedidos de uma vez. O que provavelmente acontece?',
+        opts: [
+          { e: '💰', t: 'Ele lucra 3x mais sem nenhum problema',                ok: false },
+          { e: '⚠️', t: 'Ele atrasa, perde qualidade e os clientes reclamam',  ok: true  },
+          { e: '🤷', t: 'Nada muda — é só fazer mais',                          ok: false },
+          { e: '😃', t: 'Os clientes ficam mais satisfeitos com mais opções',   ok: false },
+        ],
+        cf: 'Crescer mais rápido que sua capacidade é a principal causa de negócio bom virar ruim.',
+        wf: 'Escala sem estrutura = promessa que não cumpre = reputação destruída.',
+      },
+      {
+        type: 'mc',
+        hint: 'Existe uma velocidade certa de crescimento para cada negócio. Mais rápido do que isso, você perde o que construiu.',
+        q: 'Qual é a forma mais segura de crescer?',
+        opts: [
+          { e: '🚀', t: 'Aceitar todos os pedidos e ver o que acontece',        ok: false },
+          { e: '✅', t: 'Crescer no ritmo que mantém a qualidade que fez você ter clientes', ok: true },
+          { e: '🛑', t: 'Parar de crescer para não arriscar nada',              ok: false },
+          { e: '👤', t: 'Contratar alguém imediatamente',                       ok: false },
+        ],
+        cf: 'Crescimento saudável mantém o que fez o cliente chegar: qualidade e confiança.',
+        wf: 'Aceitar tudo sem estrutura é a receita para perder o que construiu.',
+      },
+      {
+        type: 'match',
+        hint: 'Todo problema de escala tem uma solução específica. Não existe solução universal.',
+        q: 'Conecte cada problema de crescimento com a solução correta.',
+        pairs: [
+          { left: 'Muitos pedidos, poucos recursos',   right: 'Estabeleça um limite diário de vendas'       },
+          { left: 'Qualidade caindo com o volume',     right: 'Padronize o processo antes de escalar'        },
+          { left: 'Sem tempo para dar conta de tudo',  right: 'Delegue a parte mais simples primeiro'        },
+        ],
+        cf: 'Crescer com controle é mais difícil, mas é o que faz o negócio durar.',
+      },
+      {
+        type: 'mc',
+        hint: 'Honestidade sobre o seu limite é uma das coisas mais difíceis — e mais valorizadas — no mundo dos negócios.',
+        q: 'Ana recebe 20 pedidos para o fim de semana mas consegue fazer bem só 12. O que faz?',
+        opts: [
+          { e: '😬', t: 'Aceita todos os 20 e torce para dar certo',            ok: false },
+          { e: '✅', t: 'Aceita 12, explica aos outros e oferece data alternativa', ok: true },
+          { e: '😰', t: 'Recusa todos — muita responsabilidade',                ok: false },
+          { e: '📉', t: 'Aceita e entrega com qualidade menor',                 ok: false },
+        ],
+        cf: 'Honestidade sobre o limite é sinal de profissionalismo. Cliente que entende o limite volta.',
+        wf: 'Prometer e não cumprir destrói em um dia o que você construiu em semanas.',
+      },
+    ],
+  },
+
+  'm8-parceria': {
+    title: 'Trabalhar com alguém',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Parceria não é obrigação. É estratégia — quando cada um traz o que o outro não tem.',
+        q: 'Por que fazer parceria com outra pessoa pode ser bom para o seu negócio?',
+        opts: [
+          { e: '📋', t: 'Porque dividir lucro é obrigatório',                   ok: false },
+          { e: '✅', t: 'A outra pessoa pode ter habilidade ou recurso que você não tem', ok: true },
+          { e: '😐', t: 'Porque trabalhar sozinho é chato',                     ok: false },
+          { e: '🏢', t: 'Porque todo negócio precisa de sócio',                 ok: false },
+        ],
+        cf: 'Parceria ideal: cada um traz o que o outro não tem. Juntos entregam mais do que separados.',
+        wf: 'Sócio não é obrigação. É estratégia — quando faz sentido e cada um tem papel claro.',
+      },
+      {
+        type: 'match',
+        hint: 'Três tipos de parceria, três problemas diferentes que cada uma resolve.',
+        q: 'Conecte cada tipo de parceria com quando usar.',
+        pairs: [
+          { left: 'Parceria de habilidade', right: 'Você produz, o outro vende'                        },
+          { left: 'Parceria de recurso',    right: 'Você tem a ideia, o outro tem o equipamento'       },
+          { left: 'Parceria de canal',      right: 'Você produz, o outro tem acesso aos clientes'      },
+        ],
+        cf: 'Cada tipo resolve um problema diferente. Identifique o que você precisa antes de buscar.',
+      },
+      {
+        type: 'order',
+        hint: 'Parceria sem combinado claro vira briga. A ordem certa protege os dois.',
+        q: 'Coloque na ordem certa como propor uma parceria corretamente:',
+        items: [
+          { id: 0, text: 'Identifique o que você precisa e não tem' },
+          { id: 1, text: 'Encontre alguém que tenha exatamente isso' },
+          { id: 2, text: 'Proponha com clareza: o que cada um faz e o que cada um recebe' },
+          { id: 3, text: 'Coloque o combinado por escrito, mesmo que informal' },
+        ],
+        scrambled: [0, 2, 1, 3],
+        cf: 'Parceria sem combinado claro vira briga. Combinado claro no início = parceria que dura.',
+      },
+      {
+        type: 'composite',
+        hint: 'Antes de procurar um parceiro, você precisa saber exatamente o que você precisa. Senão você atrai o parceiro errado.',
+        q: 'Você faria parceria com quem?',
+        steps: [
+          { q: 'O que você mais precisa agora?', opts: ['Alguém para vender por mim', 'Alguém para ajudar a produzir mais', 'Acesso a mais clientes'] },
+          { q: 'Que tipo de pessoa seria ideal?', opts: ['Amigo de confiança', 'Alguém com habilidade específica', 'Quem já tem clientes'] },
+          { q: 'O que você oferece em troca?', opts: ['% do lucro', 'Produto ou serviço', 'Divulgação do trabalho dela'] },
+        ],
+        cf: 'Você definiu o perfil do parceiro ideal. Agora é achar essa pessoa.',
+      },
+    ],
+  },
+
+  'm8-meta': {
+    title: 'Meta com número',
+    exercises: [
+      {
+        type: 'mc',
+        hint: 'Meta sem número é desejo. Meta com número é compromisso. Só um dos dois muda o comportamento.',
+        q: 'Qual dessas metas é mais útil para um empreendedor?',
+        opts: [
+          { e: '🤷', t: '"Quero vender mais esse mês"',                          ok: false },
+          { e: '✅', t: '"Quero vender 15 unidades por semana até o fim do mês"', ok: true },
+          { e: '🌟', t: '"Quero ter sucesso"',                                   ok: false },
+          { e: '📈', t: '"Quero crescer meu negócio"',                           ok: false },
+        ],
+        cf: 'Meta sem número é desejo. Meta com número é compromisso. Só com número você sabe se chegou.',
+        wf: '"Vender mais" pode ser 1 unidade. É vago demais para mudar comportamento.',
+      },
+      {
+        type: 'mc',
+        hint: 'Número + frequência + prazo = meta que você pode acompanhar e ajustar toda semana.',
+        q: 'Pedro quer "vender mais na escola". Como transforma isso em meta real?',
+        opts: [
+          { e: '👥', t: '"Vender para mais alunos"',                             ok: false },
+          { e: '✅', t: '"Vender 20 brigadeiros por dia, 4 dias por semana, por 3 semanas"', ok: true },
+          { e: '🏆', t: '"Ser o melhor vendedor da escola"',                    ok: false },
+          { e: '💰', t: '"Vender bastante"',                                    ok: false },
+        ],
+        cf: 'Número + frequência + prazo = meta que você pode acompanhar e ajustar toda semana.',
+        wf: '"Mais alunos" ainda é vago. "20 por dia" você sabe no fim do dia se cumpriu ou não.',
+      },
+      {
+        type: 'match',
+        hint: 'Transformar vago em específico é a habilidade mais importante de quem quer crescer.',
+        q: 'Transforme cada meta vaga em meta com número.',
+        pairs: [
+          { left: '"Quero mais clientes"',  right: '"Quero 3 clientes novos essa semana"'               },
+          { left: '"Quero ganhar mais"',    right: '"Quero lucrar R$100 essa semana"'                   },
+          { left: '"Quero ser conhecido"',  right: '"Quero que 10 pessoas novas saibam do meu produto"' },
+        ],
+        cf: 'Transformar vago em específico é a habilidade mais importante de quem cresce.',
+      },
+      {
+        type: 'composite',
+        hint: 'Você está a uma resposta de ter uma meta real de 30 dias. Não um desejo — uma meta.',
+        q: 'Defina sua meta de 30 dias:',
+        steps: [
+          { q: 'O que você quer conquistar em 30 dias?', opts: ['Número específico de vendas', 'Lucro com valor definido', 'Quantidade de clientes novos'] },
+          { q: 'Qual é o número concreto?', opts: ['2x o que faço hoje', '50% a mais que agora', 'Um número exato que já tenho em mente'] },
+          { q: 'Como vai acompanhar semana a semana?', opts: ['Anoto num caderno', 'Registro no celular', 'Conto as vendas todo domingo'] },
+        ],
+        cf: 'Você tem uma meta de 30 dias com número. Divida em 4 semanas e comece hoje.',
+      },
+    ],
+  },
+
   'm5-real': {
     title: 'Desafio: venda real',
     company: true,
@@ -956,6 +1612,7 @@ export const LESSONS = {
     exercises: [
       {
         type: 'mc',
+        hint: 'Você estudou, praticou e simulou. Esse é o momento onde empreendedorismo deixa de ser teoria.',
         q: 'Você chegou ao maior desafio do app. Está pronto para tentar uma venda real de {product}?',
         opts: [
           { e: '✅', t: 'Sim, vou tentar com alguém que conheço',         ok: true  },
@@ -968,6 +1625,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'A primeira venda é sobre aprender — não sobre dinheiro. Onde você aprende mais rápido?',
         q: 'Seu primeiro alvo para a venda real de {product} deve ser:',
         opts: [
           { e: '🌟', t: 'O cliente mais difícil pra testar sua habilidade', ok: false },
@@ -980,6 +1638,7 @@ export const LESSONS = {
       },
       {
         type: 'mc',
+        hint: 'Todo não carrega informação. A pergunta não é "por que não fechou" — é "o que eu aprendo com isso".',
         q: 'Você tentou a venda e o cliente disse não. O que isso significa?',
         opts: [
           { e: '💔', t: 'Que seu produto não presta',                      ok: false },
@@ -992,6 +1651,7 @@ export const LESSONS = {
       },
       {
         type: 'composite',
+        hint: 'Independente do resultado, o fato de você ter tentado já te coloca à frente de 90% das pessoas.',
         q: 'Registre sua tentativa de venda real:',
         steps: [
           { q: 'Para quem você tentou vender?',   opts: ['👨‍👩‍👧 Familiar', '🤝 Amigo', '👔 Conhecido do bairro'] },

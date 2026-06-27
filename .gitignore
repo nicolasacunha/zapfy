@@ -30,3 +30,10 @@ dist-ssr
 *.p12
 *.certSigningRequest
 *.mobileprovision
+
+# Tool state / agent scratch (não versionar)
+.superpowers/
+.claude/
+
+# Bundle web gerado pelo Capacitor (regenerável via npm run build + npx cap copy)
+ios/App/App/public/

@@ -6,76 +6,183 @@ export default function ChildSetupScreen({ onNav }) {
   const [name,    setName]    = useState('')
   const [age,     setAge]     = useState('')
   const [consent, setConsent] = useState(false)
+  const [pressed, setPressed] = useState(false)
+  const [nameFocused, setNameFocused] = useState(false)
+  const [ageFocused,  setAgeFocused]  = useState(false)
 
-  const ageNum     = Number(age)
-  const needsLGPD  = ageNum >= 5 && ageNum < 18 // LGPD Art. 14: menores de 18 anos
-  const dataValid  = name.trim().length >= 2 && ageNum >= 5 && ageNum <= 18
-  const valid      = dataValid && (!needsLGPD || consent)
+  const ageNum    = Number(age)
+  const needsLGPD = ageNum >= 5 && ageNum < 18 // LGPD Art. 14: menores de 18 anos
+  const dataValid = name.trim().length >= 2 && ageNum >= 5 && ageNum <= 18
+  const valid     = dataValid && (!needsLGPD || consent)
+
+  const bubbleText = name.trim().length > 0
+    ? `Conta criada! Agora vamos configurar ${name.trim()}.`
+    : 'Conta criada! Agora vamos configurar seu filho.'
+
+  const inputStyle = (focused) => ({
+    width: '100%',
+    background: 'rgba(255,255,255,0.07)',
+    border: focused ? '1.5px solid #4D7FFF' : '1.5px solid rgba(255,255,255,0.13)',
+    borderRadius: 14,
+    padding: '14px 16px',
+    fontSize: 16,
+    fontWeight: 600,
+    color: 'white',
+    outline: 'none',
+    boxSizing: 'border-box',
+    transition: 'border-color 0.15s',
+  })
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: 11,
+    fontWeight: 700,
+    color: C.inkSoft,
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    marginBottom: 6,
+  }
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-6 py-10 gap-6"
-      style={{ background: `linear-gradient(160deg, ${C.primary} 0%, #7C3AED 100%)` }}>
+    <div
+      style={{
+        background: C.bg,
+        minHeight: '100dvh',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: 'max(24px, env(safe-area-inset-top, 24px))',
+        paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))',
+        paddingLeft: 20,
+        paddingRight: 20,
+        overflowY: 'auto',
+      }}
+    >
+      {/* Speech bubble + mascot */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 28 }}>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div
+            style={{
+              background: '#1A2640',
+              borderRadius: 20,
+              padding: '18px 24px',
+              maxWidth: 280,
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 900,
+                fontSize: 18,
+                color: C.ink,
+                textAlign: 'center',
+                margin: 0,
+                lineHeight: 1.35,
+              }}
+            >
+              {bubbleText}
+            </p>
+          </div>
+          {/* Triangle tail pointing down */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: -12,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '12px solid transparent',
+              borderRight: '12px solid transparent',
+              borderTop: '12px solid #1A2640',
+            }}
+          />
+        </div>
 
-      <div className="zappy-float mt-4"><Zappy mood="happy" size={110} /></div>
-
-      <div className="text-center">
-        <h1 className="text-2xl font-black text-white mb-2">Conta criada.</h1>
-        <p className="text-white/75 font-semibold">
-          Agora vamos configurar o perfil do seu filho.
-        </p>
+        <div className="zappy-float" style={{ marginTop: 20 }}>
+          <Zappy mood="happy" size={100} />
+        </div>
       </div>
 
-      <div className="w-full flex flex-col gap-4">
+      {/* Form */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
-          <label className="text-white/80 text-xs font-bold mb-1 block">Nome da criança</label>
+          <label style={labelStyle}>Nome da criança</label>
           <input
-            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none placeholder-white/40"
-            style={{ color: 'white', background: 'rgba(255,255,255,.18)', border: '2px solid rgba(255,255,255,.3)' }}
+            style={inputStyle(nameFocused)}
             placeholder="Joãozinho"
             value={name}
             onChange={e => setName(e.target.value)}
+            onFocus={() => setNameFocused(true)}
+            onBlur={() => setNameFocused(false)}
             autoFocus
           />
         </div>
 
         <div>
-          <label className="text-white/80 text-xs font-bold mb-1 block">Idade</label>
+          <label style={labelStyle}>Idade</label>
           <input
             type="number"
             min="5"
             max="18"
-            className="w-full rounded-2xl px-4 py-4 font-extrabold text-lg outline-none placeholder-white/40"
-            style={{ color: 'white', background: 'rgba(255,255,255,.18)', border: '2px solid rgba(255,255,255,.3)' }}
+            style={inputStyle(ageFocused)}
             placeholder="11"
             value={age}
             onChange={e => setAge(e.target.value)}
+            onFocus={() => setAgeFocused(true)}
+            onBlur={() => setAgeFocused(false)}
           />
         </div>
 
-        {/* Consentimento LGPD/COPPA — aparece para crianças abaixo de 13 anos */}
+        {/* Consentimento LGPD/COPPA — aparece para crianças abaixo de 18 anos */}
         {needsLGPD && (
-          <div className="rounded-2xl p-4 flex flex-col gap-3"
-            style={{ background: 'rgba(255,255,255,.15)' }}>
-            <p className="text-white text-xs font-bold uppercase tracking-wide">
+          <div
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              borderRadius: 16,
+              padding: '16px 18px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: 10,
+                fontWeight: 700,
+                color: C.inkSoft,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}
+            >
               Consentimento do Responsável (LGPD)
             </p>
-            <p className="text-white/80 text-xs leading-relaxed">
-              Como responsável legal de <strong>{name || 'seu filho'}</strong> ({ageNum} anos), você
+            <p
+              style={{
+                margin: 0,
+                fontSize: 12,
+                color: 'rgba(255,255,255,0.7)',
+                lineHeight: 1.6,
+              }}
+            >
+              Como responsável legal de{' '}
+              <strong style={{ color: C.ink }}>{name || 'seu filho'}</strong> ({ageNum} anos), você
               autoriza o Zapfy a coletar e processar os dados necessários para o funcionamento do
               aplicativo: nome, idade e progresso de aprendizagem. Os dados não serão
               compartilhados com terceiros nem usados para publicidade.
             </p>
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
               <input
                 type="checkbox"
-                className="mt-0.5 w-5 h-5 rounded flex-shrink-0"
+                style={{ marginTop: 2, width: 18, height: 18, flexShrink: 0, accentColor: C.success }}
                 checked={consent}
                 onChange={e => setConsent(e.target.checked)}
               />
-              <span className="text-white text-xs font-semibold leading-relaxed">
+              <span style={{ fontSize: 12, color: C.ink, lineHeight: 1.6 }}>
                 Li e concordo com os{' '}
-                <span className="underline">Termos de Uso</span> e{' '}
-                <span className="underline">Política de Privacidade</span>,
+                <span style={{ textDecoration: 'underline', color: C.primary }}>Termos de Uso</span> e{' '}
+                <span style={{ textDecoration: 'underline', color: C.primary }}>Política de Privacidade</span>,
                 e consinto com o tratamento dos dados do menor conforme a LGPD.
               </span>
             </label>
@@ -83,12 +190,33 @@ export default function ChildSetupScreen({ onNav }) {
         )}
       </div>
 
-      <div className="w-full mt-2">
+      {/* CTA — pinned to bottom */}
+      <div style={{ marginTop: 'auto', paddingTop: 24 }}>
         <button
           onClick={() => valid && onNav('pinSetup', { childName: name.trim(), childAge: ageNum, childConsent: consent || !needsLGPD })}
           disabled={!valid}
-          className="w-full py-4 rounded-2xl font-extrabold text-lg uppercase tracking-wide transition-all"
-          style={{ background: valid ? 'white' : 'rgba(255,255,255,.25)', color: valid ? C.primary : 'rgba(255,255,255,.5)' }}>
+          onPointerDown={() => valid && setPressed(true)}
+          onPointerUp={() => setPressed(false)}
+          onPointerLeave={() => setPressed(false)}
+          style={{
+            width: '100%',
+            padding: '17px 0',
+            borderRadius: 16,
+            border: 'none',
+            cursor: valid ? 'pointer' : 'default',
+            background: valid ? C.success : 'rgba(255,255,255,0.08)',
+            boxShadow: valid && !pressed ? '0 5px 0 #16A34A' : 'none',
+            color: valid ? '#052010' : 'rgba(255,255,255,0.3)',
+            fontFamily: 'var(--font-display)',
+            fontWeight: 800,
+            fontSize: 15,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            transform: valid && pressed ? 'translateY(3px)' : 'translateY(0)',
+            transition: 'transform 0.08s, box-shadow 0.08s',
+            display: 'block',
+          }}
+        >
           Continuar →
         </button>
       </div>
