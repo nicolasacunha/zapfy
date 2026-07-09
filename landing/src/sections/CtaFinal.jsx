@@ -5,15 +5,29 @@ import Button from '../components/Button.jsx'
  * SEÇÃO 7 — CTA FINAL
  * Única meta de conversão da página: e-mail para a lista de espera.
  * Estados: idle → enviando → enviado | erro (com tentar de novo e
- * trocar de e-mail). TODO: trocar enviarParaListaDeEspera() por
- * integração real (Formspree ou tabela no Supabase) antes de publicar —
- * hoje ela só simula o envio, sem gravar o e-mail em lugar nenhum.
+ * trocar de e-mail).
  */
 
-function enviarParaListaDeEspera() {
-  // TODO integração real. A simulação preserva o contrato: resolve = entrou
-  // na lista, reject = falha de rede/servidor (o estado de erro já existe).
-  return new Promise((resolve) => setTimeout(resolve, 600))
+// Tabela `waitlist` no Supabase de produção do Zapfy ("Zapfy REAL").
+// A chave é a anon/publishable — pública por design; RLS só permite insert
+// (ninguém lê a lista com ela). E-mail repetido (409) conta como sucesso.
+const SUPABASE_URL = 'https://lokdzgjldehodjmqebjm.supabase.co'
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+async function enviarParaListaDeEspera(email) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ email, name: null, phone: null }),
+  })
+  if (!res.ok && res.status !== 409) {
+    throw new Error(`waitlist insert falhou: ${res.status}`)
+  }
 }
 
 export default function CtaFinal() {
