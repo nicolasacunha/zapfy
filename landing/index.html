@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/zappy/logo-mark.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zapfy — Seu filho no comando da própria empresa</title>
+    <meta
+      name="description"
+      content="O Zapfy transforma crianças de 8 a 14 anos em fundadores: missões de 5 minutos por dia no app e desafios de verdade fora dele, da primeira ideia à primeira venda."
+    />
+    <!--
+      Open Graph / Twitter: a página vive de pai compartilhando link com pai.
+      TODO antes de publicar: trocar og:image e og:url por URLs ABSOLUTAS do
+      domínio final (WhatsApp/Twitter não resolvem caminho relativo).
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Zapfy — Seu filho no comando da própria empresa" />
+    <meta
+      property="og:description"
+      content="Missões de 5 minutos por dia no app e desafios no mundo real — da primeira ideia à primeira venda. Para crianças de 8 a 14 anos."
+    />
+    <meta property="og:image" content="/zappy/hero.png" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      Tipografia do design system (decisão de produto, não renegociável):
+      Grandstander 700/800/900 para títulos · Figtree 400–900 para o resto.
+      Carregadas via CDN do Google Fonts na ausência dos .woff2 self-hosted,
+      conforme indicado no próprio guia.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Grandstander:wght@700;800;900&family=Figtree:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

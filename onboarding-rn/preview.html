@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zapfy — Protótipo navegável</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#161616;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 0;font-family:'Inter',sans-serif}
+.qphone{width:375px;height:760px;background:#0A0A0A;border-radius:44px;border:7px solid #1C1C1C;overflow:hidden;display:flex;flex-direction:column;color:#EBEBEB}
+.qstatus{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;flex-shrink:0}
+.qhead{padding:0 24px;flex-shrink:0}
+.qtrack{height:3px;background:#1C1C1C;border-radius:99px;overflow:hidden}
+.qfill{height:100%;background:#C9A84C;border-radius:99px;transition:width .35s ease}
+.qbackrow{height:34px;display:flex;align-items:center;margin:0 -8px}
+.qback{width:32px;height:32px;border:none;background:none;color:#888888;font-size:18px;cursor:pointer}
+.qscr{flex:1;display:flex;flex-direction:column;transition:opacity .13s ease,transform .13s ease}
+.qscr.in{transition:opacity .26s ease,transform .26s ease}
+.qbody{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 22px;display:flex;flex-direction:column;scrollbar-width:none}
+.qbody::-webkit-scrollbar{display:none}
+.qcenter{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.qh{font-size:24px;font-weight:700;letter-spacing:-.4px;line-height:30px}
+.qsub{font-size:14px;line-height:21px;color:#888888;font-weight:400}
+.qbtn{width:100%;height:54px;background:#C9A84C;color:#0A0A0A;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;flex-shrink:0}
+.qbtn:active{transform:scale(.98)}
+.qbtn:disabled{background:#1C1C1C;color:#888888;cursor:default}
+.qbtn.ghost{background:#1C1C1C;color:#EBEBEB}
+.qinp{width:100%;background:#141414;border:1.5px solid #262626;border-radius:12px;color:#EBEBEB;font-family:inherit;font-size:19px;font-weight:500;padding:15px 18px;outline:none}
+.qinp:focus{border-color:#C9A84C}
+.qinp::placeholder{color:#666}
+.qpills{display:flex;gap:5px}
+.qpill{flex:1;height:48px;border-radius:99px;background:#141414;border:1px solid #262626;color:#888888;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.qpill.sel{background:#C9A84C;border-color:#C9A84C;color:#0A0A0A}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.qcard{background:#141414;border:1.5px solid #262626;border-radius:12px;padding:22px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#EBEBEB;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.qcard.sel{border-color:#C9A84C;background:rgba(201,168,76,.10);color:#E2C06A}
+.qrow{display:flex;align-items:center;gap:13px;background:#141414;border-radius:12px;padding:14px 15px}
+.qico{width:44px;height:44px;border-radius:99px;background:#1C1C1C;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.qquote{background:#141414;padding:13px 15px;border-radius:12px}
+.qcoins{display:flex;align-items:center;gap:6px;background:#141414;border:1px solid #262626;border-radius:99px;padding:7px 13px;font-size:14px;font-weight:600;color:#E2C06A}
+.qmcard{display:flex;align-items:center;gap:8px;background:#141414;border:1.5px solid #C9A84C;border-radius:12px;padding:16px;margin:18px 0 12px;flex-shrink:0}
+.qtag{font-size:10px;font-weight:600;letter-spacing:1px;color:#C9A84C}
+.qnode{position:absolute;width:110px;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.qcirc{width:54px;height:54px;border-radius:99px;background:#141414;border:2px solid #262626;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#888888}
+.qcirc.on{background:#C9A84C;border-color:#E2C06A;color:#0A0A0A}
+.qdot{position:absolute;width:7px;height:7px;border-radius:99px;background:#1C1C1C}
+.qtabs{display:flex;border-top:1px solid #1C1C1C;padding:9px 0 14px;flex-shrink:0}
+.qtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#888888;font-weight:500;cursor:pointer;background:none;border:none;font-family:inherit}
+.qcardrow{display:flex;align-items:center;gap:13px;background:#141414;border:1.5px solid #262626;border-radius:12px;padding:13px;cursor:pointer}
+.qcardrow.act{border-color:#C9A84C}
+.qcardrow.lk{opacity:.55;cursor:default}
+.qbdg{width:38px;height:38px;border-radius:99px;background:#1C1C1C;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#888888;flex-shrink:0}
+.qstep{display:flex;align-items:center;gap:12px;background:#141414;border:1.5px solid #262626;border-radius:12px;padding:13px;cursor:pointer}
+.qstep.sel{border-color:#C9A84C;background:rgba(201,168,76,.10)}
+.qchk{width:24px;height:24px;border-radius:99px;border:2px solid #262626;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0A0A0A;flex-shrink:0}
+.qstep.sel .qchk{background:#C9A84C;border-color:#C9A84C}
+.qbubble{flex:1;background:#141414;border:1px solid #262626;border-radius:12px;padding:11px 13px;font-size:13px;line-height:18px;font-weight:500}
+.qzap{position:relative;flex-shrink:0;animation:qfloat 3s ease-in-out infinite;user-select:none}
+@keyframes qfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.qplan{flex:1;background:#141414;border:1.5px solid #262626;border-radius:12px;padding:15px 13px;cursor:pointer;position:relative}
+.qplan.sel{border-color:#C9A84C;background:rgba(201,168,76,.10)}
+.qstat{flex:1 1 45%;background:#141414;border-radius:12px;padding:13px}
+.qfoot{padding:10px 22px 0;flex-shrink:0}
+.qhome{height:4px;width:120px;background:#333;border-radius:99px;margin:8px auto 7px;flex-shrink:0}
+.qreset{background:none;border:none;color:#777;font-size:13px;cursor:pointer;padding:4px 8px;font-family:inherit}
+.qbrand{color:#555;font-size:11px;letter-spacing:1px;font-weight:600}
+.qpin-dots{display:flex;gap:16px;justify-content:center;margin:28px 0 32px}
+.qpin-dot{width:14px;height:14px;border-radius:99px;border:2px solid #444;transition:background .15s,border-color .15s}
+.qpin-dot.fill{background:#C9A84C;border-color:#C9A84C}
+.qpin-dot.err{background:#FB7185;border-color:#FB7185}
+.qkbd{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
+.qkbd button{height:62px;background:#141414;border:1.5px solid #262626;border-radius:12px;color:#EBEBEB;font-family:inherit;font-size:22px;font-weight:600;cursor:pointer}
+.qkbd button:active{transform:scale(.96)}
+.qkbd button.kghost{background:none;border-color:transparent;color:#888888;font-size:18px}
+.qwho{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.qwho-btn{height:72px;background:#141414;border:1.5px solid #262626;border-radius:16px;color:#EBEBEB;font-family:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:14px;padding:0 20px;width:100%}
+.qwho-btn:active{transform:scale(.98)}
+.qpbar{height:6px;background:#1C1C1C;border-radius:99px;overflow:hidden;margin-top:10px}
+.qpfill{height:100%;background:#C9A84C;border-radius:99px}
+</style>
+</head>
+<body>
+<div class="qphone">
+  <div class="qstatus"><span>9:41</span><span style="letter-spacing:1px;">●●●</span></div>
+  <div class="qhead" id="qob" style="display:none;">
+    <div class="qtrack"><div class="qfill" id="qfill" style="width:17%;"></div></div>
+    <div class="qbackrow"><button class="qback" id="qbk0" style="visibility:hidden;">←</button></div>
+  </div>
+  <div class="qscr in" id="qscr"></div>
+  <div class="qhome"></div>
+</div>
+<button class="qreset" id="qrst">↺ Reiniciar protótipo</button>
+<div class="qbrand">ZAPFY — PROTÓTIPO NAVEGÁVEL</div>
+<script>
+(function(){
+var MIS=[
+{id:1,day:1,t:'Caça à primeira ideia',b:'Todo império começa com uma ideia. Bora achar a sua.',r:50,p:['Foto da sua lista de ideias com a escolhida marcada',200],steps:[['Liste 3 coisas que você adora fazer','Desenhar, jogar, cozinhar — vale tudo.'],['Pergunte a 2 pessoas o que comprariam de você','Família e amigos contam.'],['Escolha UMA ideia pra começar','Todo império começa com uma escolha.']]},
+{id:2,day:2,t:'Detetive de clientes',b:'Quem vai comprar de você? Hora de descobrir.',r:50,p:['Áudio ou anotação do que as pessoas responderam',200],steps:[['Descreva seu cliente ideal','Colega, vizinho, família?'],['Descubra onde ele está','Escola, condomínio, internet?'],['Anote o que ele precisa','Qual problema sua ideia resolve?']]},
+{id:3,day:3,t:'Preço que vende',b:'Quanto custa? Quanto vale? Vamos descobrir.',r:50,p:['Foto da sua conta: custo + lucro = preço',200],steps:[['Calcule quanto custa fazer','Materiais, tempo — tudo conta.'],['Pesquise quanto cobram por aí','Encontre 3 preços parecidos.'],['Defina o seu preço','Custo + lucro = seu preço.']]},
+{id:4,day:4,t:'Primeira oferta',b:'Hora de mostrar pro mundo o que você faz.',r:50,p:['Vídeo de 10s falando sua oferta em 1 frase',200],steps:[['Monte sua oferta em 1 frase','"Eu vendo X por Y pra Z."'],['Conte pra 3 pessoas','Treine sua frase de fundador.'],['Anote as reações','O que fez os olhos brilharem?']]},
+{id:5,day:5,t:'Plano de fundador',b:'Última missão do módulo. Seu plano nasce aqui.',r:100,p:['Foto do seu plano com a data de começar marcada',400],steps:[['Junte tudo que descobriu','Ideia + cliente + preço + oferta.'],['Defina sua primeira meta','Ex: vender 3 unidades essa semana.'],['Marque a data de começar','Fundador de verdade tem prazo.']]}
+];
+var MODS=['Ideia','Marca','Produto','Primeira venda','Crescimento'];
+var VID={1:'assets/videos/missao-1.mp4',2:'assets/videos/missao-2.mp4',3:'assets/videos/missao-3.mp4',4:'assets/videos/missao-4.mp4',5:'assets/videos/missao-5.mp4'};
+var CATS=[['fisico','📦','Produto físico'],['servico','🛠️','Serviço'],['digital','💻','Digital'],['indefinido','🤔','Ainda não sei']];
+var S,anim=false;
+
+function init(){
+  S={
+    mode:'parent_ob', pscreen:0,
+    pflow:'dash', cscr:'home', cflow:'tabs',
+    parentName:'', childName:'', childAge:null, childPIN:'',
+    pinInput:'', pinError:false,
+    ob:{name:'',age:null,company:'',category:null},
+    coins:0,done:[],proofs:[],pf:false,
+    screen:3,mid:1,checks:[],plan:'yearly',from:'home'
+  };
+}
+init();
+
+var scr=document.getElementById('qscr'),ob=document.getElementById('qob'),fill=document.getElementById('qfill'),bk0=document.getElementById('qbk0');
+
+function first(){return (S.ob.name.trim().split(' ')[0])||S.childName.split(' ')[0]||'Fundador';}
+function comp(){return S.ob.company.trim()||'sua empresa';}
+function catLabel(){var c=CATS.find(function(x){return x[0]===S.ob.category;});return c?c[1]+' '+c[2]:'—';}
+function zappy(s,pose){
+  pose=pose||'waving';
+  if(pose==='wink')pose='pointing';
+  return '<img class="qzap" src="assets/zappy/zappy-'+pose+'.png" alt="Zappy" style="width:'+s+'px;height:'+s+'px;object-fit:contain;" draggable="false">';}
+function foot(label,dis){return '<div class="qfoot" style="padding:10px 0 14px;"><button class="qbtn" id="qnx"'+(dis?' disabled':'')+'>'+label+'</button></div>';}
+
+function pinDots(val,err){
+  var h='<div class="qpin-dots">';
+  for(var i=0;i<4;i++)h+='<div class="qpin-dot'+(i<val.length?' fill':'')+(err?' err':'')+'"></div>';
+  return h+'</div>';}
+function pinKbd(){
+  var h='<div class="qkbd">';
+  [1,2,3,4,5,6,7,8,9,'','0','⌫'].forEach(function(k){
+    if(k==='')h+='<button class="kghost" disabled></button>';
+    else h+='<button data-k="'+k+'">'+k+'</button>';
+  });
+  return h+'</div>';}
+
+/* ── PARENT ONBOARDING ── */
+var POB=[
+  function(){return '<div class="qbody"><div class="qcenter"><div style="width:72px;height:72px;border-radius:21px;background:rgba(201,168,76,.10);border:1px solid rgba(201,168,76,.35);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:22px;">⚡</div><div style="font-size:44px;font-weight:800;letter-spacing:-1.2px;color:#C9A84C;">Zapfy</div><p class="qsub" style="font-size:16px;margin-top:8px;">Seu filho, fundador de uma empresa real.</p></div>'+foot('Começar como responsável')+'</div>';},
+  function(){return '<div class="qbody"><div class="qh" style="margin-top:22px;">Qual é o seu nome?</div><p class="qsub" style="margin-top:6px;">Como a gente vai te chamar no app.</p><input class="qinp" id="qin" data-field="parentName" style="margin-top:18px;" placeholder="Seu nome" value="'+S.parentName+'"><div style="flex:1;"></div>'+foot('Continuar',!S.parentName.trim())+'</div>';},
+  function(){return '<div class="qbody"><div class="qh" style="margin-top:22px;">Qual é o nome do seu filho?</div><p class="qsub" style="margin-top:6px;">Ele vai criar uma empresa com esse nome.</p><input class="qinp" id="qin" data-field="childName" style="margin-top:18px;" placeholder="Nome do filho" value="'+S.childName+'"><div style="flex:1;"></div>'+foot('Continuar',!S.childName.trim())+'</div>';},
+  function(){var p='';for(var a=8;a<=14;a++)p+='<button class="qpill'+(S.childAge===a?' sel':'')+'" data-age="'+a+'">'+a+'</button>';return '<div class="qbody"><div class="qh" style="margin-top:22px;">Quantos anos ele tem?</div><div class="qpills" style="margin-top:24px;">'+p+'</div><div style="flex:1;"></div>'+foot('Continuar',S.childAge===null)+'</div>';},
+  function(){return '<div class="qbody"><div class="qh" style="margin-top:22px;">Crie um PIN de 4 dígitos</div><p class="qsub" style="margin-top:6px;">'+S.childName+' vai usar esse PIN pra acessar a conta dele.</p>'+pinDots(S.childPIN,false)+pinKbd()+'<div style="flex:1;"></div>'+foot('Criar PIN',S.childPIN.length<4)+'</div>';},
+  function(){return '<div class="qbody"><div class="qcenter">'+zappy(110,'waving')+'<div class="qh" style="margin-top:20px;">Passe o celular pro '+S.childName+'</div><p class="qsub" style="margin-top:10px;padding:0 12px;">Ele vai criar a empresa dele agora. Você acompanha o progresso pelo painel do responsável.</p></div>'+foot('Começar como '+S.childName.split(' ')[0])+'</div>';}
+];
+
+/* ── WHO USING ── */
+function whoUsingT(){
+  var pn=S.parentName||'Responsável',cn=S.childName||'Filho';
+  return '<div class="qbody"><div style="padding-top:20px;"><div class="qtag" style="text-align:center;display:block;">ZAPFY</div><div class="qh" style="margin-top:10px;text-align:center;">Quem vai usar?</div></div>'
+    +'<div class="qwho" style="margin-top:28px;">'
+    +'<button class="qwho-btn" id="qwp"><span style="font-size:26px;">👨‍💼</span><div style="flex:1;text-align:left;"><div>'+pn+'</div><div style="font-size:12px;color:#888888;font-weight:400;margin-top:2px;">Responsável · painel completo</div></div><span style="color:#C9A84C;font-size:18px;">›</span></button>'
+    +'<button class="qwho-btn" id="qwc"><span style="font-size:26px;">🧒</span><div style="flex:1;text-align:left;"><div>'+cn+'</div><div style="font-size:12px;color:#888888;font-weight:400;margin-top:2px;">Modo criança · missões</div></div><span style="color:#888888;font-size:18px;">›</span></button>'
+    +'</div></div>';}
+
+/* ── PIN ENTRY ── */
+function pinEntryT(){
+  return '<div class="qbody"><div style="padding-top:20px;text-align:center;"><div class="qh">PIN do '+(S.childName.split(' ')[0]||'filho')+'</div>'
+    +(S.pinError?'<p style="color:#FB7185;font-size:13px;margin-top:6px;">PIN incorreto. Tenta de novo.</p>':'<p class="qsub" style="margin-top:6px;">Digite o PIN de 4 dígitos</p>')
+    +'</div>'
+    +pinDots(S.pinInput,S.pinError)
+    +pinKbd()
+    +'<div style="flex:1;"></div>'
+    +'<div class="qfoot"><button class="qbtn ghost" id="qpinback">← Voltar</button></div></div>';}
+
+/* ── PARENT DASHBOARD ── */
+function parentDashT(){
+  var done=S.done.length,total=5,pct=Math.round(done/total*100);
+  var recent=MIS.filter(function(m){return S.done.indexOf(m.id)>=0;}).slice(-2).reverse();
+  var recentH=recent.length?'<div style="font-size:14px;font-weight:700;margin:16px 0 10px;flex-shrink:0;">Últimas missões</div>':'';
+  recent.forEach(function(m){
+    var wp=S.proofs.indexOf(m.id)>=0;
+    recentH+='<div style="display:flex;align-items:center;gap:11px;background:#141414;border-radius:12px;padding:12px;margin-bottom:8px;">'
+      +'<span style="font-size:15px;">'+(wp?'📎':'✓')+'</span>'
+      +'<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+m.t+'</div><div style="font-size:11px;margin-top:1px;color:'+(wp?'#E2C06A':'#888888')+';">'+(wp?'Com prova real':'Auto-declarada')+'</div></div>'
+      +'<div style="font-size:12px;font-weight:600;color:#E2C06A;">+'+m.r+'</div></div>';});
+  return '<div class="qbody"><div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;flex-shrink:0;">'
+    +'<div><div class="qtag">RESPONSÁVEL</div><div class="qh" style="font-size:21px;margin-top:3px;">Olá, '+(S.parentName.split(' ')[0]||'você')+'</div></div>'
+    +'<button id="qswitch" style="background:#141414;border:1px solid #262626;border-radius:99px;color:#C9A84C;font-family:inherit;font-size:12px;font-weight:600;padding:7px 13px;cursor:pointer;">↔ Mudar</button></div>'
+    +'<div style="background:#141414;border:1.5px solid #262626;border-radius:12px;padding:16px;margin-top:16px;flex-shrink:0;">'
+    +'<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px;">🧒</span><div style="flex:1;"><div style="font-size:15px;font-weight:700;">'+(S.childName||'Filho')+'</div><div style="font-size:12px;color:#888888;margin-top:1px;">'+(S.childAge||'—')+' anos · Módulo 1 de 5</div></div><div style="font-size:20px;font-weight:700;color:#C9A84C;">'+pct+'%</div></div>'
+    +'<div class="qpbar"><div class="qpfill" style="width:'+pct+'%;"></div></div>'
+    +'<div style="font-size:11px;color:#888888;margin-top:6px;">'+done+'/'+total+' missões concluídas no Módulo 1</div></div>'
+    +'<div style="display:flex;gap:9px;margin-top:12px;">'
+    +'<div class="qstat"><div style="font-size:11px;color:#888888;">ZapCoins</div><div style="font-size:20px;font-weight:700;margin-top:3px;color:#E2C06A;">🪙 '+S.coins+'</div></div>'
+    +'<div class="qstat"><div style="font-size:11px;color:#888888;">Provas reais</div><div style="font-size:20px;font-weight:700;margin-top:3px;">📎 '+S.proofs.length+'</div></div>'
+    +'</div>'
+    +(recent.length?recentH:'<div style="background:#141414;border-radius:12px;padding:15px;margin-top:12px;font-size:13px;line-height:19px;color:#888888;">'+(S.childName.split(' ')[0]||'Seu filho')+' ainda não concluiu missões. A primeira leva ~10 min e acontece fora da tela.</div>')
+    +'<div style="height:14px;"></div></div>'
+    +'<div class="qfoot" style="display:flex;gap:9px;padding-bottom:2px;">'
+    +'<button class="qbtn ghost" id="qpreport" style="flex:1;font-size:14px;">Ver relatório</button>'
+    +'<button class="qbtn" id="qppw" style="flex:1;font-size:14px;">Assinar ⚡</button></div>';}
+
+/* ── PARENT REPORT ── */
+function parentReportT(){
+  var done2=MIS.filter(function(m){return S.done.indexOf(m.id)>=0;}),rows='';
+  done2.forEach(function(m){var wp=S.proofs.indexOf(m.id)>=0;rows+='<div style="display:flex;align-items:center;gap:12px;background:#141414;border-radius:12px;padding:13px;margin-bottom:8px;"><span style="font-size:15px;">'+(wp?'📎':'✓')+'</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+m.t+'</div><div style="font-size:11px;margin-top:2px;color:'+(wp?'#E2C06A':'#888888')+';">'+(wp?'Com prova do mundo real':'Auto-declarada (sem prova)')+'</div></div></div>';});
+  return '<div class="qbody"><div style="display:flex;align-items:center;height:40px;margin:0 -6px;flex-shrink:0;">'
+    +'<button id="qpb" style="background:none;border:none;color:#888888;font-size:18px;cursor:pointer;width:32px;">←</button>'
+    +'<div class="qtag" style="flex:1;text-align:center;">RELATÓRIO DO RESPONSÁVEL</div><div style="width:32px;"></div></div>'
+    +'<div class="qh" style="margin-top:10px;">O progresso real de '+first()+'.</div>'
+    +'<p style="font-size:13px;line-height:19px;color:#888888;margin-top:7px;">Medimos o que aconteceu no mundo real — não moedas ou tempo de tela.</p>'
+    +'<div style="display:flex;gap:9px;margin-top:16px;">'
+    +'<div class="qstat"><div style="font-size:22px;font-weight:700;color:#C9A84C;">'+S.done.length+'/5</div><div style="font-size:11px;color:#888888;margin-top:2px;">missões do Módulo 1</div></div>'
+    +'<div class="qstat"><div style="font-size:22px;font-weight:700;color:#C9A84C;">'+S.proofs.length+'</div><div style="font-size:11px;color:#888888;margin-top:2px;">provas reais enviadas</div></div></div>'
+    +(rows?'<div style="margin-top:13px;">'+rows+'</div>':'<div style="background:#141414;border-radius:12px;padding:16px;margin-top:13px;font-size:13px;line-height:19px;color:#888888;">'+first()+' ainda não concluiu missões.</div>')
+    +'<p style="font-size:12px;line-height:18px;color:#888888;margin-top:15px;padding-bottom:8px;">No Módulo 4, '+first()+' faz a primeira venda real da '+comp()+' — com dinheiro de verdade registrado aqui.</p></div>'
+    +'<div class="qfoot"><button class="qbtn" id="qppw2">Liberar a jornada completa</button></div>';}
+
+/* ── CHILD ONBOARDING (steps 3-8) ── */
+var OB=[
+  null,null,null,
+  function(){return '<div class="qbody"><div class="qh" style="margin-top:22px;">Fala, '+(S.childName.split(' ')[0]||'você')+'! Seu negócio precisa de um nome.</div><p class="qsub" style="margin-top:8px;">Pode mudar depois. Por agora, qualquer coisa serve.</p><input class="qinp" id="qin" data-field="company" style="margin-top:20px;" placeholder="Nome da empresa" value="'+S.ob.company+'"><div style="flex:1;"></div>'+foot('Continuar',!S.ob.company.trim())+'</div>';},
+  function(){var h='';CATS.forEach(function(c){h+='<button class="qcard'+(S.ob.category===c[0]?' sel':'')+'" data-cat="'+c[0]+'"><span style="font-size:30px;">'+c[1]+'</span>'+c[2]+'</button>';});return '<div class="qbody"><div class="qh" style="margin-top:22px;">O que a '+comp()+' vai vender?</div><div class="qgrid" style="margin-top:22px;">'+h+'</div><div style="flex:1;"></div>'+foot('Continuar',S.ob.category===null)+'</div>';},
+  function(){return '<div class="qbody"><div class="qcenter">'+zappy(150,'waving')+'<div class="qh" style="margin-top:24px;">Oi, eu sou o Zappy.</div><p class="qsub" style="margin-top:10px;padding:0 8px;">Vou ser seu sócio nessa jornada. Te mando missões, te conto o que tá funcionando, e nunca te deixo travar.</p></div>'+foot('Boa, vamos nessa')+'</div>';},
+  function(){var i=[['⚡','Missões diárias','Pequenas, rápidas, do mundo real.'],['🪙','ZapCoins','Ganhe completando missões.'],['📈','Seu negócio cresce','Acompanhe tudo aqui.']],h='';i.forEach(function(r){h+='<div class="qrow"><div class="qico">'+r[0]+'</div><div><div style="font-size:15px;font-weight:600;">'+r[1]+'</div><div style="font-size:13px;color:#888888;margin-top:2px;">'+r[2]+'</div></div></div>';});return '<div class="qbody"><div class="qh" style="margin-top:22px;">Como o Zapfy funciona</div><div style="display:flex;flex-direction:column;gap:11px;margin-top:22px;">'+h+'</div><div style="flex:1;"></div>'+foot('Entendi')+'</div>';},
+  function(){var q=[['Vendi 3 brigadeiros no recreio depois da missão 4.','Ana, 11 anos'],['Minha loja de slime já tem 12 pedidos.','Lucas, 10 anos'],['Lavei 5 carros no condomínio no fim de semana.','Sofia, 13 anos']],h='';q.forEach(function(c){h+='<div class="qquote"><div style="font-size:14px;line-height:20px;">"'+c[0]+'"</div><div style="font-size:12px;font-weight:600;color:#C9A84C;margin-top:8px;">'+c[1]+'</div></div>';});return '<div class="qbody"><div class="qh" style="margin-top:22px;">Crianças como você já estão construindo.</div><div style="display:flex;flex-direction:column;gap:11px;margin-top:20px;">'+h+'</div><div style="flex:1;"></div>'+foot('Quero fazer igual')+'</div>';},
+  function(){return '<div class="qbody"><div class="qcenter">'+zappy(130,'celebrating')+'<div class="qh" style="margin-top:24px;">A <span style="color:#C9A84C;">'+comp()+'</span> acabou de nascer.</div><p class="qsub" style="margin-top:10px;">Sua primeira missão te espera.</p></div>'+foot('Ver minha primeira missão')+'</div>';}
+];
+
+/* ── CHILD TABS ── */
+function ctabs(act){
+  var t=[['home','🏠','Início'],['missions','⚡','Missões'],['business','📈','Negócio']],h='<div class="qtabs">';
+  t.forEach(function(x){h+='<button class="qtab" data-ctab="'+x[0]+'" style="'+(act===x[0]?'':'opacity:.5;')+'"><span style="font-size:17px;">'+x[1]+'</span><span style="'+(act===x[0]?'color:#C9A84C;':'')+'">'+x[2]+'</span></button>';});
+  h+='<button class="qtab" id="qmuser" style="opacity:.5;"><span style="font-size:17px;">👤</span><span>Sair</span></button>';
+  return h+'</div>';}
+
+function trail(){
+  var W=331,XS=[.5,.82,.5,.18,.5],SEG=96,TOP=30,html='';
+  function cx(i){return XS[i]*W}function cy(i){return TOP+i*SEG}
+  for(var i=0;i<4;i++){for(var d=1;d<=3;d++){var t=d/4;html+='<div class="qdot" style="left:'+(cx(i)+(cx(i+1)-cx(i))*t-3.5)+'px;top:'+(cy(i)+(cy(i+1)-cy(i))*t-3.5)+'px;"></div>';}}
+  var md=S.done.length>=5;
+  MODS.forEach(function(name,i){
+    var on=i===0;
+    html+='<div class="qnode" data-lock="'+(on?'0':'1')+'" style="left:'+(cx(i)-55)+'px;top:'+(cy(i)-27)+'px;'+(on?'':'opacity:.55;')+'"><div class="qcirc'+(on?' on':'')+'">'+(on?(md?'✓':'1'):'🔒')+'</div><div style="font-size:11px;font-weight:600;margin-top:5px;'+(on?'color:#E2C06A;':'color:#888888;')+'">'+name+'</div>'+(on?'<div style="background:rgba(201,168,76,.10);border:1px solid rgba(201,168,76,.35);border-radius:99px;padding:1px 9px;font-size:10px;font-weight:700;color:#E2C06A;margin-top:3px;">'+S.done.length+'/5</div>':'')+'</div>';});
+  html+='<div style="position:absolute;left:'+(cx(0)+36)+'px;top:'+(cy(0)-56)+'px;">'+zappy(52,md?'celebrating':'waving')+'</div>';
+  return '<div style="position:relative;height:'+(TOP+4*SEG+74)+'px;flex-shrink:0;">'+html+'</div>';}
+
+function homeT(){
+  var md=S.done.length>=5,nx=MIS[Math.min(S.done.length,4)];
+  return '<div class="qbody"><div style="display:flex;align-items:center;gap:10px;padding-top:6px;flex-shrink:0;"><div style="flex:1;"><div class="qh" style="font-size:23px;">Fala, '+first()+'!</div><div style="font-size:13px;font-weight:500;color:#C9A84C;margin-top:2px;">'+comp()+'</div></div><div class="qcoins">🪙 <span>'+S.coins+'</span></div></div>'
+  +'<div class="qmcard"><div style="flex:1;"><div class="qtag">'+(md?'MÓDULO 1 COMPLETO 🏁':'MISSÃO '+nx.id+' • MÓDULO 1')+'</div><div style="font-size:18px;font-weight:700;margin-top:5px;line-height:23px;">'+(md?'A '+comp()+' tem um plano.':nx.t)+'</div><div style="font-size:12px;color:#888888;margin-top:6px;">'+(md?'O Módulo 2 — Marca te espera.':'⏱ ~10 min &nbsp;•&nbsp; até +'+(nx.r+nx.p[1])+' ZapCoins')+'</div></div>'+zappy(70,md?'celebrating':'wink')+'</div>'
+  +'<button class="qbtn" id="qcta">'+(md?'Desbloquear Módulo 2':'Começar missão')+'</button>'
+  +'<div style="font-size:16px;font-weight:700;margin:20px 0 4px;flex-shrink:0;">Sua jornada de fundador</div>'+trail()+'</div>'+ctabs('home');}
+
+function missionsT(){
+  var nxid=S.done.length+1,h='';
+  MIS.forEach(function(m){
+    var dn=S.done.indexOf(m.id)>=0,av=!dn&&m.id===nxid,lk=!dn&&!av;
+    h+='<div class="qcardrow'+(av?' act':'')+(lk?' lk':'')+'" data-m="'+(av?m.id:'')+'"><div class="qbdg" style="'+(dn?'background:rgba(201,168,76,.10);color:#E2C06A;':av?'background:#C9A84C;color:#0A0A0A;':'')+'">'+(dn?'✓':lk?'🔒':m.id)+'</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;'+(lk?'color:#888888;':'')+'">'+m.t+'</div><div style="font-size:12px;color:#888888;margin-top:2px;">'+(dn?'Concluída':lk?'Dia '+m.day:'Hoje • até +'+(m.r+m.p[1])+' ZapCoins')+'</div></div>'+(av?'<span style="color:#C9A84C;font-size:14px;">▶</span>':'')+'</div>';});
+  return '<div class="qbody"><div class="qh" style="padding-top:6px;">Missões</div><div style="font-size:13px;font-weight:500;color:#C9A84C;margin:2px 0 16px;">Módulo 1 • Ideia</div><div style="display:flex;flex-direction:column;gap:9px;">'+h+'</div>'
+  +(S.done.length>=5?'<div id="qnext" style="background:rgba(201,168,76,.10);border:1px solid rgba(201,168,76,.35);border-radius:12px;padding:15px;margin-top:14px;text-align:center;cursor:pointer;"><div style="font-size:15px;font-weight:700;color:#E2C06A;">Módulo 1 completo! 🏁</div><div style="font-size:12px;color:#888888;margin-top:3px;">O Módulo 2 — Marca te espera.</div></div>':'')+'</div>'+ctabs('missions');}
+
+function businessT(){
+  return '<div class="qbody"><div class="qh" style="padding-top:6px;margin-bottom:16px;">Seu negócio</div>'
+  +'<div style="background:#141414;border:1.5px solid #C9A84C;border-radius:12px;padding:18px;"><div style="font-size:20px;font-weight:700;color:#C9A84C;">'+comp()+'</div><div style="font-size:13px;color:#888888;margin-top:5px;">'+catLabel()+'</div></div>'
+  +'<div style="display:flex;flex-wrap:wrap;gap:9px;margin-top:12px;"><div class="qstat"><div style="font-size:12px;color:#888888;">Provas reais</div><div style="font-size:18px;font-weight:700;margin-top:3px;">📎 '+S.proofs.length+'</div></div><div class="qstat"><div style="font-size:12px;color:#888888;">Missões</div><div style="font-size:18px;font-weight:700;margin-top:3px;">'+S.done.length+'/5</div></div><div class="qstat"><div style="font-size:12px;color:#888888;">ZapCoins</div><div style="font-size:18px;font-weight:700;margin-top:3px;">🪙 '+S.coins+'</div></div><div class="qstat"><div style="font-size:12px;color:#888888;">Módulo</div><div style="font-size:18px;font-weight:700;margin-top:3px;">1 de 5</div></div></div>'
+  +'<div style="background:#141414;border-radius:12px;padding:20px;margin-top:12px;text-align:center;"><div style="font-size:26px;">💰</div><div style="font-size:15px;font-weight:600;margin-top:8px;">Suas vendas aparecem aqui</div><div style="font-size:12px;color:#888888;margin-top:5px;line-height:17px;">No Módulo 4, você registra dinheiro de verdade entrando na '+comp()+'.</div>'
+  +'<button id="qpw" style="background:#1C1C1C;border:none;border-radius:10px;padding:11px 16px;margin-top:12px;font-family:inherit;font-size:12px;font-weight:600;color:#888888;cursor:default;" disabled>🔒 Pedir pro responsável liberar</button></div>'
+  +'</div>'+ctabs('business');}
+
+function introT(){
+  var m=MIS[S.mid-1];
+  return '<div class="qbody"><div style="display:flex;align-items:center;justify-content:space-between;height:40px;margin:0 -6px;flex-shrink:0;"><button id="qib" style="background:none;border:none;color:#888888;font-size:18px;cursor:pointer;width:32px;">←</button><div class="qtag" style="font-size:11px;">ZAPPY EXPLICA</div><button id="qskip" style="background:none;border:none;color:#888888;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Pular →</button></div>'
+  +'<video src="'+VID[S.mid]+'" controls autoplay playsinline style="width:100%;border-radius:16px;background:#141414;margin-top:6px;"></video>'
+  +'<div style="margin-top:14px;"><div class="qtag">MISSÃO '+m.id+'</div><div style="font-size:18px;font-weight:700;margin-top:4px;">'+m.t+'</div></div><div style="flex:1;"></div></div>'
+  +'<div class="qfoot"><button class="qbtn" id="qgomi">Partiu missão</button></div>';}
+
+function missionT(){
+  var m=MIS[S.mid-1],steps='';
+  m.steps.forEach(function(st,i){steps+='<div class="qstep'+(S.checks[i]?' sel':'')+'" data-i="'+i+'"><div class="qchk">'+(S.checks[i]?'✓':'')+'</div><div><div style="font-size:14px;font-weight:600;'+(S.checks[i]?'color:#E2C06A;':'')+'">'+st[0]+'</div><div style="font-size:12px;color:#888888;margin-top:2px;">'+st[1]+'</div></div></div>';});
+  return '<div class="qbody"><div style="display:flex;align-items:center;justify-content:space-between;height:40px;margin:0 -6px;flex-shrink:0;"><button id="qbk" style="background:none;border:none;color:#888888;font-size:18px;cursor:pointer;width:32px;">←</button><div class="qtag" style="font-size:11px;">MÓDULO 1 • MISSÃO '+m.id+'</div><div style="width:32px;"></div></div>'
+  +'<div style="display:flex;align-items:center;gap:11px;margin-top:8px;flex-shrink:0;">'+zappy(60,'wink')+'<div class="qbubble">'+m.b+'</div></div>'
+  +'<div class="qh" style="margin:18px 0 14px;flex-shrink:0;">'+m.t+'</div><div style="display:flex;flex-direction:column;gap:10px;">'+steps+'</div>'
+  +'<div id="qpf" style="display:flex;align-items:center;gap:11px;background:'+(S.pf?'rgba(201,168,76,.10)':'#141414')+';border:1.5px '+(S.pf?'solid #C9A84C':'dashed rgba(201,168,76,.45)')+';border-radius:12px;padding:14px;margin-top:14px;cursor:pointer;"><span style="font-size:20px;">📸</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Prova do fundador <span style="color:#E2C06A;font-weight:700;">+'+m.p[1]+' 🔥</span></div><div style="font-size:11px;color:#888888;margin-top:2px;line-height:15px;">'+m.p[0]+'</div></div><span style="background:'+(S.pf?'#C9A84C;color:#0A0A0A':'#1C1C1C;color:#E2C06A')+';border-radius:99px;padding:7px 12px;font-size:11px;font-weight:600;white-space:nowrap;">'+(S.pf?'Anexada ✓':'Anexar')+'</span></div>'
+  +'<div style="font-size:10px;color:#888888;text-align:center;margin-top:7px;padding-bottom:6px;">Prova real vale '+Math.round(m.p[1]/m.r)+'x mais que marcar os passos.</div></div>'
+  +'<div class="qfoot"><button class="qbtn" id="qdone"'+(S.checks.every(function(x){return x;})&&S.checks.length?'':' disabled')+'>Concluir missão · +'+(m.r+(S.pf?m.p[1]:0))+'</button></div>';}
+
+function celebT(){
+  var m=MIS[S.mid-1];
+  return '<div class="qbody" style="align-items:center;justify-content:center;text-align:center;">'+zappy(120,'celebrating')
+  +'<div style="display:flex;gap:8px;margin-top:20px;"><div style="background:rgba(201,168,76,.10);border:1px solid rgba(201,168,76,.35);border-radius:99px;padding:8px 15px;font-size:14px;font-weight:700;color:#E2C06A;">+'+m.r+' ZapCoins</div>'+(S.pf?'<div style="background:#C9A84C;border-radius:99px;padding:8px 15px;font-size:14px;font-weight:700;color:#0A0A0A;">+'+m.p[1]+' prova real 🔥</div>':'')+'</div>'
+  +'<div class="qh" style="margin-top:14px;">Missão concluída!</div><p class="qsub" style="margin-top:8px;padding:0 14px;">'+(S.pf?'Prova registrada — a '+comp()+' tem fatos pra mostrar.':'A '+comp()+' deu mais um passo. Da próxima, manda a prova: vale +'+m.p[1]+'.')+'</p></div>'
+  +'<div class="qfoot"><button class="qbtn" id="qhq">Voltar pro QG</button></div>';}
+
+function paywallT(){
+  var isParent=S.mode==='parent';
+  var rows='';
+  MODS.forEach(function(n,i){rows+='<div style="display:flex;align-items:center;gap:11px;"><span style="font-size:14px;">'+(i===0?'✅':'🔒')+'</span><div style="font-size:13px;font-weight:600;">Módulo '+(i+1)+' — '+n+(i===0?' · grátis':'')+'</div></div>';});
+  return '<div class="qbody">'
+  +(isParent?'':'<div style="background:#1C1C1C;border-radius:99px;padding:7px 15px;align-self:center;font-size:11px;color:#888888;font-weight:500;margin-top:6px;">📲 Pede pro responsável liberar</div>')
+  +'<div class="qh" style="margin-top:18px;">'+first()+' acabou de virar fundador.</div>'
+  +'<p style="font-size:13px;line-height:19px;color:#888888;margin-top:8px;">O Módulo 1 foi grátis. A jornada completa transforma a '+comp()+' em um negócio de verdade — com marca, produto e a primeira venda real.</p>'
+  +'<div style="display:flex;flex-direction:column;gap:9px;margin-top:16px;">'+rows+'</div>'
+  +'<div style="display:flex;gap:10px;margin-top:18px;">'
+  +'<div class="qplan'+(S.plan==='yearly'?' sel':'')+'" data-p="yearly"><div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#C9A84C;color:#0A0A0A;font-size:8px;font-weight:700;letter-spacing:.5px;border-radius:99px;padding:2px 8px;white-space:nowrap;">2 MESES GRÁTIS</div><div style="font-size:12px;font-weight:600;color:#888888;">Anual</div><div style="font-size:19px;font-weight:700;margin-top:4px;">R$ 599<span style="font-size:11px;color:#888888;font-weight:500;">/ano</span></div><div style="font-size:10px;color:#888888;margin-top:3px;">R$ 49,90/mês</div></div>'
+  +'<div class="qplan'+(S.plan==='monthly'?' sel':'')+'" data-p="monthly"><div style="font-size:12px;font-weight:600;color:#888888;">Mensal</div><div style="font-size:19px;font-weight:700;margin-top:4px;">R$ 69,90<span style="font-size:11px;color:#888888;font-weight:500;">/mês</span></div><div style="font-size:10px;color:#888888;margin-top:3px;">cancele quando quiser</div></div></div></div>'
+  +'<div class="qfoot">'
+  +(isParent?'<button class="qbtn" id="qpayok">Liberar a jornada completa</button>':'<button class="qbtn" disabled style="cursor:default;">Pedir pro responsável</button>')
+  +'<button id="qnot" style="background:none;border:none;color:#888888;font-size:13px;font-weight:500;cursor:pointer;width:100%;padding:11px;font-family:inherit;">Agora não</button></div>';}
+
+/* ── NAVIGATION ── */
+function nav(to,dir){
+  if(anim)return;anim=true;
+  scr.classList.remove('in');scr.style.opacity='0';scr.style.transform='translateX('+(-28*dir)+'px)';
+  setTimeout(function(){
+    switch(S.mode){
+      case 'parent_ob':
+        if(to==='child_ob'){S.mode='child_ob';S.ob.name=S.childName;S.ob.age=S.childAge;S.screen=3;}
+        else S.pscreen=to;
+        break;
+      case 'child_ob':
+        if(typeof to==='number'){S.screen=to;}
+        else if(to==='child'){S.mode='child';S.cscr='home';S.cflow='tabs';}
+        break;
+      case 'who_using':
+        if(to==='parent'){S.mode='parent';S.pflow='dash';}
+        else if(to==='pin_entry'){S.mode='pin_entry';S.pinInput='';S.pinError=false;}
+        break;
+      case 'pin_entry':
+        if(to==='child'){S.mode='child';S.cscr='home';S.cflow='tabs';}
+        else if(to==='who_using'){S.mode='who_using';}
+        break;
+      case 'parent':
+        if(to==='who_using'){S.mode='who_using';}
+        else if(to==='paywall'){S.pflow='paywall';}
+        else if(to==='report'){S.pflow='report';}
+        else if(to==='dash'){S.pflow='dash';}
+        break;
+      case 'child':
+        if(to==='who_using'){S.mode='who_using';}
+        else if(to==='home'||to==='missions'||to==='business'){S.cflow='tabs';S.cscr=to;}
+        else if(to==='intro'||to==='mission'||to==='celebrate'){S.cflow=to;}
+        else if(to==='paywall'){S.from=S.cscr;S.cflow='paywall';}
+        break;
+    }
+    render();
+    scr.style.transition='none';scr.style.transform='translateX('+(28*dir)+'px)';void scr.offsetWidth;
+    scr.style.transition='';scr.classList.add('in');scr.style.opacity='1';scr.style.transform='translateX(0)';
+    setTimeout(function(){anim=false;},270);
+  },140);}
+
+/* ── RENDER ── */
+function render(){
+  var showOb=S.mode==='parent_ob'||S.mode==='child_ob';
+  ob.style.display=showOb?'block':'none';
+  if(S.mode==='parent_ob'){
+    fill.style.width=((S.pscreen+1)/6*100)+'%';
+    bk0.style.visibility=S.pscreen>0?'visible':'hidden';
+    scr.innerHTML=POB[S.pscreen]();
+  } else if(S.mode==='who_using'){
+    scr.innerHTML=whoUsingT();
+  } else if(S.mode==='pin_entry'){
+    scr.innerHTML=pinEntryT();
+  } else if(S.mode==='child_ob'){
+    fill.style.width=((S.screen-2)/6*100)+'%';
+    bk0.style.visibility=S.screen>3?'visible':'hidden';
+    scr.innerHTML=OB[S.screen]();
+  } else if(S.mode==='parent'){
+    if(S.pflow==='dash') scr.innerHTML=parentDashT();
+    else if(S.pflow==='report') scr.innerHTML=parentReportT();
+    else scr.innerHTML=paywallT();
+  } else if(S.mode==='child'){
+    if(S.cflow==='tabs'){
+      if(S.cscr==='home') scr.innerHTML=homeT();
+      else if(S.cscr==='missions') scr.innerHTML=missionsT();
+      else scr.innerHTML=businessT();
+    } else if(S.cflow==='intro') scr.innerHTML=introT();
+    else if(S.cflow==='mission') scr.innerHTML=missionT();
+    else if(S.cflow==='celebrate') scr.innerHTML=celebT();
+    else scr.innerHTML=paywallT();
+  }
+  wire();
+  var ai=document.getElementById('qin');if(ai&&document.activeElement!==ai)ai.focus();}
+
+/* ── WIRE ── */
+function wire(){
+  /* next button */
+  var nx=document.getElementById('qnx');
+  if(nx)nx.onclick=function(){
+    if(S.mode==='parent_ob'){
+      if(S.pscreen===5){nav('child_ob',1);return;}
+      nav(S.pscreen+1,1);return;}
+    if(S.mode==='child_ob'){
+      if(S.screen===8){nav('child',1);return;}
+      nav(S.screen+1,1);return;}};
+
+  /* text inputs */
+  var inp=document.getElementById('qin');
+  if(inp){
+    inp.oninput=function(){
+      var f=inp.dataset.field;
+      if(f==='parentName') S.parentName=inp.value;
+      else if(f==='childName') S.childName=inp.value;
+      else if(f==='company') S.ob.company=inp.value;
+      var b=document.getElementById('qnx');if(b)b.disabled=!inp.value.trim();};
+    inp.onkeydown=function(e){if(e.key==='Enter'&&inp.value.trim()){var b=document.getElementById('qnx');if(b&&!b.disabled)b.click();}};}
+
+  /* age pills (parent ob step 3) */
+  scr.querySelectorAll('.qpill[data-age]').forEach(function(p){
+    p.onclick=function(){S.childAge=+p.dataset.age;render();};});
+
+  /* category cards (child ob step 4) */
+  scr.querySelectorAll('.qcard[data-cat]').forEach(function(c){
+    c.onclick=function(){S.ob.category=c.dataset.cat;render();};});
+
+  /* PIN keypad */
+  scr.querySelectorAll('.qkbd button[data-k]').forEach(function(b){
+    b.onclick=function(){
+      var k=b.dataset.k;
+      if(S.mode==='parent_ob'&&S.pscreen===4){
+        if(k==='⌫') S.childPIN=S.childPIN.slice(0,-1);
+        else if(S.childPIN.length<4) S.childPIN+=k;
+        render();return;}
+      if(S.mode==='pin_entry'){
+        if(k==='⌫'){S.pinInput=S.pinInput.slice(0,-1);S.pinError=false;}
+        else if(S.pinInput.length<4) S.pinInput+=k;
+        if(S.pinInput.length===4){
+          if(S.pinInput===S.childPIN){nav('child',1);}
+          else{S.pinError=true;render();setTimeout(function(){S.pinInput='';S.pinError=false;render();},700);}
+        } else render();
+        return;}};});
+
+  /* who using */
+  var wp=document.getElementById('qwp');
+  if(wp)wp.onclick=function(){nav('parent',1);};
+  var wc=document.getElementById('qwc');
+  if(wc)wc.onclick=function(){nav('pin_entry',1);};
+
+  /* pin back */
+  var pinback=document.getElementById('qpinback');
+  if(pinback)pinback.onclick=function(){nav('who_using',-1);};
+
+  /* parent dash */
+  var sw=document.getElementById('qswitch');
+  if(sw)sw.onclick=function(){nav('who_using',-1);};
+  var pr=document.getElementById('qpreport');
+  if(pr)pr.onclick=function(){nav('report',1);};
+  var ppw=document.getElementById('qppw');
+  if(ppw)ppw.onclick=function(){nav('paywall',1);};
+
+  /* parent report */
+  var pb=document.getElementById('qpb');
+  if(pb)pb.onclick=function(){nav('dash',-1);};
+  var ppw2=document.getElementById('qppw2');
+  if(ppw2)ppw2.onclick=function(){nav('paywall',1);};
+
+  /* child tabs */
+  scr.querySelectorAll('.qtab[data-ctab]').forEach(function(t){
+    t.onclick=function(){if(t.dataset.ctab!==S.cscr||S.cflow!=='tabs')nav(t.dataset.ctab,1);};});
+  var mu=document.getElementById('qmuser');
+  if(mu)mu.onclick=function(){nav('who_using',-1);};
+
+  /* home CTA */
+  var cta=document.getElementById('qcta');
+  if(cta)cta.onclick=function(){
+    if(S.done.length>=5){nav('paywall',1);}
+    else{S.mid=S.done.length+1;S.checks=MIS[S.mid-1].steps.map(function(){return false;});S.pf=false;nav(VID[S.mid]?'intro':'mission',1);}};
+
+  /* intro */
+  var ib=document.getElementById('qib');if(ib)ib.onclick=function(){nav('home',-1);};
+  var sk=document.getElementById('qskip');if(sk)sk.onclick=function(){nav('mission',1);};
+  var gm=document.getElementById('qgomi');if(gm)gm.onclick=function(){nav('mission',1);};
+
+  /* mission */
+  var pf=document.getElementById('qpf');if(pf)pf.onclick=function(){S.pf=!S.pf;render();};
+  scr.querySelectorAll('.qstep').forEach(function(st){st.onclick=function(){S.checks[+st.dataset.i]=!S.checks[+st.dataset.i];render();};});
+  var bk=document.getElementById('qbk');if(bk)bk.onclick=function(){nav('home',-1);};
+  var dn=document.getElementById('qdone');
+  if(dn)dn.onclick=function(){var m=MIS[S.mid-1];if(S.done.indexOf(S.mid)<0){S.done.push(S.mid);S.coins+=m.r+(S.pf?m.p[1]:0);if(S.pf)S.proofs.push(S.mid);}nav('celebrate',1);};
+
+  /* celebrate */
+  var hq=document.getElementById('qhq');if(hq)hq.onclick=function(){nav('home',1);};
+
+  /* missions tab */
+  scr.querySelectorAll('.qcardrow[data-m]').forEach(function(c){var id=+c.dataset.m;if(id)c.onclick=function(){S.mid=id;S.checks=MIS[id-1].steps.map(function(){return false;});S.pf=false;nav(VID[id]?'intro':'mission',1);};});
+  var qn=document.getElementById('qnext');if(qn)qn.onclick=function(){nav('paywall',1);};
+  scr.querySelectorAll('.qnode[data-lock="1"]').forEach(function(n){n.onclick=function(){nav('paywall',1);};});
+
+  /* paywall */
+  scr.querySelectorAll('.qplan[data-p]').forEach(function(p){p.onclick=function(){S.plan=p.dataset.p;render();};});
+  var nt=document.getElementById('qnot');
+  if(nt)nt.onclick=function(){
+    if(S.mode==='parent'){nav('dash',-1);}
+    else nav(S.from,-1);};
+}
+
+/* ── BACK BUTTON (header) ── */
+bk0.onclick=function(){
+  if(S.mode==='parent_ob'&&S.pscreen>0) nav(S.pscreen-1,-1);
+  else if(S.mode==='child_ob'&&S.screen>3) nav(S.screen-1,-1);};
+
+document.getElementById('qrst').onclick=function(){init();render();};
+render();
+})();
+</script>
+</body>
+</html>

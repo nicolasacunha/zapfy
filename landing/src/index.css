@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Shell do sistema: html/body em #0C1222 (regra auditada do design system). */
+html,
+body {
+  background-color: #0c1222;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-body text-ink antialiased;
+}
+
+/* Títulos sempre em Grandstander — pesos 700/800/900. */
+h1,
+h2,
+h3 {
+  @apply font-display;
+}
+
+/* Entrada escalonada do hero (uma orquestração só, sem micro-animações espalhadas). */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.rise-1 { animation-delay: 0.05s; }
+.rise-2 { animation-delay: 0.15s; }
+.rise-3 { animation-delay: 0.25s; }
+.rise-4 { animation-delay: 0.35s; }
+
+/* Flutuação sutil do Zappy no hero. */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto;
+  }
+  .rise,
+  .float {
+    animation: none;
+  }
+}
