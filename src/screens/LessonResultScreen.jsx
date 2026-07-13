@@ -10,6 +10,7 @@ import { getCopy } from '../lib/copy'
 import TreasureChest, { pickChestReward } from '../components/TreasureChest'
 import { isLastUnitOfModule } from '../data/modules'
 import { PAYWALL_ENABLED } from '../lib/flags'
+import { rewardForLesson, levelFromXp } from '../lib/economy'
 
 // ── CountUp: rola um número do zero até `target` ─────────────
 function CountUp({ target, duration = 900, prefix = '', suffix = '', className = '', style = {} }) {
@@ -80,7 +81,7 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
   }
 
   const handleShare = async () => {
-    const level = Math.floor(state.xp / 500) + 1
+    const level = levelFromXp(state.xp)
     const text = `Avancei uma missão no Zapfy ⚡ Nível ${level} — construindo meu negócio. #Zapfy #Empreendedorismo`
     try {
       await navigator.share({ title: 'Zapfy', text })
@@ -89,10 +90,12 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
     }
   }
 
+  const reward = rewardForLesson({ xp2xActive: state.xp2xActive })
+
   const rewards = [
     {
       icon: <Star  size={22} fill={C.warning} color={C.warning} />,
-      label: <CountUp target={25} prefix="+"/>,
+      label: <CountUp target={reward.xp} prefix="+"/>,
       sub:   'XP ganho',
       border: C.warning,
     },
@@ -104,7 +107,7 @@ export default function LessonResultScreen({ onNav, unitId, perfect }) {
     },
     {
       icon: <Coins size={22} fill={C.warning} color={C.warning} />,
-      label: <CountUp target={10} prefix="+"/>,
+      label: <CountUp target={reward.zapcoins} prefix="+"/>,
       sub:   'Zapcoins',
       border: C.warning,
     },

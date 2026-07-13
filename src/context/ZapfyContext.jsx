@@ -5,6 +5,7 @@ import { checkNewAchievements, getAchievement } from '../data/achievements'
 import { recordXP } from '../lib/xpHistory'
 import { logPilotEvent } from '../lib/pilotMetrics'
 import { registerActivity, clampEnergy, decayEnergy } from '../lib/zappyState'
+import { rewardForLesson, levelFromXp } from '../lib/economy'
 
 // ── Estado inicial ─────────────────────────────────────────────
 const INIT = {
@@ -177,11 +178,11 @@ function reducer(state, action) {
       const unitId = action.unitId
       if (state.completedUnits.includes(unitId)) return state
       const prevUnlocked = state.unlockedAchievements || []
-      const prevLevel    = Math.floor(state.xp / 500)
-      // xp2x: dobra XP se item ativo
-      const xpGain = state.xp2xActive ? 50 : 25
-      const newXp  = state.xp + xpGain
-      const newLevel = Math.floor(newXp / 500)
+      const prevLevel    = levelFromXp(state.xp)
+      // Recompensa da lição vem da fonte única (respeita xp2x)
+      const reward = rewardForLesson({ xp2xActive: state.xp2xActive })
+      const newXp  = state.xp + reward.xp
+      const newLevel = levelFromXp(newXp)
       // Streak: incrementa apenas uma vez por dia-calendário
       const todayStr = new Date().toISOString().slice(0, 10)
       const lastDate = state.streakLastDate
@@ -215,7 +216,7 @@ function reducer(state, action) {
         streak:                newStreak,
         streakLastDate:        todayStr,
         xp:                    newXp,
-        zapcoins:              state.zapcoins + 10,
+        zapcoins:              state.zapcoins + reward.zapcoins,
         completedUnits:        [...state.completedUnits, unitId],
         perfectLessons:        action.perfect ? (state.perfectLessons || 0) + 1 : (state.perfectLessons || 0),
         pendingLevelUp:        newLevel > prevLevel ? newLevel : (state.pendingLevelUp || null),
@@ -439,7 +440,7 @@ export function ZapfyProvider({ children }) {
     rawDispatch(action)
     saveLocalProgress(nextState) // persiste local a cada mudança (offline-first)
 
-    if (action.type === 'COMPLETE_UNIT') recordXP(25)
+    if (action.type === 'COMPLETE_UNIT') recordXP(rewardForLesson({ xp2xActive: nextState.xp2xActive }).xp)
 
     // ── Piloto: log de eventos por criança (D1–D7 + engajamento) ──
     const pcid = nextState.childProfileId

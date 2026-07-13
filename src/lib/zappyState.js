@@ -81,9 +81,9 @@ export const EVOLUTIONS = [
   { key: 'lenda',    label: 'Lenda',    minLevel: 5 },
 ]
 
-export function levelFromXp(xp) {
-  return Math.floor((xp || 0) / 500) + 1
-}
+// Nível vive em lib/economy (fonte única da economia); reexportado aqui para os
+// consumidores que já importavam levelFromXp de zappyState (ex.: MeuZappyScreen).
+export { levelFromXp } from './economy'
 
 // Estágio atual a partir do nível
 export function evolutionStage(level) {

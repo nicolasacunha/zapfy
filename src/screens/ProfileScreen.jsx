@@ -6,8 +6,7 @@ import Header from '../components/Header'
 import Zappy from '../components/Zappy'
 import { getWeekXP } from '../lib/xpHistory'
 import { evolutionStage, nextEvolution } from '../lib/zappyState'
-
-const LEVEL_TITLES = ['Curioso', 'Aprendiz', 'Empreendedor', 'Estrategista', 'Visionário', 'Fundador', 'Lenda']
+import { levelFromXp, titleForLevel } from '../lib/economy'
 
 export default function ProfileScreen({ onNav }) {
   const { state } = useZapfy()
@@ -15,8 +14,8 @@ export default function ProfileScreen({ onNav }) {
   const badges   = ACHIEVEMENTS.filter(a => unlocked.includes(a.id))
     .map(a => ({ e: a.emoji, n: a.name, d: a.desc }))
   const days  = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
-  const level = Math.floor(state.xp / 500) + 1
-  const title = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)]
+  const level = levelFromXp(state.xp)
+  const title = titleForLevel(level)
   const stage = evolutionStage(level)
   const nextEvo = nextEvolution(level)
   const weekXP = getWeekXP()

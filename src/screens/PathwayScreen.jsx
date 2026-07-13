@@ -10,10 +10,10 @@ import ZappyWelcomeBack from '../components/ZappyWelcomeBack'
 import { useHeartTimer } from '../hooks/useHeartTimer'
 import { getCopy } from '../lib/copy'
 import { getMissions } from '../lib/missions'
+import { levelFromXp, xpPct, titleForLevel } from '../lib/economy'
 
 const MOD_EMOJI = { 1: '💡', 2: '🏢', 3: '👥', 4: '💎', 5: '🚀' }
 const ZIGZAG = ['mr-auto ml-8', 'mx-auto', 'ml-auto mr-8', 'mx-auto']
-const LEVEL_TITLES = ['Curioso', 'Aprendiz', 'Empreendedor', 'Estrategista', 'Visionário', 'Fundador', 'Lenda']
 
 function InfoCard({ icon, title, sub, badge, badgeColor, badgeBg, onClick }) {
   return (
@@ -84,10 +84,9 @@ export default function PathwayScreen({ onNav }) {
     return 'active'
   }
 
-  const xpInLevel  = state.xp % 500
-  const xpPct      = Math.round((xpInLevel / 500) * 100)
-  const level      = Math.floor(state.xp / 500) + 1
-  const title      = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)]
+  const pct        = xpPct(state.xp)
+  const level      = levelFromXp(state.xp)
+  const title      = titleForLevel(level)
   const missions   = getMissions(state.streak)
   const wager      = state.streakWager
   const doneMissions = missions.filter(m => m.done).length
@@ -120,7 +119,7 @@ export default function PathwayScreen({ onNav }) {
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, color: C.inkSoft }}>{state.xp} XP</span>
         </div>
-        <XPBar pct={xpPct} />
+        <XPBar pct={pct} />
       </div>
 
       {/* Abraço de boas-vindas no retorno (1x por sessão) */}
