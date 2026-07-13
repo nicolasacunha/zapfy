@@ -41,7 +41,6 @@ export async function loadUserState(childId) {
     currentModule:     progress?.current_module  ?? 1,
     parentPin:         profile.parent_pin_hash ?? null,
     missionReports,
-    completedMissions: Object.keys(missionReports).map(Number),
     company: company ? {
       name:      company.name,
       type:      company.type,

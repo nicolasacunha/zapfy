@@ -41,7 +41,7 @@ export default function RealWorldMissionScreen({ onNav, moduleId }) {
     }
 
     dispatch({
-      type: 'COMPLETE_MISSION',
+      type: 'COMPLETE_MODULE_MISSION',
       moduleId,
       xp:     mission.xp,
       report,

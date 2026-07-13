@@ -7,18 +7,26 @@ export const MISSION_DEFS = [
 const LS_KEY = 'zapfy_missions'
 const today = () => new Date().toISOString().slice(0, 10)
 
+// Dono do ciclo diário das missões: progresso + concluídas + resgatadas, com reset
+// automático na virada de dia (comparação por `date`). O reducer é dono da carteira;
+// aqui vive tudo que reseta à meia-noite.
+function blank() {
+  return { date: today(), progress: {}, completed: [], claimed: [] }
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(LS_KEY)
     const d = raw ? JSON.parse(raw) : null
     if (!d || d.date !== today()) {
-      const fresh = { date: today(), progress: {}, completed: [] }
+      const fresh = blank()
       localStorage.setItem(LS_KEY, JSON.stringify(fresh))
       return fresh
     }
+    if (!Array.isArray(d.claimed)) d.claimed = [] // tolera estados salvos antes do resgate
     return d
   } catch {
-    return { date: today(), progress: {}, completed: [] }
+    return blank()
   }
 }
 
@@ -27,12 +35,17 @@ function save(s) {
 }
 
 export function getMissions(streak = 0) {
-  const { progress, completed } = load()
-  return MISSION_DEFS.map(m => ({
-    ...m,
-    current: Math.min(m.type === 'streak' ? streak : (progress[m.id] || 0), m.target),
-    done: completed.includes(m.id),
-  }))
+  const { progress, completed, claimed } = load()
+  return MISSION_DEFS.map(m => {
+    const done = completed.includes(m.id)
+    return {
+      ...m,
+      current:   Math.min(m.type === 'streak' ? streak : (progress[m.id] || 0), m.target),
+      done,
+      claimed:   claimed.includes(m.id),
+      claimable: done && !claimed.includes(m.id),
+    }
+  })
 }
 
 export function trackMission(type, streak = 0) {
@@ -59,10 +72,24 @@ export function trackMission(type, streak = 0) {
   return newlyDone
 }
 
+// Único juiz do "já resgatou?": devolve a recompensa exatamente uma vez, ou null se a
+// missão não está concluída ou já foi resgatada. O caller credita a carteira só quando
+// recebe uma recompensa não-nula.
+export function claimDailyMission(id) {
+  const state = load()
+  const def = MISSION_DEFS.find(m => m.id === id)
+  if (!def) return null
+  if (!state.completed.includes(id)) return null // ainda não concluída
+  if (state.claimed.includes(id)) return null     // já resgatada
+  state.claimed.push(id)
+  save(state)
+  return def.reward
+}
+
 export function hasPendingMissions(streak = 0) {
-  return getMissions(streak).some(m => !m.done)
+  return getMissions(streak).some(m => !m.claimed)
 }
 
 export function allMissionsDone(streak = 0) {
-  return getMissions(streak).every(m => m.done)
+  return getMissions(streak).every(m => m.claimed)
 }

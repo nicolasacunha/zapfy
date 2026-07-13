@@ -10,7 +10,7 @@ export const ACHIEVEMENTS = [
   { id: 'modulo_1',       emoji: '💡', name: 'Visionário',         desc: 'Módulo 1 completo',             check: s => s.completedModules.includes(1) },
   { id: 'rico',           emoji: '🪙', name: 'Tesoureiro',         desc: '100 Zapcoins acumulados',       check: s => s.zapcoins >= 100 },
   { id: 'perfeccionista', emoji: '🎯', name: 'Perfeccionista',     desc: 'Lição sem nenhum erro',         check: s => s.perfectLessons >= 1 },
-  { id: 'missao',         emoji: '📋', name: 'Em Missão',          desc: 'Completou missão do dia',       check: s => s.missionsDoneToday >= 1 },
+  { id: 'missao',         emoji: '📋', name: 'Em Missão',          desc: 'Completou missão do dia',       check: s => s.moduleMissionsDone >= 1 },
 ]
 
 export function getAchievement(id) {

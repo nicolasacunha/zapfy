@@ -34,7 +34,6 @@ const INIT = {
   completedModules: [],
   completedUnits:   [],
   seenModuleIntros:  [],
-  completedMissions: [],
   missionReports:    {},
 
   // Escolhas de exercícios compostos
@@ -46,7 +45,7 @@ const INIT = {
   pendingLevelUp:        null,
   pendingStreakMilestone: null,
   perfectLessons:        0,
-  missionsDoneToday:     0,
+  moduleMissionsDone:    0,
   dailyXpGoal:           20,
   streakWager:           null,
   zapfySkin:             'default',
@@ -80,18 +79,17 @@ const MOCK_STATE = {
   zappyEnergy:       95,
   zappyLastActive:   null,
   seenModuleIntros:  [1],
-  completedMissions: [],
   missionReports:    {},
   pendingToast:     null,
   pendingLevelUp:   null,
   perfectLessons:   2,
-  missionsDoneToday: 0,
+  moduleMissionsDone: 0,
 }
 
 // Ações que precisam ser sincronizadas com o banco
 const SYNC_ACTIONS = new Set([
   'COMPLETE_UNIT', 'COMPLETE_MODULE', 'LOSE_HEART', 'RESTORE_HEARTS', 'REGEN_HEARTS',
-  'SPEND_ZAPCOIN', 'SPEND_GEM', 'UNLOCK_FOUNDER', 'COMPLETE_MISSION',
+  'SPEND_ZAPCOIN', 'SPEND_GEM', 'UNLOCK_FOUNDER', 'COMPLETE_MODULE_MISSION', 'GRANT_DAILY_REWARD',
 ])
 
 // ── Persistência local (offline-first) ─────────────────────────
@@ -275,22 +273,31 @@ function reducer(state, action) {
       return withAchievements(prevUnlocked, next)
     }
 
-    case 'COMPLETE_MISSION': {
+    case 'COMPLETE_MODULE_MISSION': {
       const prevUnlocked = state.unlockedAchievements || []
       const moduleId     = action.moduleId
-      const alreadyDone  = (state.completedMissions || []).includes(moduleId)
+      // missionReports é o dono das missões de módulo concluídas; alreadyDone deriva dele
+      const alreadyDone  = !!(state.missionReports || {})[moduleId]
       const next = {
         ...state,
-        xp:               state.xp + (alreadyDone ? 0 : (action.xp || 0)),
-        zapcoins:         state.zapcoins + (alreadyDone ? 0 : (action.zapcoins || 0)),
-        missionsDoneToday: alreadyDone ? state.missionsDoneToday : (state.missionsDoneToday || 0) + 1,
-        completedMissions: alreadyDone ? (state.completedMissions || []) : [...(state.completedMissions || []), moduleId],
-        missionReports:    action.report
+        xp:                 state.xp + (alreadyDone ? 0 : (action.xp || 0)),
+        zapcoins:           state.zapcoins + (alreadyDone ? 0 : (action.zapcoins || 0)),
+        moduleMissionsDone: alreadyDone ? state.moduleMissionsDone : (state.moduleMissionsDone || 0) + 1,
+        missionReports:     action.report
           ? { ...(state.missionReports || {}), [moduleId]: action.report }
           : (state.missionReports || {}),
       }
       return withAchievements(prevUnlocked, next)
     }
+
+    case 'GRANT_DAILY_REWARD':
+      // Crédito puro da carteira. A idempotência ("já resgatou?") vive em lib/missions.js,
+      // que só devolve recompensa uma vez — aqui apenas somamos.
+      return {
+        ...state,
+        xp:       state.xp + (action.xp || 0),
+        zapcoins: state.zapcoins + (action.zapcoins || 0),
+      }
 
     case 'DISMISS_TOAST':
       return { ...state, pendingToast: null }
@@ -441,7 +448,7 @@ export function ZapfyProvider({ children }) {
         logPilotEvent('lesson_complete', { unit_id: action.unitId }, pcid); break
       case 'COMPLETE_MODULE':
         logPilotEvent('module_complete', { module_id: action.moduleId }, pcid); break
-      case 'COMPLETE_MISSION':
+      case 'COMPLETE_MODULE_MISSION':
         logPilotEvent('mission_complete', { module_id: action.moduleId, withProof: !!action.report }, pcid); break
       case 'FOUND_COMPANY':
         logPilotEvent('company_created', { name: nextState.company?.name || null }, pcid); break
@@ -464,7 +471,7 @@ export function ZapfyProvider({ children }) {
       saveCompany(nextState.childProfileId, { ...nextState.company, isFounder: true })
     }
 
-    if (action.type === 'COMPLETE_MISSION' && action.moduleId && action.report &&
+    if (action.type === 'COMPLETE_MODULE_MISSION' && action.moduleId && action.report &&
         nextState.childProfileId && nextState.childProfileId !== 'mock-child') {
       saveMissionReport(nextState.childProfileId, action.moduleId, action.report)
     }

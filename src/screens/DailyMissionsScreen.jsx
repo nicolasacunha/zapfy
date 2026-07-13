@@ -1,17 +1,17 @@
 import { X, Check } from 'lucide-react'
 import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
-import { getMissions } from '../lib/missions'
+import { getMissions, claimDailyMission } from '../lib/missions'
 import { getCopy } from '../lib/copy'
 
 export default function DailyMissionsScreen({ onNav }) {
   const { state, dispatch } = useZapfy()
   const missions = getMissions(state.streak)
-  const allDone  = missions.every(m => m.done)
+  const allDone  = missions.every(m => m.claimed)
 
   const claimMission = (m) => {
-    if (!m.done || m.claimed) return
-    dispatch({ type: 'COMPLETE_MISSION', xp: m.reward.xp, zapcoins: m.reward.zapcoins })
+    const reward = claimDailyMission(m.id)
+    if (reward) dispatch({ type: 'GRANT_DAILY_REWARD', xp: reward.xp, zapcoins: reward.zapcoins })
   }
 
   return (
@@ -64,19 +64,27 @@ export default function DailyMissionsScreen({ onNav }) {
                     </p>
                   </div>
                 </div>
-                {m.done
+                {m.claimed
                   ? (
                     <div className="w-8 h-8 rounded-full flex items-center justify-center pop-in"
                       style={{ background: C.success }}>
                       <Check size={16} color="white" strokeWidth={3} />
                     </div>
                   )
-                  : (
-                    <span className="text-xs font-extrabold px-2 py-1 rounded-lg"
-                      style={{ background: C.bg, color: C.inkSoft }}>
-                      {m.current}/{m.target}
-                    </span>
-                  )}
+                  : m.claimable
+                    ? (
+                      <button onClick={() => claimMission(m)}
+                        className="text-xs font-extrabold px-3 py-2 rounded-xl pop-in active:scale-95 transition-transform"
+                        style={{ background: C.primary, color: 'white' }}>
+                        Resgatar
+                      </button>
+                    )
+                    : (
+                      <span className="text-xs font-extrabold px-2 py-1 rounded-lg"
+                        style={{ background: C.bg, color: C.inkSoft }}>
+                        {m.current}/{m.target}
+                      </span>
+                    )}
               </div>
 
               {/* Progress bar */}
