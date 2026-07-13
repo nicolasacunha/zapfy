@@ -1,5 +1,56 @@
 import { supabase } from './supabase'
 
+// ── Mapeamento de campos (fonte única, bidirecional) ───────────────────────────
+// Antes o de↔para snake_case (colunas Supabase) ↔ camelCase (state) vivia escrito
+// duas vezes — uma na leitura (loadUserState) e outra na escrita (syncProgress).
+// Adicionar um campo exigia tocar os dois lados e era fácil divergir. Agora o mapa
+// é declarativo e as duas direções derivam dele.
+const PROGRESS_MAP = [
+  { col: 'xp',                key: 'xp',               fallback: 0 },
+  { col: 'streak',            key: 'streak',           fallback: 0 },
+  { col: 'hearts',            key: 'hearts',           fallback: 5 },
+  { col: 'zapcoins',          key: 'zapcoins',         fallback: 0 },
+  { col: 'gems',              key: 'gems',             fallback: 0 },
+  { col: 'league',            key: 'league',           fallback: 'Bronze' },
+  { col: 'league_position',   key: 'leaguePosition',   fallback: 1 },
+  { col: 'completed_units',   key: 'completedUnits',   fallback: [] },
+  { col: 'completed_modules', key: 'completedModules', fallback: [] },
+  { col: 'current_module',    key: 'currentModule',    fallback: 1 },
+]
+
+const COMPANY_MAP = [
+  { col: 'name',       key: 'name',      fallback: null },
+  { col: 'type',       key: 'type',      fallback: null },
+  { col: 'product',    key: 'product',   fallback: null },
+  { col: 'is_founder', key: 'isFounder', fallback: false },
+]
+
+// linha do banco → recorte do state (com defaults de leitura)
+function rowToState(map, row) {
+  const out = {}
+  for (const { col, key, fallback } of map) {
+    const v = row?.[col]
+    out[key] = v ?? (Array.isArray(fallback) ? [...fallback] : fallback)
+  }
+  return out
+}
+
+// state → linha do banco (só as colunas do mapa)
+function stateToRow(map, state) {
+  const row = {}
+  for (const { col, key, fallback } of map) {
+    const v = state?.[key]
+    row[col] = v ?? (Array.isArray(fallback) ? [...fallback] : fallback)
+  }
+  return row
+}
+
+export const progressToState = (progress) => rowToState(PROGRESS_MAP, progress)
+export const stateToProgress = (state) => stateToRow(PROGRESS_MAP, state)
+export const companyToState  = (company) => rowToState(COMPANY_MAP, company)
+export const stateToCompany  = (company) => stateToRow(COMPANY_MAP, company)
+
+// ── I/O Supabase ───────────────────────────────────────────────────────────────
 export async function getMissionReports(childId) {
   const { data, error } = await supabase
     .from('mission_completions')
@@ -21,57 +72,29 @@ export async function loadUserState(childId) {
 
   // O streak é devolvido cru; a autoridade que avança/reinicia é o reducer
   // (nextStreak em lib/calendar), no próximo COMPLETE_UNIT.
-  const streak = progress?.streak ?? 0
-
   return {
-    user:              { name: profile.name, age: profile.age },
-    streak,
-    xp:                progress?.xp            ?? 0,
-    hearts:            progress?.hearts         ?? 5,
-    zapcoins:          progress?.zapcoins       ?? 0,
-    gems:              progress?.gems           ?? 0,
-    league:            progress?.league         ?? 'Bronze',
-    leaguePosition:    progress?.league_position ?? 1,
-    completedUnits:    progress?.completed_units  ?? [],
-    completedModules:  progress?.completed_modules ?? [],
-    currentModule:     progress?.current_module  ?? 1,
-    parentPin:         profile.parent_pin_hash ?? null,
+    user:      { name: profile.name, age: profile.age },
+    parentPin: profile.parent_pin_hash ?? null,
     missionReports,
-    company: company ? {
-      name:      company.name,
-      type:      company.type,
-      product:   company.product,
-      isFounder: company.is_founder,
-    } : null,
+    ...progressToState(progress),
+    company: company ? companyToState(company) : null,
   }
 }
 
 export async function syncProgress(childId, state) {
   const { error } = await supabase.from('progress').upsert({
-    user_id:           childId,
-    xp:                state.xp,
-    streak:            state.streak,
-    hearts:            state.hearts,
-    zapcoins:          state.zapcoins,
-    gems:              state.gems,
-    league:            state.league,
-    league_position:   state.leaguePosition,
-    completed_units:   state.completedUnits,
-    completed_modules: state.completedModules,
-    current_module:    state.currentModule,
-    last_played_at:    new Date().toISOString(),
-    updated_at:        new Date().toISOString(),
+    user_id:        childId,
+    ...stateToProgress(state),
+    last_played_at: new Date().toISOString(),
+    updated_at:     new Date().toISOString(),
   })
   if (error) console.error('[Zapfy] sync error:', error)
 }
 
 export async function saveCompany(childId, company) {
   const { error } = await supabase.from('companies').upsert({
-    user_id:    childId,
-    name:       company.name,
-    type:       company.type,
-    product:    company.product,
-    is_founder: company.isFounder ?? false,
+    user_id: childId,
+    ...stateToCompany(company),
   })
   if (error) console.error('[Zapfy] company sync error:', error)
 }

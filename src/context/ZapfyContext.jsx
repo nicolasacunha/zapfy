@@ -102,6 +102,9 @@ const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate
   'completedUnits','completedModules','currentModule','seenModuleIntros','company',
   'missionReports','lessonChoices','user','zappyEnergy','zappyLastActive','zappyName']
 
+// Criança real (não o perfil mock de dev) — porta de entrada para gravar no Supabase
+const isRealChild = (s) => !!s?.childProfileId && s.childProfileId !== 'mock-child'
+
 function saveLocalProgress(s) {
   if (!s || !s.childProfileId) return
   try {
@@ -417,7 +420,7 @@ export function ZapfyProvider({ children }) {
   }, [state.isLoading])
 
   const scheduleSync = useCallback((nextState) => {
-    if (!IS_CONFIGURED || !nextState.childProfileId || nextState.childProfileId === 'mock-child') return
+    if (!IS_CONFIGURED || !isRealChild(nextState)) return
     clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
       syncProgress(nextState.childProfileId, nextState)
@@ -454,18 +457,15 @@ export function ZapfyProvider({ children }) {
       scheduleSync(nextState)
     }
 
-    if (action.type === 'FOUND_COMPANY' && nextState.company && nextState.childProfileId &&
-        nextState.childProfileId !== 'mock-child') {
+    if (action.type === 'FOUND_COMPANY' && nextState.company && isRealChild(nextState)) {
       saveCompany(nextState.childProfileId, nextState.company)
     }
 
-    if (action.type === 'UNLOCK_FOUNDER' && nextState.company && nextState.childProfileId &&
-        nextState.childProfileId !== 'mock-child') {
+    if (action.type === 'UNLOCK_FOUNDER' && nextState.company && isRealChild(nextState)) {
       saveCompany(nextState.childProfileId, { ...nextState.company, isFounder: true })
     }
 
-    if (action.type === 'COMPLETE_MODULE_MISSION' && action.moduleId && action.report &&
-        nextState.childProfileId && nextState.childProfileId !== 'mock-child') {
+    if (action.type === 'COMPLETE_MODULE_MISSION' && action.moduleId && action.report && isRealChild(nextState)) {
       saveMissionReport(nextState.childProfileId, action.moduleId, action.report)
     }
   }, [scheduleSync])
