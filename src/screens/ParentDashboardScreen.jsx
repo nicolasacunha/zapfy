@@ -6,6 +6,7 @@ import Zappy from '../components/Zappy'
 import { MODULES } from '../data/modules'
 import { getLast7Days, getWeekTotal } from '../lib/screenTime'
 import { exportPilotData, pilotSummary } from '../lib/pilotMetrics'
+import { skillsFromProgress } from '../lib/domain'
 
 export default function ParentDashboardScreen({ onNav }) {
   const { state } = useZapfy()
@@ -23,12 +24,8 @@ export default function ParentDashboardScreen({ onNav }) {
   const doneUnits  = state.completedUnits.length
   const progress   = totalUnits > 0 ? Math.round((doneUnits / totalUnits) * 100) : 0
 
-  const skills = [
-    { n: 'Identificar oportunidades',  pct: Math.min(100, 20 + doneUnits * 10), c: C.primary  },
-    { n: 'Pensar como cliente',        pct: Math.min(100, doneUnits * 8),        c: '#7C3AED' },
-    { n: 'Matemática de negócio',      pct: Math.min(100, doneUnits * 5),        c: C.accent  },
-    { n: 'Comunicação e pitch',        pct: Math.min(100, doneUnits * 4),        c: C.success },
-  ]
+  const SKILL_COLORS = [C.primary, '#7C3AED', C.accent, C.success]
+  const skills = skillsFromProgress(doneUnits).map((s, i) => ({ n: s.name, pct: s.pct, c: SKILL_COLORS[i] }))
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { C } from '../tokens'
 import { useZapfy } from '../context/ZapfyContext'
+import { inferCompanyType } from '../lib/domain'
 import Zappy from '../components/Zappy'
 import Btn from '../components/Btn'
 
@@ -40,25 +41,16 @@ const ZAPPY_REACTIONS = [
   'Perfeito pra você!',
 ]
 
-// Mapeia escolhas dos exercícios para tipo de empresa
-function inferTypeFromChoices(lessonChoices) {
-  const m2 = lessonChoices?.['m2-nome']?.[0] || ''
-  const m1 = lessonChoices?.['m1-ideia']?.[0] || ''
-  if (m2.includes('Produto físico')) return 'loja'
-  if (m2.includes('Digital')  || m1.includes('Tecnologia')) return 'digital'
-  if (m2.includes('Serviço')  || m1.includes('Desenho') || m1.includes('Estudos')) return 'servico'
-  return null
-}
-
 export default function CompanyCreationScreen({ onNav }) {
   const { state, dispatch } = useZapfy()
   const { lessonChoices } = state
 
-  const suggestedType = inferTypeFromChoices(lessonChoices)
+  const suggestedType = inferCompanyType(lessonChoices)
 
   const [step,           setStep]          = useState(0)
   const [selectedType,   setSelectedType]  = useState(suggestedType)
-  const [companyName,    setCompanyName]   = useState('')
+  // Pré-preenche com o nome que a criança digitou no onboarding (companyDraftName)
+  const [companyName,    setCompanyName]   = useState(state.companyDraftName || '')
   const [selectedProduct,setSelectedProduct] = useState(null)
   const [reaction,       setReaction]      = useState(ZAPPY_REACTIONS[0])
   const [nameTyped,      setNameTyped]     = useState(false)
