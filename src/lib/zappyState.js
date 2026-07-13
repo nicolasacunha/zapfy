@@ -35,22 +35,13 @@ export function moodMeta(energy) {
 
 // ── Decaimento (ponto de partida — ajustar com dado real) ──────────
 export const DECAY_PER_DAY = 15
+// dayKey/daysBetween vivem em lib/calendar (fonte única do dia-calendário).
+import { dayKey as toDateStr, daysBetween } from './calendar'
+export { daysBetween } // reexporta para quem já importava de zappyState (ZappyWelcomeBack)
+
 export const GRACE_DAYS = 1        // 1º dia de carência (não cai)
 export const ACTIVITY_BUMP = 40    // aparecer/atividade sobe forte
 export const RETURN_BUMP = 35      // salto extra se estava baixo (reencontro gostoso)
-
-export function toDateStr(d = new Date()) {
-  const x = new Date(d); x.setHours(12, 0, 0, 0)
-  return x.toISOString().slice(0, 10)
-}
-
-export function daysBetween(fromStr, now = new Date()) {
-  if (!fromStr) return 0
-  const MS = 24 * 60 * 60 * 1000
-  const a = new Date(fromStr); a.setHours(0, 0, 0, 0)
-  const b = new Date(now);     b.setHours(0, 0, 0, 0)
-  return Math.max(0, Math.round((b - a) / MS))
-}
 
 // Recalcula a energia a partir do último dia ativo (chamar no app-open)
 export function decayEnergy(energy, lastActiveDate, now = new Date()) {

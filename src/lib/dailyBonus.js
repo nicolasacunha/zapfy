@@ -1,3 +1,5 @@
+import { dayKey, isYesterday } from './calendar'
+
 const KEY = 'zapfy_daily_bonus'
 
 const REWARDS = [
@@ -10,10 +12,6 @@ const REWARDS = [
   { zapcoins: 0,  gems: 3, label: 'Dia 7 🌟', special: true },
 ]
 
-function today() {
-  return new Date().toISOString().slice(0, 10)
-}
-
 export function getDailyBonusState() {
   try {
     return JSON.parse(localStorage.getItem(KEY) || '{}')
@@ -24,18 +22,15 @@ export function getDailyBonusState() {
 
 export function shouldShowBonus() {
   const s = getDailyBonusState()
-  return s.lastClaimed !== today()
+  return s.lastClaimed !== dayKey()
 }
 
 export function claimBonus() {
   const s = getDailyBonusState()
-  const t = today()
+  const t = dayKey()
   if (s.lastClaimed === t) return null
 
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  const yd = yesterday.toISOString().slice(0, 10)
-  const streak = s.lastClaimed === yd ? (s.streak || 0) + 1 : 1
+  const streak = isYesterday(s.lastClaimed) ? (s.streak || 0) + 1 : 1
   const dayIdx = Math.min(streak - 1, REWARDS.length - 1)
   const reward = REWARDS[dayIdx]
 

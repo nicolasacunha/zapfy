@@ -6,6 +6,7 @@ import { recordXP } from '../lib/xpHistory'
 import { logPilotEvent } from '../lib/pilotMetrics'
 import { registerActivity, clampEnergy, decayEnergy } from '../lib/zappyState'
 import { rewardForLesson, levelFromXp } from '../lib/economy'
+import { nextStreak, dayKey } from '../lib/calendar'
 
 // ── Estado inicial ─────────────────────────────────────────────
 const INIT = {
@@ -97,7 +98,7 @@ const SYNC_ACTIONS = new Set([
 // Garante que o progresso fique intacto ao fechar/reabrir, mesmo se o sync do
 // Supabase falhar. O merge nunca regride: união de listas, máximo de números.
 const LS_PROGRESS = 'zapfy_progress'
-const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate','league','leaguePosition',
+const PERSIST_FIELDS = ['xp','hearts','zapcoins','gems','streak','streakLastDate','streakFreezeActive','streakFreezeExpiry','league','leaguePosition',
   'completedUnits','completedModules','currentModule','seenModuleIntros','company',
   'missionReports','lessonChoices','user','zappyEnergy','zappyLastActive','zappyName']
 
@@ -126,6 +127,9 @@ function mergeProgress(base, local) {
     gems:             Math.max(base.gems ?? 0, local.gems ?? 0),
     streak:           Math.max(base.streak ?? 0, local.streak ?? 0),
     streakLastDate:   mergedStreakDate,
+    // freeze é efêmero no Supabase (só local o persiste): local vence
+    streakFreezeActive: local.streakFreezeActive ?? base.streakFreezeActive ?? false,
+    streakFreezeExpiry: local.streakFreezeExpiry ?? base.streakFreezeExpiry ?? null,
     currentModule:    Math.max(base.currentModule ?? 1, local.currentModule ?? 1),
     hearts:           base.hearts ?? local.hearts,
     completedUnits:   uniqArr(base.completedUnits, local.completedUnits),
@@ -183,24 +187,12 @@ function reducer(state, action) {
       const reward = rewardForLesson({ xp2xActive: state.xp2xActive })
       const newXp  = state.xp + reward.xp
       const newLevel = levelFromXp(newXp)
-      // Streak: incrementa apenas uma vez por dia-calendário
-      const todayStr = new Date().toISOString().slice(0, 10)
-      const lastDate = state.streakLastDate
-      let newStreak
-      if (lastDate === todayStr) {
-        newStreak = state.streak // já jogou hoje — não incrementa
-      } else if (lastDate) {
-        const yesterday = new Date()
-        yesterday.setDate(yesterday.getDate() - 1)
-        const yStr = yesterday.toISOString().slice(0, 10)
-        if (lastDate === yStr || state.streakFreezeActive) {
-          newStreak = state.streak + 1 // ontem ou freeze ativo — continua
-        } else {
-          newStreak = 1 // pulou mais de 1 dia sem freeze — reinicia
-        }
-      } else {
-        newStreak = 1 // primeira lição ever
-      }
+      // Streak: regra única em lib/calendar (dia local + freeze)
+      const newStreak = nextStreak({
+        current:      state.streak,
+        lastKey:      state.streakLastDate,
+        freezeActive: state.streakFreezeActive,
+      })
       const MILESTONES = [7, 30, 100, 365]
       const milestone  = MILESTONES.includes(newStreak) ? newStreak : (state.pendingStreakMilestone || null)
       // Verifica wager
@@ -214,7 +206,7 @@ function reducer(state, action) {
       const next = {
         ...state,
         streak:                newStreak,
-        streakLastDate:        todayStr,
+        streakLastDate:        dayKey(),
         xp:                    newXp,
         zapcoins:              state.zapcoins + reward.zapcoins,
         completedUnits:        [...state.completedUnits, unitId],

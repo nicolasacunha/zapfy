@@ -5,6 +5,7 @@
 // Export JSON pelo Parent Dashboard → família manda no WhatsApp.
 
 import { supabase, IS_CONFIGURED } from './supabase'
+import { dayKey } from './calendar'
 
 const BUFFER_KEY   = 'zapfy_pilot_events'
 const INSTALL_KEY  = 'zapfy_pilot_install_at'
@@ -62,7 +63,7 @@ export function logPilotEvent(event, params = {}, childId = null) {
 
 // session_open no máx. 1x por dia-calendário (base da retenção diária)
 export function logSessionOpen(childId = null) {
-  const todayKey = new Date().toISOString().slice(0, 10)
+  const todayKey = dayKey()
   if (localStorage.getItem(SESSION_KEY) === todayKey) return
   localStorage.setItem(SESSION_KEY, todayKey)
   logPilotEvent('session_open', { d: dayIndex() }, childId)

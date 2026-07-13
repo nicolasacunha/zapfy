@@ -17,7 +17,8 @@ beforeEach(() => {
     clear: () => { store = {} },
   })
   vi.useFakeTimers()
-  vi.setSystemTime(new Date('2026-07-12T10:00:00Z'))
+  // meio-dia local (sem Z): dia-calendário inequívoco, alinhado ao dayKey local
+  vi.setSystemTime(new Date('2026-07-12T12:00:00'))
 })
 
 afterEach(() => {
@@ -62,7 +63,7 @@ describe('missões diárias — ciclo do dia', () => {
     claimDailyMission('complete_lessons')
     expect(byId('complete_lessons').claimed).toBe(true)
 
-    vi.setSystemTime(new Date('2026-07-13T00:05:00Z')) // dia seguinte
+    vi.setSystemTime(new Date('2026-07-13T12:00:00')) // dia seguinte (meio-dia local)
     const m = byId('complete_lessons')
     expect(m.done).toBe(false)
     expect(m.claimed).toBe(false)

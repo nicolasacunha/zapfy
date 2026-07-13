@@ -1,13 +1,11 @@
-const KEY = 'zapfy_screen_time'
+import { dayKey } from './calendar'
 
-function today() {
-  return new Date().toISOString().slice(0, 10)
-}
+const KEY = 'zapfy_screen_time'
 
 export function recordSession(ms) {
   if (ms < 5000) return
   const data = JSON.parse(localStorage.getItem(KEY) || '{}')
-  const d = today()
+  const d = dayKey()
   data[d] = (data[d] || 0) + Math.round(ms / 60000)
   const keys = Object.keys(data).sort().slice(-30)
   const trimmed = {}
@@ -21,7 +19,7 @@ export function getLast7Days() {
   for (let i = 6; i >= 0; i--) {
     const d = new Date()
     d.setDate(d.getDate() - i)
-    const key = d.toISOString().slice(0, 10)
+    const key = dayKey(d)
     result.push({ date: key, minutes: data[key] || 0 })
   }
   return result

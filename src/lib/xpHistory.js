@@ -1,12 +1,10 @@
-const KEY = 'zapfy_xp_history'
+import { dayKey } from './calendar'
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10)
-}
+const KEY = 'zapfy_xp_history'
 
 export function recordXP(amount) {
   const hist = JSON.parse(localStorage.getItem(KEY) || '{}')
-  const today = todayKey()
+  const today = dayKey()
   hist[today] = (hist[today] || 0) + amount
   // mantém apenas 30 dias para não crescer indefinidamente
   const keys = Object.keys(hist).sort().slice(-30)
@@ -24,6 +22,6 @@ export function getWeekXP() {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(now)
     d.setDate(now.getDate() + mondayDelta + i)
-    return hist[d.toISOString().slice(0, 10)] || 0
+    return hist[dayKey(d)] || 0
   })
 }

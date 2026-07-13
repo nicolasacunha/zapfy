@@ -19,13 +19,9 @@ export async function loadUserState(childId) {
 
   if (!profile) return null
 
-  // Calcular streak real
-  let streak = progress?.streak ?? 0
-  if (progress?.last_played_at) {
-    const diffMs   = Date.now() - new Date(progress.last_played_at).getTime()
-    const diffDays = Math.floor(diffMs / 86_400_000)
-    if (diffDays > 1) streak = 0 // streak quebrado
-  }
+  // O streak é devolvido cru; a autoridade que avança/reinicia é o reducer
+  // (nextStreak em lib/calendar), no próximo COMPLETE_UNIT.
+  const streak = progress?.streak ?? 0
 
   return {
     user:              { name: profile.name, age: profile.age },

@@ -4,21 +4,22 @@ export const MISSION_DEFS = [
   { id: 'streak_goal',      emoji: '🔥', title: 'Jogue 1 dia seguido',        target: 1, type: 'streak',  reward: { xp: 60, zapcoins: 25 } },
 ]
 
+import { dayKey } from './calendar'
+
 const LS_KEY = 'zapfy_missions'
-const today = () => new Date().toISOString().slice(0, 10)
 
 // Dono do ciclo diário das missões: progresso + concluídas + resgatadas, com reset
 // automático na virada de dia (comparação por `date`). O reducer é dono da carteira;
 // aqui vive tudo que reseta à meia-noite.
 function blank() {
-  return { date: today(), progress: {}, completed: [], claimed: [] }
+  return { date: dayKey(), progress: {}, completed: [], claimed: [] }
 }
 
 function load() {
   try {
     const raw = localStorage.getItem(LS_KEY)
     const d = raw ? JSON.parse(raw) : null
-    if (!d || d.date !== today()) {
+    if (!d || d.date !== dayKey()) {
       const fresh = blank()
       localStorage.setItem(LS_KEY, JSON.stringify(fresh))
       return fresh
