@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { X, Check } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { X, Check, GripVertical } from 'lucide-react'
 import { C } from '../tokens'
 import zappyFace from '../assets/zappy-face.png'
 import Zappy from '../components/Zappy'
@@ -37,10 +37,11 @@ export default function LessonScreen({ onNav, lessonId }) {
   const [ex2Matched, setEx2Matched] = useState([])
   const [ex2Wrong,   setEx2Wrong]   = useState(null)
 
-  // order state
+  // order state — arrastar e soltar (inserção, não troca)
   const [ex3Items,   setEx3Items]   = useState(null)
-  const [ex3Sel,     setEx3Sel]     = useState(null)
+  const [ex3Drag,    setEx3Drag]    = useState(null) // { idx, startY, dy, insertAt, rects }
   const [ex3Ok,      setEx3Ok]      = useState(false)
+  const ex3ListRef = useRef(null)
 
   // composite state
   const [ex6Step,    setEx6Step]    = useState(0)
@@ -112,17 +113,50 @@ export default function LessonScreen({ onNav, lessonId }) {
     }
   }
 
-  const handleEx3Tap = (idx) => {
+  const handleEx3PointerDown = (e, idx) => {
     if (ex3Ok) return
-    const items = ex3Items
-    if (ex3Sel === null) { setEx3Sel(idx); return }
-    if (ex3Sel === idx)  { setEx3Sel(null); return }
-    const ni = [...items]; [ni[ex3Sel], ni[idx]] = [ni[idx], ni[ex3Sel]]
-    setEx3Items(ni); setEx3Sel(null)
+    const list = ex3ListRef.current
+    if (!list) return
+    const rects = [...list.children].map(el => {
+      const r = el.getBoundingClientRect()
+      return { h: r.height, mid: r.top + r.height / 2 }
+    })
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setEx3Drag({ idx, startY: e.clientY, dy: 0, insertAt: idx, rects })
+  }
+
+  const handleEx3PointerMove = (e) => {
+    if (!ex3Drag) return
+    const dy = e.clientY - ex3Drag.startY
+    const center = ex3Drag.rects[ex3Drag.idx].mid + dy
+    let insertAt = 0
+    ex3Drag.rects.forEach((r, j) => { if (j !== ex3Drag.idx && r.mid < center) insertAt++ })
+    setEx3Drag(d => d ? { ...d, dy, insertAt } : d)
+  }
+
+  const handleEx3PointerUp = () => {
+    if (!ex3Drag) return
+    const { idx, insertAt, dy } = ex3Drag
+    setEx3Drag(null)
+    if (Math.abs(dy) < 6 || insertAt === idx) return
+    const ni = [...ex3Items]
+    const [moved] = ni.splice(idx, 1)
+    ni.splice(insertAt, 0, moved)
+    setEx3Items(ni)
     const correctOrder = cur.items.map(i => i.id)
     if (ni.map(i => i.id).join(',') === correctOrder.join(',')) {
       setEx3Ok(true); setFeedback('correct'); hapticSuccess(); trackMission('correct', state.streak)
     }
+  }
+
+  // Deslocamento visual dos itens não arrastados enquanto o drag abre espaço
+  const ex3Shift = (idx) => {
+    if (!ex3Drag || idx === ex3Drag.idx) return 0
+    const { idx: di, insertAt, rects } = ex3Drag
+    const slot = rects[di].h + 8 // altura do item + gap-2
+    if (di < idx && insertAt >= idx) return -slot
+    if (di > idx && insertAt <= idx) return slot
+    return 0
   }
 
   const handleEx6Choice = (val) => {
@@ -141,7 +175,7 @@ export default function LessonScreen({ onNav, lessonId }) {
   const handleContinue = () => {
     setFeedback(null); setSelected(null)
     setEx2Left(null); setEx2Matched([]); setEx2Wrong(null)
-    setEx3Items(null); setEx3Sel(null); setEx3Ok(false)
+    setEx3Items(null); setEx3Drag(null); setEx3Ok(false)
     setEx6Step(0); setEx6Choices([]); setEx6Done(false)
     if (exIdx < exercises.length - 1) {
       setExIdx(i => i + 1)
@@ -275,24 +309,46 @@ export default function LessonScreen({ onNav, lessonId }) {
           </>
         )}
 
-        {/* Reorder */}
+        {/* Reorder — arrastar e soltar */}
         {cur.type === 'order' && ex3Items && (
           <>
             <p className="text-xs font-semibold mb-3" style={{ color: C.inkSoft }}>
-              {ex3Sel !== null ? '👆 Agora toque onde quer colocar' : '👆 Toque um item para selecionar, depois toque onde mover'}
+              ✋ Arraste os itens para a ordem certa
             </p>
-            <div className="flex flex-col gap-2">
-              {ex3Items.map((item, idx) => (
-                <button key={item.id} onClick={() => handleEx3Tap(idx)}
-                  className="flex items-center gap-3 p-4 rounded-2xl border-2 text-left font-bold text-sm transition-all"
-                  style={{ borderColor: ex3Ok ? C.success : ex3Sel === idx ? C.primary : C.border, background: ex3Ok ? '#F0FDF4' : ex3Sel === idx ? `${C.primary}12` : C.card }}>
-                  <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold flex-shrink-0"
-                    style={{ background: ex3Sel === idx ? C.primary : C.bg, color: ex3Sel === idx ? 'white' : C.inkSoft }}>
-                    {idx + 1}
+            <div ref={ex3ListRef} className="flex flex-col gap-2">
+              {ex3Items.map((item, idx) => {
+                const dragging = ex3Drag?.idx === idx
+                return (
+                  <div key={item.id}
+                    onPointerDown={(e) => handleEx3PointerDown(e, idx)}
+                    onPointerMove={handleEx3PointerMove}
+                    onPointerUp={handleEx3PointerUp}
+                    onPointerCancel={() => setEx3Drag(null)}
+                    className="flex items-center gap-3 p-4 rounded-2xl border-2 text-left font-bold text-sm"
+                    style={{
+                      borderColor: ex3Ok ? C.success : dragging ? C.primary : C.border,
+                      background: ex3Ok ? '#F0FDF4' : dragging ? `${C.primary}12` : C.card,
+                      touchAction: 'none',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none',
+                      cursor: ex3Ok ? 'default' : dragging ? 'grabbing' : 'grab',
+                      transform: dragging
+                        ? `translateY(${ex3Drag.dy}px) scale(1.03)`
+                        : `translateY(${ex3Shift(idx)}px)`,
+                      transition: dragging ? 'none' : 'transform 150ms ease',
+                      zIndex: dragging ? 10 : 1,
+                      position: 'relative',
+                      boxShadow: dragging ? '0 8px 24px rgba(0,0,0,0.35)' : 'none',
+                    }}>
+                    <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold flex-shrink-0"
+                      style={{ background: dragging ? C.primary : C.bg, color: dragging ? 'white' : C.inkSoft }}>
+                      {idx + 1}
+                    </div>
+                    <span className="flex-1" style={{ color: C.ink }}>{item.text}</span>
+                    {!ex3Ok && <GripVertical size={18} style={{ color: C.inkSoft, flexShrink: 0 }} />}
                   </div>
-                  <span style={{ color: C.ink }}>{item.text}</span>
-                </button>
-              ))}
+                )
+              })}
             </div>
             {feedback && (
               <div className="mt-4 p-4 rounded-2xl border-2 slide-up" style={{ borderColor: C.success, background: '#F0FDF4' }}>
