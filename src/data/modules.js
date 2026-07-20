@@ -1,10 +1,14 @@
+// Vídeos de intro hospedados no Supabase Storage (bucket público "videos") —
+// streaming sob demanda para não engordar o binário do app.
+const VIDEO_BASE = 'https://lokdzgjldehodjmqebjm.supabase.co/storage/v1/object/public/videos'
+
 export const MODULES = [
   {
     id: 1,
     name: 'O que é empreendedorismo',
     tag: 'Mentalidade',
     color: '#1E40AF',
-    videoUrl: null,
+    videoUrl: `${VIDEO_BASE}/modulo-1.mp4`,
     mission: {
       type: 'real-world',
       title: 'Caçador de Problemas',
@@ -47,7 +51,7 @@ export const MODULES = [
     name: 'Seu primeiro cliente',
     tag: 'Mercado',
     color: '#0891B2',
-    videoUrl: null,
+    videoUrl: `${VIDEO_BASE}/modulo-3.mp4`,
     mission: {
       type: 'real-world',
       title: 'Primeira Conversa',
@@ -74,7 +78,7 @@ export const MODULES = [
     name: 'Criando e entregando valor',
     tag: 'Valor',
     color: '#059669',
-    videoUrl: null,
+    videoUrl: `${VIDEO_BASE}/modulo-4.mp4`,
     mission: {
       type: 'real-world',
       title: 'Define o Preço',
@@ -101,7 +105,7 @@ export const MODULES = [
     name: 'Sua primeira venda',
     tag: 'Marco',
     color: '#B45309',
-    videoUrl: null,
+    videoUrl: `${VIDEO_BASE}/modulo-5.mp4`,
     mission: {
       type: 'real-world',
       title: 'Tentativa de Venda Real',
@@ -180,7 +184,7 @@ export const MODULES = [
     name: 'Crescimento',
     tag: 'Escala',
     color: '#9333EA',
-    videoUrl: null,
+    videoUrl: `${VIDEO_BASE}/modulo-8.mp4`,
     mission: {
       type: 'real-world',
       title: 'Meta de 30 Dias',
