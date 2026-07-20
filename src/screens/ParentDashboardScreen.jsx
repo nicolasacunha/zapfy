@@ -6,6 +6,7 @@ import Zappy from '../components/Zappy'
 import { MODULES } from '../data/modules'
 import { getLast7Days, getWeekTotal } from '../lib/screenTime'
 import { exportPilotData, pilotSummary } from '../lib/pilotMetrics'
+import { PAYWALL_ENABLED } from '../lib/flags'
 import { skillsFromProgress } from '../lib/domain'
 
 export default function ParentDashboardScreen({ onNav }) {
@@ -192,14 +193,16 @@ export default function ParentDashboardScreen({ onNav }) {
         })()}
       </div>
 
-      <div className="w-full px-4 pt-3 bg-white border-t" style={{ flexShrink: 0, borderColor: C.border, paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}>
-        <button className="w-full py-4 rounded-2xl font-extrabold text-white uppercase tracking-wide relative overflow-hidden"
-          style={{ background: `linear-gradient(135deg, ${C.primary}, #7C3AED)`, boxShadow: `0 4px 0 ${C.primaryDk}` }}>
-          Zapfy Premium — cosméticos e extras
-          <br />
-          <span className="text-sm font-semibold opacity-75">R$ 14,90/mês · todo conteúdo educacional é gratuito</span>
-        </button>
-      </div>
+      {PAYWALL_ENABLED && (
+        <div className="w-full px-4 pt-3 bg-white border-t" style={{ flexShrink: 0, borderColor: C.border, paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}>
+          <button className="w-full py-4 rounded-2xl font-extrabold text-white uppercase tracking-wide relative overflow-hidden"
+            style={{ background: `linear-gradient(135deg, ${C.primary}, #7C3AED)`, boxShadow: `0 4px 0 ${C.primaryDk}` }}>
+            Zapfy Premium — cosméticos e extras
+            <br />
+            <span className="text-sm font-semibold opacity-75">R$ 14,90/mês · todo conteúdo educacional é gratuito</span>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
