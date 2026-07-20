@@ -87,16 +87,16 @@ export async function syncProgress(childId, state) {
     ...stateToProgress(state),
     last_played_at: new Date().toISOString(),
     updated_at:     new Date().toISOString(),
-  })
-  if (error) console.error('[Zapfy] sync error:', error)
+  }, { onConflict: 'user_id' })
+  if (error) console.error('[Zapfy] sync error:', error.message, error.details ?? '')
 }
 
 export async function saveCompany(childId, company) {
   const { error } = await supabase.from('companies').upsert({
     user_id: childId,
     ...stateToCompany(company),
-  })
-  if (error) console.error('[Zapfy] company sync error:', error)
+  }, { onConflict: 'user_id' })
+  if (error) console.error('[Zapfy] company sync error:', error.message, error.details ?? '')
 }
 
 export async function getChildProfiles(parentId) {
@@ -116,5 +116,5 @@ export async function saveMissionReport(childId, moduleId, report) {
     report,
     completed_at:     new Date().toISOString(),
   }, { onConflict: 'child_profile_id,module_id' })
-  if (error) console.error('[Zapfy] mission sync error:', error)
+  if (error) console.error('[Zapfy] mission sync error:', error.message, error.details ?? '')
 }
