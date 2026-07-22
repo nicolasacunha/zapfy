@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidade — Zapfy</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@800;900&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #090F1C;
+      --surface:  #111B33;
+      --border:   rgba(255,255,255,.09);
+      --primary:  #4D7FFF;
+      --ink:      #E6EDFF;
+      --ink-dim:  rgba(230,237,255,.55);
+      --ink-faint:rgba(230,237,255,.32);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Figtree', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    header {
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-mark svg { display: block; }
+
+    .logo-name {
+      font-family: 'Grandstander', cursive;
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--ink);
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      font-family: 'Grandstander', cursive;
+      font-weight: 900;
+      font-size: clamp(28px, 6vw, 40px);
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: var(--ink-faint);
+      font-weight: 500;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 40px;
+    }
+
+    .toc-title {
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--ink-faint);
+      margin-bottom: 14px;
+    }
+
+    .toc ol {
+      list-style: decimal;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toc a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toc a:hover { text-decoration: underline; }
+
+    section {
+      margin-bottom: 48px;
+    }
+
+    h2 {
+      font-family: 'Grandstander', cursive;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 16px;
+      scroll-margin-top: 24px;
+    }
+
+    p {
+      color: var(--ink-dim);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul, ol {
+      padding-left: 22px;
+      color: var(--ink-dim);
+      font-size: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    strong { color: var(--ink); font-weight: 700; }
+
+    .highlight {
+      background: rgba(77,127,255,.08);
+      border: 1px solid rgba(77,127,255,.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .highlight p {
+      color: rgba(179,200,255,.85);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .highlight strong { color: #7AAAFF; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--ink-faint);
+      margin: 0;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      .page { padding: 32px 20px 64px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 5H16L7 15H16" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-name">Zapfy</span>
+      </a>
+      <h1>Política de Privacidade</h1>
+      <p class="meta">Última atualização: 8 de junho de 2026</p>
+    </header>
+
+    <nav class="toc">
+      <p class="toc-title">Neste documento</p>
+      <ol>
+        <li><a href="#quem-somos">Quem somos</a></li>
+        <li><a href="#dados-coletados">Dados coletados</a></li>
+        <li><a href="#finalidade">Para que usamos seus dados</a></li>
+        <li><a href="#base-legal">Base legal (LGPD)</a></li>
+        <li><a href="#menores">Proteção de menores</a></li>
+        <li><a href="#compartilhamento">Compartilhamento com terceiros</a></li>
+        <li><a href="#retencao">Retenção dos dados</a></li>
+        <li><a href="#direitos">Seus direitos</a></li>
+        <li><a href="#seguranca">Segurança</a></li>
+        <li><a href="#alteracoes">Alterações nesta política</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ol>
+    </nav>
+
+    <div class="divider"></div>
+
+    <section id="quem-somos">
+      <h2>1. Quem somos</h2>
+      <p>
+        O <strong>Zapfy</strong> é um aplicativo de educação empreendedora voltado a crianças e jovens de 8 a 14 anos. Através de missões práticas, o Zapfy guia o usuário a construir e gerir um negócio real com acompanhamento dos pais ou responsáveis.
+      </p>
+      <p>
+        Para fins da Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD), o controlador dos seus dados pessoais é:
+      </p>
+      <ul>
+        <li><strong>Empresa:</strong> Zapfy Educação Ltda.</li>
+        <li><strong>E-mail de contato:</strong> <a href="mailto:privacidade@zapfy.app" style="color:var(--primary)">privacidade@zapfy.app</a></li>
+      </ul>
+    </section>
+
+    <section id="dados-coletados">
+      <h2>2. Dados coletados</h2>
+      <p>Coletamos apenas o mínimo necessário para o funcionamento do aplicativo:</p>
+
+      <p><strong>Dados fornecidos diretamente:</strong></p>
+      <ul>
+        <li>E-mail e senha do responsável (conta de acesso)</li>
+        <li>Nome, idade e PIN da criança (perfil do aluno)</li>
+        <li>Nome da empresa fictícia criada pela criança</li>
+        <li>Progresso nas lições, pontuação e conquistas</li>
+      </ul>
+
+      <p><strong>Dados coletados automaticamente:</strong></p>
+      <ul>
+        <li>Tempo de uso do aplicativo por sessão</li>
+        <li>Dados de desempenho e erros técnicos (logs anônimos)</li>
+        <li>Informações do dispositivo (sistema operacional, versão do app)</li>
+      </ul>
+
+      <div class="highlight">
+        <p><strong>Não coletamos</strong> localização, fotos, contatos, ou qualquer dado sensível da criança. Não exibimos publicidade dentro do aplicativo.</p>
+      </div>
+    </section>
+
+    <section id="finalidade">
+      <h2>3. Para que usamos seus dados</h2>
+      <ul>
+        <li>Criar e gerenciar a conta do responsável e o perfil da criança</li>
+        <li>Salvar e sincronizar o progresso do aluno entre dispositivos</li>
+        <li>Gerar relatórios de desempenho para o painel dos pais</li>
+        <li>Enviar notificações de lembrete de estudo (quando autorizado)</li>
+        <li>Melhorar o conteúdo pedagógico com base em dados agregados e anônimos</li>
+        <li>Cumprir obrigações legais</li>
+      </ul>
+    </section>
+
+    <section id="base-legal">
+      <h2>4. Base legal (LGPD)</h2>
+      <p>Tratamos seus dados com base nas seguintes hipóteses legais previstas na LGPD:</p>
+      <ul>
+        <li><strong>Execução do contrato</strong> — para fornecer o serviço contratado (Art. 7º, V)</li>
+        <li><strong>Consentimento</strong> — para envio de notificações e comunicações de marketing (Art. 7º, I)</li>
+        <li><strong>Interesse legítimo</strong> — para melhorias do produto com dados agregados e anônimos (Art. 7º, IX)</li>
+        <li><strong>Cumprimento de obrigação legal</strong> — quando exigido por lei (Art. 7º, II)</li>
+      </ul>
+    </section>
+
+    <section id="menores">
+      <h2>5. Proteção de menores</h2>
+      <p>
+        O Zapfy é desenvolvido especificamente para crianças e adolescentes. Seguimos rigorosamente o Art. 14 da LGPD, que exige consentimento específico de pelo menos um dos pais ou do responsável legal para o tratamento de dados de menores de 18 anos.
+      </p>
+      <p>
+        O cadastro no Zapfy é sempre realizado pelo responsável, que autoriza a criação do perfil da criança. O responsável pode, a qualquer momento:
+      </p>
+      <ul>
+        <li>Visualizar todos os dados da criança no painel de pais</li>
+        <li>Excluir o perfil da criança e todos os seus dados</li>
+        <li>Revogar o consentimento e solicitar a exclusão da conta</li>
+      </ul>
+      <div class="highlight">
+        <p><strong>Não vendemos, não compartilhamos e não usamos dados de menores para fins publicitários</strong>, de criação de perfil comportamental ou qualquer outra finalidade além das descritas nesta política.</p>
+      </div>
+    </section>
+
+    <section id="compartilhamento">
+      <h2>6. Compartilhamento com terceiros</h2>
+      <p>Seus dados podem ser compartilhados com os seguintes prestadores de serviço, estritamente necessários para o funcionamento do aplicativo:</p>
+      <ul>
+        <li><strong>Supabase</strong> — infraestrutura de banco de dados e autenticação (servidores na UE/EUA com cláusulas contratuais padrão)</li>
+        <li><strong>Google Analytics 4</strong> — análise de uso agregada e anônima</li>
+        <li><strong>Apple / Google</strong> — distribuição do app nas lojas (App Store e Google Play)</li>
+      </ul>
+      <p>
+        Não vendemos, alugamos ou cedemos dados pessoais a terceiros para fins comerciais ou publicitários.
+      </p>
+    </section>
+
+    <section id="retencao">
+      <h2>7. Retenção dos dados</h2>
+      <p>
+        Mantemos seus dados enquanto a conta estiver ativa. Após o encerramento da conta, excluímos os dados pessoais em até <strong>30 dias</strong>, salvo obrigação legal de retenção.
+      </p>
+      <p>
+        Dados agregados e anonimizados (sem identificação individual) podem ser mantidos por prazo indeterminado para fins de pesquisa e melhoria do produto.
+      </p>
+    </section>
+
+    <section id="direitos">
+      <h2>8. Seus direitos</h2>
+      <p>Em conformidade com a LGPD, você (ou o responsável pela criança) tem os seguintes direitos:</p>
+      <ul>
+        <li><strong>Acesso</strong> — solicitar uma cópia dos dados que mantemos</li>
+        <li><strong>Correção</strong> — corrigir dados incompletos, inexatos ou desatualizados</li>
+        <li><strong>Exclusão</strong> — solicitar a exclusão dos dados (quando não houver obrigação legal de retenção)</li>
+        <li><strong>Portabilidade</strong> — receber os dados em formato estruturado e legível por máquina</li>
+        <li><strong>Revogação do consentimento</strong> — retirar o consentimento a qualquer momento, sem prejuízo do tratamento realizado anteriormente</li>
+        <li><strong>Oposição</strong> — opor-se ao tratamento em casos de descumprimento da LGPD</li>
+      </ul>
+      <p>Para exercer qualquer desses direitos, entre em contato pelo e-mail <a href="mailto:privacidade@zapfy.app" style="color:var(--primary)">privacidade@zapfy.app</a>. Respondemos em até 15 dias úteis.</p>
+    </section>
+
+    <section id="seguranca">
+      <h2>9. Segurança</h2>
+      <p>
+        Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda ou alteração, incluindo:
+      </p>
+      <ul>
+        <li>Criptografia em trânsito (TLS) e em repouso</li>
+        <li>Autenticação com PIN para o perfil da criança</li>
+        <li>Acesso restrito aos dados por equipe autorizada</li>
+        <li>Revisões periódicas de segurança</li>
+      </ul>
+      <p>
+        Em caso de incidente de segurança que possa gerar risco a você, notificaremos a Autoridade Nacional de Proteção de Dados (ANPD) e os titulares afetados no prazo exigido por lei.
+      </p>
+    </section>
+
+    <section id="alteracoes">
+      <h2>10. Alterações nesta política</h2>
+      <p>
+        Esta política pode ser atualizada periodicamente. Quando isso ocorrer, atualizaremos a data no topo deste documento e, se as mudanças forem relevantes, notificaremos os responsáveis por e-mail ou por aviso no aplicativo.
+      </p>
+      <p>
+        O uso continuado do Zapfy após a publicação de alterações constitui aceitação da política atualizada.
+      </p>
+    </section>
+
+    <section id="contato">
+      <h2>11. Contato</h2>
+      <p>Dúvidas, solicitações ou reclamações relacionadas a esta política:</p>
+      <ul>
+        <li><strong>E-mail:</strong> <a href="mailto:privacidade@zapfy.app" style="color:var(--primary)">privacidade@zapfy.app</a></li>
+        <li><strong>Encarregado de Dados (DPO):</strong> disponível pelo e-mail acima</li>
+      </ul>
+      <p>
+        Você também pode registrar uma reclamação perante a <strong>Autoridade Nacional de Proteção de Dados (ANPD)</strong> em <a href="https://www.gov.br/anpd" style="color:var(--primary)" target="_blank" rel="noopener">gov.br/anpd</a>.
+      </p>
+    </section>
+
+    <footer>
+      <p>© 2026 Zapfy Educação Ltda. Todos os direitos reservados.</p>
+      <p><a href="/">Voltar ao aplicativo</a></p>
+    </footer>
+  </div>
+</body>
+</html>
