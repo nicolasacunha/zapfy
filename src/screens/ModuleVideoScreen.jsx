@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { ArrowRight } from 'lucide-react'
 import { C } from '../tokens'
 import Zappy from '../components/Zappy'
@@ -32,8 +33,11 @@ export default function ModuleVideoScreen({ onNav, moduleId, lessonId, unitId })
   }
 
   // ── Vídeo MP4 ──────────────────────────────────────────────
+  // Portal para o <body>: o wrapper de tela retém transform (screen-enter,
+  // fill-mode forwards) e o WKWebView pode não compor a camada de vídeo
+  // dentro de ancestral transformado — áudio toca, imagem não aparece.
   if (mod.videoUrl) {
-    return (
+    return createPortal(
       <VideoPlayer
         mod={mod}
         color={color}
@@ -41,7 +45,8 @@ export default function ModuleVideoScreen({ onNav, moduleId, lessonId, unitId })
         showSkip={showSkip}
         setShowSkip={setShowSkip}
         skipTimerRef={skipTimerRef}
-      />
+      />,
+      document.body
     )
   }
 
